@@ -1,0 +1,6 @@
+@_4toExpoApi_v1._0._0_HostAddress = http://localhost:5086
+
+GET {{_4toExpoApi_v1._0._0_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
