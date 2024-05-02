@@ -23,6 +23,7 @@ namespace _4toExpoApi.Core.Mappers
                 cfg.CreateMap<PermisosVM, Permisos>().ReverseMap();
                 cfg.CreateMap<UsuarioPermisosVM, UsuarioPermisos>().ReverseMap();
                 cfg.CreateMap<UsuariosResponse, Usuarios>().ReverseMap();
+                cfg.CreateMap<PagoRequest, Reserva>().ReverseMap();
             });
 
             _mapper = new Mapper(config);
