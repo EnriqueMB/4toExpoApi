@@ -16,5 +16,6 @@ namespace _4toExpoApi.DataAccess
         public DbSet<Reservas> Reservas { get; set; }
         public DbSet<Pagos> Pagos { get; set; }
         public DbSet<Clientes> Clientes { get; set; }
+        public DbSet<Servicios> Servicios { get; set; }
     }
 }
