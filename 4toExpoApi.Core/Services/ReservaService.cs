@@ -34,7 +34,7 @@ namespace _4toExpoApi.Core.Services
 
         #region <-- Metodos -->
 
-        public async Task<GenericResponse> reservaProducto(PagoRequest request, int usrAlta)
+        public async Task<GenericResponse> reservaProducto(ReservaRequest request,PagoRequest requestPago ,int usrAlta)
         {
             try
             {
@@ -43,14 +43,43 @@ namespace _4toExpoApi.Core.Services
                 var response = new GenericResponse();
 
 
-                var persona = AppMapper.Map<PagoRequest, Reserva>(request);
+                var persona = AppMapper.Map<ReservaRequest, Reservas>(request);
+                var pagos = AppMapper.Map<PagoRequest, Pagos>(requestPago);
 
-           
+                //***************  DATOS PARA TABLA PAGOS ********************/
+
+                if (persona.TipoPago == "OxxoPay")
+                {
+                    pagos.Pasarela = "OxxoPay";
+                    pagos.StatusPago = requestPago.payment_status;
+                    pagos.IdTransaccion = requestPago.id;
+                    pagos.Monto = requestPago.amount;
+                    pagos.FechaAlt = DateTime.Now;
+                    pagos.UserAlt = usrAlta;
+                    pagos.Activo = true;
+                }
+        
+
+                //***************  DATOS ´PARA TABLA RESERVA ********************/
+
                 persona.FechaAlt = DateTime.Now;
                 persona.UserAlt = usrAlta;
                 persona.Activo = true;
 
-                var result = await _reservaRepository.AgregarReserva(persona, _logger);
+                //***************  DATOS ´PARA TABLA CLIENTES ********************/
+
+                var clientes = new Clientes
+                {
+                    Nombre = request.NombreTitular,
+                    Apellidos = request.Apellidos,
+                    Telefono = request.Telefono,
+                    Correo = request.Correo,
+                    FechaAlt = DateTime.Now,
+                    Activo = true
+                };
+
+
+                var result = await _reservaRepository.AgregarReserva(persona, pagos, clientes, _logger);
 
                 if (result.Success)
                 {

@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using static System.Net.Mime.MediaTypeNames;
 using System.Runtime.InteropServices;
 using System.Text.Unicode;
+using Newtonsoft.Json;
 
 
 namespace _4toExpoApi_v1._0._0.Controllers
@@ -37,7 +38,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
         #region<--- Metodos->
 
         [HttpPost("GenerarRefefencia")]
-        public async Task <IActionResult> pagarOxxo(PagoRequest request)
+        public async Task <IActionResult> pagarOxxo(ReservaRequest request)
         {
 
             try
@@ -60,23 +61,23 @@ namespace _4toExpoApi_v1._0._0.Controllers
                     {
                         new
                         {
-                            name = "paquete",
-                            unit_price = 2300,
-                            quantity = 1
+                            name = request.Nombre,
+                            unit_price = request.Monto,
+                            quantity = request.Cantidad
                         }
                     },
-                                    currency = "MXN",
-                                    customer_info = new
-                                    {
-                                        name = "Jorge Martínez",
-                                        email = "rafahh531@gmail.com",
-                                        phone = "+5218181818181"
-                                    },
-                                    metadata = new
-                                    {
-                                        datos_extra = "1234"
-                                    },
-                                    charges = new[]
+                    currency = "MXN",
+                    customer_info = new
+                    {
+                        name = request.NombreTitular,
+                        email = request.Correo,
+                        phone = request.Telefono
+                    },
+                    metadata = new
+                    {
+                        datos_extra = "1234"
+                    },
+                    charges = new[]
                                     {
                         new
                         {
@@ -104,9 +105,10 @@ namespace _4toExpoApi_v1._0._0.Controllers
                     if (responseOxo.IsSuccessStatusCode)
                     {
                         var responseContent = await responseOxo.Content.ReadAsStringAsync();
+                        var conektaResponse = JsonConvert.DeserializeObject<PagoRequest>(responseContent);
 
                         // return Ok(responseContent);
-                        var response = await _payService.reservaProducto(request, 1);
+                        var response = await _payService.reservaProducto(request, conektaResponse, 1);
 
                         if (response.Success)
                         {

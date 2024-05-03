@@ -26,7 +26,7 @@ builder.Services.AddScoped<ReservaService>();
 //builder.Services.AddScoped<IBaseRepository<Usuarios>, BaseRepository<Usuarios>>();
 //builder.Services.AddScoped<IBaseRepository<UsuarioPermisos>, BaseRepository<UsuarioPermisos>>();
 //builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-builder.Services.AddScoped<IBaseRepository<Reserva>, BaseRepository<Reserva>>();
+builder.Services.AddScoped<IBaseRepository<Reservas>, BaseRepository<Reservas>>();
 builder.Services.AddScoped<IReservaRepository, ReservaRepository>();
 #endregion
 #region <-- Context -->
