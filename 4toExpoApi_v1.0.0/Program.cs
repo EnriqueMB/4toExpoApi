@@ -20,6 +20,7 @@ builder.Services.AddHttpClient();
 //builder.Services.AddScoped<PermisosService>();
 builder.Services.AddScoped<ReservaService>();
 builder.Services.AddScoped<ServicioService>();
+builder.Services.AddScoped<TalleresService>();
 
 #endregion
 #region <-- Repositories -->
