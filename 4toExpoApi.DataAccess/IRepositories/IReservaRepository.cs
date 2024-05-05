@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace _4toExpoApi.DataAccess.IRepositories
 {
-    public interface IReservaRepository : IBaseRepository<Reserva>
+    public interface IReservaRepository : IBaseRepository<Reservas>
     {
-        Task<GenericResponse<Reserva>> AgregarReserva(Reserva reserva, ILogger logger);
+        Task<GenericResponse<Reservas>> AgregarReserva(Reservas reserva,Pagos pagos,Clientes clientes, ILogger logger);
     }
 }
