@@ -34,7 +34,7 @@ namespace _4toExpoApi.Core.Services
 
         #region <-- Metodos -->
 
-        public async Task<GenericResponse> reservaProducto(ReservaRequest request,PagoRequest requestPago ,int usrAlta)
+        public async Task<GenericResponse> reservaProducto(ReservaRequest request,PagoRequest requestPago,string requestDataDb,string responseContent ,int usrAlta)
         {
             try
             {
@@ -42,6 +42,10 @@ namespace _4toExpoApi.Core.Services
 
                 var response = new GenericResponse();
 
+                var consecutivo = await _reservaRepository.GetAll(_logger);
+                var ultimoConsecutivo = consecutivo.OrderByDescending(x => x.Id).FirstOrDefault();
+
+            
 
                 var persona = AppMapper.Map<ReservaRequest, Reservas>(request);
                 var pagos = AppMapper.Map<PagoRequest, Pagos>(requestPago);
@@ -58,10 +62,27 @@ namespace _4toExpoApi.Core.Services
                     pagos.UserAlt = usrAlta;
                     pagos.Activo = true;
                 }
-        
+
 
                 //***************  DATOS ´PARA TABLA RESERVA ********************/
+                string nuevoConsecutivo;
 
+                if (ultimoConsecutivo.Consecutivo != null)
+                {
+                    string numeroConsecutivoString = ultimoConsecutivo.Consecutivo.Substring(6);
+                    int numeroConsecutivo = int.Parse(numeroConsecutivoString);
+                   
+                    numeroConsecutivo++;
+
+                    nuevoConsecutivo = "ECIES-" +numeroConsecutivo.ToString();
+                }
+                else
+                {
+                    nuevoConsecutivo = "ECIES-1";
+                }
+                persona.Consecutivo = nuevoConsecutivo;
+                persona.LogRequest = requestDataDb;
+                persona.LogResponse = responseContent;
                 persona.FechaAlt = DateTime.Now;
                 persona.UserAlt = usrAlta;
                 persona.Activo = true;
@@ -70,6 +91,7 @@ namespace _4toExpoApi.Core.Services
 
                 var clientes = new Clientes
                 {
+                    Identificador = nuevoConsecutivo,
                     Nombre = request.NombreTitular,
                     Apellidos = request.Apellidos,
                     Telefono = request.Telefono,
@@ -91,6 +113,36 @@ namespace _4toExpoApi.Core.Services
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
 
                 return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<GenericResponse> reservaProductoPaypal(ReservaRequest reserva)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+                var response = new GenericResponse();
+
+                var Reserva = AppMapper.Map<ReservaRequest,Reservas>(reserva);
+
+
+                //var result = await _reservaRepository.AgregarReserva(Reserva);
+                //if (result.Success)
+                //{
+                //    response.Message = "Reserva agregado correctamente";
+                //    response.Success = true;
+                //    response.CreatedId = result.CreatedId;
+                //}
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return response;
+
             }
             catch (Exception ex)
             {
