@@ -20,6 +20,7 @@ builder.Services.AddHttpClient();
 //builder.Services.AddScoped<PermisosService>();
 builder.Services.AddScoped<ReservaService>();
 builder.Services.AddScoped<ServicioService>();
+builder.Services.AddScoped<ContadorService>();
 
 #endregion
 #region <-- Repositories -->
@@ -29,6 +30,7 @@ builder.Services.AddScoped<ServicioService>();
 //builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IBaseRepository<Reservas>, BaseRepository<Reservas>>();
 builder.Services.AddScoped<IBaseRepository<Servicios>, BaseRepository<Servicios>>();
+builder.Services.AddScoped<IBaseRepository<Contador>, BaseRepository<Contador>>();
 builder.Services.AddScoped<IReservaRepository, ReservaRepository>();
 #endregion
 #region <-- Context -->
