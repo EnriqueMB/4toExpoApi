@@ -18,7 +18,7 @@ namespace _4toExpoApi.DataAccess.Entities
      
         public string? NombreTitular { get; set; }
         public string? Apellidos { get; set; }
-        public float? Monto { get; set; }
+        public int? Monto { get; set; }
         public string? TipoPago { get; set; }
         public string? LogRequest { get; set; }
         public string? LogResponse { get; set; }
