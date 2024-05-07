@@ -50,39 +50,41 @@ namespace _4toExpoApi_v1._0._0.Controllers
 
 
 
+     
         [HttpPut("EditarBannerConfig")]
-        public async Task<IActionResult> EditarBannerConfig(BannerConfigRequest request)
+public async Task<IActionResult> EditarBannerConfig(BannerConfigRequest request)
+{
+    try
+    {
+        _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+        var response = await _bannerConfigService.EditarBannerConfig(request, 1);
+
+        if (response.Success)
         {
-            try
-            {
-                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+            _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
 
-                var response = await _bannerConfigService.EditarBannerConfig(request, 1);
-
-                if (response.Data == null)
-                {
-                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
-                    return NotFound("No se encontró el banner");
-                }
-
-                if (response.Success)
-                {
-                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
-                    return Ok(response);
-                }
-
-                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
-                return BadRequest(response);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " " + ex.Message);
-                return StatusCode(500, "Ha ocurrido un error" + ex.Message);
-            }
+            return Ok(response);
         }
+
+        if (response.Message == "El Banner no existe")
+        {
+            _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+            return NotFound("No se encontró el banner");
+        }
+
+        _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+        return BadRequest(response);
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " " + ex.Message);
+        return StatusCode(500, "Ha ocurrido un error" + ex.Message);
+    }
+}
+
 
 
 
