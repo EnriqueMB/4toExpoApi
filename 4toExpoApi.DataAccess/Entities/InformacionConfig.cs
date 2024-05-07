@@ -11,7 +11,7 @@ namespace _4toExpoApi.DataAccess.Entities
     {
         //PROPIEDADES DE LA ENTIDAD 
         [Key]
-        public int id { get; set; }
+        public int Id { get; set; }
         public string Titulo { get; set; }
         public string Subtitulo { get; set; }
         public string Multimedia { get; set; }
