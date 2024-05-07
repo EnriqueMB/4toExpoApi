@@ -31,6 +31,8 @@ builder.Services.AddScoped<ContadorService>();
 builder.Services.AddScoped<IBaseRepository<Reservas>, BaseRepository<Reservas>>();
 builder.Services.AddScoped<IBaseRepository<Servicios>, BaseRepository<Servicios>>();
 builder.Services.AddScoped<IBaseRepository<Contador>, BaseRepository<Contador>>();
+builder.Services.AddScoped<IBaseRepository<InformacionConfig>, BaseRepository<InformacionConfig>>();
+
 builder.Services.AddScoped<IReservaRepository, ReservaRepository>();
 #endregion
 #region <-- Context -->
