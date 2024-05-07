@@ -14,7 +14,6 @@ namespace _4toExpoApi.DataAccess.Entities
         public string Descripcion { get; set; }
         public DateTime Fecha { get; set; }
         public TimeSpan Hora { get; set; }
-        public string Detalles { get; set; }
         public int UserAlt { get; set; }
         public DateTime? FechaAlt { get; set; }
         public int? UserUpd { get; set; }

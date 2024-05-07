@@ -74,7 +74,6 @@ namespace _4toExpoApi.Core.Services
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " Started Success");
 
-                // Ajuste aquí: Pasar _logger a GetAll()
                 var talleres = await _talleresRepository.GetAll(_logger);
 
                 if (talleres == null || !talleres.Any())
@@ -90,7 +89,6 @@ namespace _4toExpoApi.Core.Services
                     Descripcion = t.Descripcion,
                     Fecha = t.Fecha,
                     Hora = t.Hora,
-                    Detalles = t.Detalles
                 }).ToList();
 
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " Finished Success");
@@ -161,7 +159,6 @@ namespace _4toExpoApi.Core.Services
                 taller.Descripcion = request.Descripcion;
                 taller.Fecha = request.Fecha;
                 taller.Hora = request.Hora;
-                taller.Detalles = request.Detalles;
                 taller.FechaUpd = DateTime.Now;
 
                 var result = await _talleresRepository.Update(taller, _logger);
