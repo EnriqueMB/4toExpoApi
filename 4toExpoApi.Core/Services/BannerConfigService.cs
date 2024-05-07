@@ -62,7 +62,7 @@ namespace _4toExpoApi.Core.Services
         {
             try
             {
-                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " Started Success");
 
                 var response = new GenericResponse<BannerConfigRequest>();
                 var bannerConfig = await _bannerConfigRepository.GetById(request.Id, _logger);
@@ -83,77 +83,66 @@ namespace _4toExpoApi.Core.Services
                 var update = await _bannerConfigRepository.Update(bannerConfig, _logger);
                 if (update != null)
                 {
-                    response.Message = "Se edito correctamente el Banner";
+                    response.Message = "Se editó correctamente el Banner";
                     response.Success = true;
                     response.UpdatedId = update.Id.ToString();
                 }
                 else
                 {
-                    response.Message = "No se edito correctamente el Banner";
+                    response.Message = "No se editó correctamente el Banner";
                     response.Success = false;
-
                 }
-                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " Finished Success");
 
                 return response;
             }
             catch (Exception ex)
             {
-                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " " + ex.Message);
                 throw;
             }
         }
+
 
         public async Task<GenericResponse<BannerConfigRequest>> EliminarBannerConfig(int id)
+{
+    try
+    {
+        _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " Started Success");
+
+        var response = new GenericResponse<BannerConfigRequest>();
+        var bannerConfig = await _bannerConfigRepository.GetById(id, _logger);
+        if (bannerConfig == null)
         {
-            try
-            {
-                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
-
-                var response = new GenericResponse<BannerConfigRequest>();
-                var bannerConfig = await _bannerConfigRepository.GetById(id, _logger);
-                if (bannerConfig == null)
-                {
-                    response.Message = "El Banner no existe";
-                    return response;
-                }
-
-                bannerConfig.Id = 0;
-
-
-                var update = await _bannerConfigRepository.Update(bannerConfig, _logger);
-                if (update != null)
-                {
-                    response.Message = "Se elimino correctamente el Banner";
-                    response.Success = true;
-                    response.UpdatedId = update.Id.ToString();
-                }
-                else
-                {
-                    response.Message = "No se elimino correctamente el Banner";
-                    response.Success = false;
-
-                }
-                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
-                return response;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
-                throw;
-            }
+            response.Message = "El Banner no existe";
+            return response;
         }
 
-        public async Task<object?> EditarBannerConfig(ServicioRequest request, int v)
+        var delete = await _bannerConfigRepository.Delete(id, _logger);
+        if (delete != null)
         {
-            throw new NotImplementedException();
+            response.Message = "Se eliminó correctamente el Banner";
+            response.Success = true;
+            response.UpdatedId = id.ToString();
         }
+        else
+        {
+            response.Message = "No se eliminó correctamente el Banner";
+            response.Success = false;
+        }
+        _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " Finished Success");
 
+        return response;
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " " + ex.Message);
+        throw;
+    }
+}
+
+
+       
         #endregion
-
-
-
-
     }
 }

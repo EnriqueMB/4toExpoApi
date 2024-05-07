@@ -23,30 +23,28 @@ namespace _4toExpoApi_v1._0._0.Controllers
             _bannerConfigService = bannerConfigService;
             _logger = logger;
         }
+
+
+
+
+
         [HttpGet("ObtenerBannerConfig/{id}")]
-        public async Task<IEnumerable> ObtenerBannerConfig(int id)
+        public async Task<IActionResult> ObtenerBannerConfig(int id)
         {
             try
             {
-                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " Started Success");
 
                 var response = await _bannerConfigService.ObtenerBannerConfig(id);
 
-                if (response != null)
-                {
-                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " Finished Success");
 
-                    return response;
-                }
-
-                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
-                return null;
+                return Ok(response); // Devuelve una respuesta 200 OK con los datos
             }
             catch (Exception ex)
             {
-                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
-                throw;
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " " + ex.Message);
+                return StatusCode(500, "Ha ocurrido un error" + ex.Message); // Devuelve un error 500 en caso de excepción
             }
         }
 
@@ -61,21 +59,28 @@ namespace _4toExpoApi_v1._0._0.Controllers
 
                 var response = await _bannerConfigService.EditarBannerConfig(request, 1);
 
+                if (response.Data == null)
+                {
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                    return NotFound("No se encontró el banner");
+                }
+
                 if (response.Success)
                 {
                     _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
 
-                    return BadRequest(response);
+                    return Ok(response);
                 }
 
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
 
-                return Ok(response);
+                return BadRequest(response);
             }
             catch (Exception ex)
             {
-                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
-                throw;
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " " + ex.Message);
+                return StatusCode(500, "Ha ocurrido un error" + ex.Message);
             }
         }
 
@@ -83,33 +88,33 @@ namespace _4toExpoApi_v1._0._0.Controllers
 
 
         [HttpDelete("EliminarBannerConfig")]
-    public async Task<IActionResult> EliminarBannerConfig(int id)
-    {
-        try
+        public async Task<IActionResult> EliminarBannerConfig(int id)
         {
-            _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
-
-
-            var response = await _bannerConfigService.EliminarBannerConfig(id);
-
-            if (response.Success)
+            try
             {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var response = await _bannerConfigService.EliminarBannerConfig(id);
+
+                if (response.Success)
+                {
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                    return Ok(response);
+                }
+
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
 
-                return Ok(response);
+                return BadRequest(response);
             }
-
-            _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
-            return BadRequest(response);
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " " + ex.Message);
+                return StatusCode(500, "Ha ocurrido un error" + ex.Message);
+            }
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
-            throw;
-        }
-    }
-    #endregion
+
+        #endregion
 
     }
 }
