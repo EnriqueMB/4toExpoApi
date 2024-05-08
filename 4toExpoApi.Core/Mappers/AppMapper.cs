@@ -33,6 +33,7 @@ namespace _4toExpoApi.Core.Mappers
                 cfg.CreateMap<ContadorRequets, Contador>().ReverseMap();
                 cfg.CreateMap<PaqueteGeneralRequest, PaqueteGeneral>().ReverseMap();
                 cfg.CreateMap<IncluyePaqueteRequest, IncluyePaquete>().ReverseMap();
+                cfg.CreateMap<IncluyePaquete, IncluyePaqueteRequest>().ReverseMap();
             });
 
             _mapper = new Mapper(config);

@@ -1,5 +1,6 @@
 ﻿using _4toExpoApi.Core.Request;
 using _4toExpoApi.Core.Services;
+using _4toExpoApi.Core.ViewModels;
 using Azure;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
@@ -53,7 +54,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
             }
         }
 
-        [HttpPut("EditarPqueteGeneral")]
+        [HttpPut("EditarPaqueteGeneral")]
         public async Task<IActionResult> EditarPaquete(PaqueteGeneralRequest request)
         {
             try
@@ -71,6 +72,34 @@ namespace _4toExpoApi_v1._0._0.Controllers
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
 
                 return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+
+        [HttpGet("ObtenerPaquetesGeneral")]
+        public async Task<List<PaqueteGeneralVM>> ObtenerPaquetes()
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+
+                var response = await _paqueteGeneralService.ObtenerPaquetes();
+
+                if (response != null)
+                {
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                    return response;
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return null;
             }
             catch (Exception ex)
             {

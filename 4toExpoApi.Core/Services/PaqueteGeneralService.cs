@@ -2,6 +2,7 @@
 using _4toExpoApi.Core.Mappers;
 using _4toExpoApi.Core.Request;
 using _4toExpoApi.Core.Response;
+using _4toExpoApi.Core.ViewModels;
 using _4toExpoApi.DataAccess.Entities;
 using _4toExpoApi.DataAccess.IRepositories;
 using _4toExpoApi.DataAccess.Repositories;
@@ -156,6 +157,48 @@ namespace _4toExpoApi.Core.Services
                 _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
                 throw;
             }
+        }
+
+        public async Task<List<PaqueteGeneralVM>> ObtenerPaquetes()
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var listaPaquetesGeneral = await _paqueteGeneralRepository.GetAll(_logger);
+
+                var listaIncluye = await _incluyePaqueteRepository.GetAll(_logger);
+
+                listaPaquetesGeneral.Where(x => x.Activo == true).ToList();
+                listaIncluye.Where(x => x.Activo == true).ToList();
+               
+
+
+                var listaPaqueteVM = (from paqueteGeneral in listaPaquetesGeneral
+                                      join incluyePaquete in listaIncluye on paqueteGeneral.Id equals incluyePaquete.PaqueteId into listaIncluyePaquete
+                               
+                                       select new PaqueteGeneralVM
+                                       {
+                                           Id = paqueteGeneral.Id,
+
+                                           Nombre = paqueteGeneral.Nombre,
+                                           Descripcion = paqueteGeneral.Descripcion,
+                                           Precio = paqueteGeneral.Precio,
+                                           listaIncluyePaquete = listaIncluyePaquete.Select(x => AppMapper.Map<IncluyePaquete, IncluyePaqueteRequest>(x)).ToList()
+
+                                       }).ToList();
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return listaPaqueteVM;
+
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+
         }
         #endregion
     }
