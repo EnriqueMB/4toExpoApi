@@ -2,6 +2,7 @@
 using _4toExpoApi.Core.Request;
 using _4toExpoApi.DataAccess.Entities;
 using _4toExpoApi.DataAccess.IRepositories;
+using _4toExpoApi.DataAccess.Response;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -39,6 +40,44 @@ namespace _4toExpoApi.Core.Services
             }
             catch (Exception ex) {
 
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<GenericResponse<ContadorRequets>> EditarContador(ContadorRequets request, int UserUpd)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var response = new GenericResponse<ContadorRequets>();
+                var contador = await _contadorRepository.GetById(request.Id, _logger);
+               
+                contador.Fecha = request.Fecha;
+                contador.Descripcion = request.Descripcion;
+               
+                contador.UserUpd = UserUpd;
+                contador.FechaUpd = DateTime.Now;
+                var update = await _contadorRepository.Update(contador, _logger);
+                if (update != null)
+                {
+                    response.Message = "Se edito correctamente el Contador";
+                    response.Success = true;
+                    response.UpdatedId = update.Id.ToString();
+                }
+                else
+                {
+                    response.Message = "No se edito correctamente el Contador";
+                    response.Success = false;
+
+                }
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return response;
+            }
+            catch (Exception ex)
+            {
                 _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
                 throw;
             }

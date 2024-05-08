@@ -17,8 +17,13 @@ namespace _4toExpoApi.DataAccess
         public DbSet<Pagos> Pagos { get; set; }
         public DbSet<Clientes> Clientes { get; set; }
         public DbSet<Servicios> Servicios { get; set; }
+        public DbSet<PaquetePatrocinadores> PaquetePatrocinadores { get; set; }
+        public DbSet<TipoPaquete> TipoPaquete { get; set; }
+        public DbSet<BeneficioPaquete> BeneficioPaquete { get; set; }
         public DbSet<Contador> Contador { get; set;}
         public DbSet<PaqueteGeneral> PaqueteGeneral { get; set;}
         public DbSet<IncluyePaquete> IncluyePaquete { get; set; }
+
+        public DbSet<Hotel> Hotel { get; set; }
     }
 }
