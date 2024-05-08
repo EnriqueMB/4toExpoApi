@@ -23,7 +23,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
         }
         #endregion
         #region <---Metodos--->
-        [HttpPost]
+        [HttpPost("AgregarPaquete")]
         public async Task<IActionResult> AgregarPaquete(PaquetePatrocinadoresVM paqueteVM)
         {
             try
@@ -87,6 +87,62 @@ namespace _4toExpoApi_v1._0._0.Controllers
 
 
                 var response = await _paquetePatrocinadorService.EditarPaquete(paqueteVM, 1);
+
+                if (response.Success)
+                {
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                    return Ok(response);
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+        [HttpDelete("EliminarPaquete")]
+
+        public async Task<IActionResult> EliminarPaquete(int id)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+
+                var response = await _paquetePatrocinadorService.EliminarPaquete(id);
+
+                if (response.Success)
+                {
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                    return Ok(response);
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+        [HttpDelete("EliminarBeneficio")]
+
+        public async Task<IActionResult> EliminarBeneficio(int id)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+
+                var response = await _paquetePatrocinadorService.EliminarBeneficio(id);
 
                 if (response.Success)
                 {
