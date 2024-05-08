@@ -28,6 +28,8 @@ namespace _4toExpoApi.Core.Mappers
                 cfg.CreateMap<ServicioRequest, Servicios>().ReverseMap();
                 cfg.CreateMap<Servicios, ServicioRequest>().ReverseMap();
                 cfg.CreateMap<ContadorRequets, Contador>().ReverseMap();
+                cfg.CreateMap<PaqueteGeneralRequest, PaqueteGeneral>().ReverseMap();
+                cfg.CreateMap<IncluyePaqueteRequest, IncluyePaquete>().ReverseMap();
             });
 
             _mapper = new Mapper(config);
