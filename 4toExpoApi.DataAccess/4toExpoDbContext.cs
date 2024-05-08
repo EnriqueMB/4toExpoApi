@@ -13,5 +13,10 @@ namespace _4toExpoApi.DataAccess
         public DbSet<Permisos> Permisos { get; set; }
         public DbSet<UsuarioPermisos> UsuarioPermisos { get; set; }
         public DbSet<UsuariosRoles> UsuariosRoles { get; set; }
+        public DbSet<Reservas> Reservas { get; set; }
+        public DbSet<Pagos> Pagos { get; set; }
+        public DbSet<Clientes> Clientes { get; set; }
+        public DbSet<Servicios> Servicios { get; set; }
+        public DbSet<Contador> Contador { get; set;}
     }
 }
