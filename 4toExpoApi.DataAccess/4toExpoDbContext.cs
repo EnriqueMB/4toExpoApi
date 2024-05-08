@@ -18,5 +18,6 @@ namespace _4toExpoApi.DataAccess
         public DbSet<Clientes> Clientes { get; set; }
         public DbSet<Servicios> Servicios { get; set; }
         public DbSet<Contador> Contador { get; set;}
+        public DbSet<Multimedia> Multimedia { get; set;}
     }
 }
