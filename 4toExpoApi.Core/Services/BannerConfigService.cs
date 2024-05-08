@@ -57,6 +57,33 @@ namespace _4toExpoApi.Core.Services
                 throw;
             }
         }
+        public async Task<List<BannerConfigRequest>> ObtenerTodosLosBanners()
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var listBanner = await _bannerConfigRepository.GetAll(_logger);
+
+                if (listBanner == null || listBanner.Count() == 0)
+                {
+                    return null;
+                }
+
+                var requestListBannerConfig = listBanner
+                    .Select(bannerConfig => AppMapper.Map<BannerConfig, BannerConfigRequest>(bannerConfig))
+                    .ToList();
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return requestListBannerConfig;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
 
         public async Task<GenericResponse<BannerConfigRequest>> EditarBannerConfig(BannerConfigRequest request, int UserUpd)
         {
@@ -104,45 +131,45 @@ namespace _4toExpoApi.Core.Services
         }
 
 
-        public async Task<GenericResponse<BannerConfigRequest>> EliminarBannerConfig(int id)
-{
-    try
-    {
-        _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " Started Success");
-
-        var response = new GenericResponse<BannerConfigRequest>();
-        var bannerConfig = await _bannerConfigRepository.GetById(id, _logger);
-        if (bannerConfig == null)
+        public async Task<GenericResponse<BannerConfig>> EliminarBannerConfig(int id)
         {
-            response.Message = "El Banner no existe";
-            return response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var response = new GenericResponse<BannerConfig>();
+                var banner = await _bannerConfigRepository.GetById(id, _logger);
+                if (banner == null)
+                {
+                    response.Message = "El banner no existe";
+                    return response;
+                }
+
+                banner.Activo = false;
+
+                var update = await _bannerConfigRepository.Update(banner, _logger);
+                if (update != null)
+                {
+                    response.Message = "Se eliminó correctamente el banner";
+                    response.Success = true;
+                    response.UpdatedId = update.Id.ToString();
+                }
+                else
+                {
+                    response.Message = "No se eliminó correctamente el banner";
+                    response.Success = false;
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
         }
-
-        var delete = await _bannerConfigRepository.Delete(id, _logger);
-        if (delete != null)
-        {
-            response.Message = "Se eliminó correctamente el Banner";
-            response.Success = true;
-            response.UpdatedId = id.ToString();
-        }
-        else
-        {
-            response.Message = "No se eliminó correctamente el Banner";
-            response.Success = false;
-        }
-        _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " Finished Success");
-
-        return response;
-    }
-    catch (Exception ex)
-    {
-        _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " " + ex.Message);
-        throw;
-    }
-}
-
-
-       
         #endregion
     }
 }

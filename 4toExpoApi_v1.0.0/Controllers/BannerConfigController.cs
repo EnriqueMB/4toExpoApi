@@ -25,9 +25,6 @@ namespace _4toExpoApi_v1._0._0.Controllers
         }
 
 
-
-
-
         [HttpGet("ObtenerBannerConfig/{id}")]
         public async Task<IActionResult> ObtenerBannerConfig(int id)
         {
@@ -50,7 +47,32 @@ namespace _4toExpoApi_v1._0._0.Controllers
 
 
 
-     
+        [HttpGet("ObtenerTodosLosBanners")]
+        public async Task<IActionResult> ObtenerTodosLosBanners()
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " Started Success");
+
+                var response = await _bannerConfigService.ObtenerTodosLosBanners();
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " Finished Success");
+
+                if (response == null || response.Count == 0)
+                {
+                    return NoContent(); // Devuelve un código 204 No Content si no hay datos
+                }
+
+                return Ok(response); // Devuelve una respuesta 200 OK con los datos
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " " + ex.Message);
+                return StatusCode(500, "Ha ocurrido un error" + ex.Message); // Devuelve un error 500 en caso de excepción
+            }
+        }
+
+
         [HttpPut("EditarBannerConfig")]
 public async Task<IActionResult> EditarBannerConfig(BannerConfigRequest request)
 {
@@ -101,20 +123,19 @@ public async Task<IActionResult> EditarBannerConfig(BannerConfigRequest request)
                 if (response.Success)
                 {
                     _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
                     return Ok(response);
                 }
 
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
                 return BadRequest(response);
             }
             catch (Exception ex)
             {
-                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " " + ex.Message);
-                return StatusCode(500, "Ha ocurrido un error" + ex.Message);
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
             }
         }
+
 
         #endregion
 
