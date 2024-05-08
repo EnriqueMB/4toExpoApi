@@ -14,6 +14,6 @@ namespace _4toExpoApi.Core.ViewModels
         public string Descripcion { get; set; }
         public decimal Precio { get; set; }
 
-        public List<IncluyePaqueteRequest> listaIncluyePaquete {  get; set; }
+        public List<IncluyePaqueteRequest> listaPaquetes {  get; set; }
     }
 }
