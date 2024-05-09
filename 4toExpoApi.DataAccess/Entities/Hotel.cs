@@ -2,18 +2,19 @@
 
 namespace _4toExpoApi.DataAccess.Entities
 {
-    public class Hotel
+    public class Hotel: FieldsDefault
     {
         
-       /** public Hotel() {
+       public Hotel() {
             Nombre = "";
             Tipo = "";
             Ubicacion = "";
             Telefono = 0;
             LinkWhatsapp = "";
             CodigoReserva = "";
+            Correo = "";
             Imagen = "";
-        }**/
+        }
 
         [Key]
         public int Id {set; get;}
@@ -23,13 +24,9 @@ namespace _4toExpoApi.DataAccess.Entities
         public int Telefono { set; get; }
         public string LinkWhatsapp { set; get; }
         public string CodigoReserva { set; get; }
+        public string Correo { set; get; }
         public string Imagen { set; get; }
         public string? Tarifa { set; get; }
-        public int? UserAlt { get; set; }
-        public DateTime? FechaAlt { get; set; }
-        public int? UserUpd { get; set; }
-        public DateTime? FechaUpd { get; set; }
-        public bool? Activo { get; set; }
 
     }
 }
