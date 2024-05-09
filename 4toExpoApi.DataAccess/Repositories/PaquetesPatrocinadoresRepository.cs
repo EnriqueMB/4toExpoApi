@@ -34,7 +34,7 @@ namespace _4toExpoApi.DataAccess.Repositories
              
                     var save = await _context.SaveChangesAsync();
 
-                    if (beneficio != null)
+                    if (beneficio != null && beneficio.Count() != 0)
                     {
                         foreach (var item in beneficio)
                         {
@@ -113,7 +113,7 @@ namespace _4toExpoApi.DataAccess.Repositories
 
                         var beneficiosUpdate = new List<BeneficioPaquete>();
                         var beneficiosNuevos = new List<BeneficioPaquete>();
-                        if (beneficio != null)
+                        if ((beneficio != null || beneficio.Count() != 0))
                         {
 
                             foreach (var item in beneficio)
@@ -121,7 +121,7 @@ namespace _4toExpoApi.DataAccess.Repositories
                                 if (item.Id == 0)
                                 {
                                     item.IdPaquetePatrocinador = paquete.Id;
-
+                                    item.Activo = true;
                                     item.UserAlt = userUpd;
                                     item.FechaAlt = DateTime.Now;
                                     beneficiosNuevos.Add(item);

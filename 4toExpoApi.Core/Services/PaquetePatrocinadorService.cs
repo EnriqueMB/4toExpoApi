@@ -61,6 +61,7 @@ namespace _4toExpoApi.Core.Services
                 var paquetes = AppMapper.Map<PaquetePatrocinadoresRequest, PaquetePatrocinadores>(paqueteRequest.PaquetePatrocinador);
                 paquetes.UserAlt = userAlt;
                 paquetes.FechaAlt = DateTime.Now;
+                paquetes.Activo = true;
                 var result = await _paquetePatrocinadoresRepository.AgregarPaquete(paquetes, Beneficios, userAlt, _logger);
 
                 if (result.Success == true)
@@ -99,9 +100,9 @@ namespace _4toExpoApi.Core.Services
 
                 var tipoPaquete = await _baseTipoPaqueteRepository.GetAll(_logger);
 
-                listaPaquetes.Where(x => x.Activo == true).ToList();
-                listaBeneficios.Where(x => x.Activo == true).ToList();
-                tipoPaquete.Where(x => x.Activo == true).ToList();
+                listaPaquetes = listaPaquetes.Where(x => x.Activo == true).ToList();
+                listaBeneficios = listaBeneficios.Where(x => x.Activo == true).ToList();
+                tipoPaquete = tipoPaquete.Where(x => x.Activo == true).ToList();
 
 
                 var listaVM = (from paquete in listaPaquetes
@@ -111,10 +112,11 @@ namespace _4toExpoApi.Core.Services
                                {
                                    Id = paquete.Id,
                                    TipoPaquete = tipo.Nombre,
+                                   IdTipoPaquete = tipo.Id,
                                    NombrePaquete = paquete.NombrePaquete,
                                    Descripcion = paquete.Descripcion,
                                    Precio = paquete.Precio,
-                                   listaIncluye = beneficiosDelPaquete.Select(x => AppMapper.Map<BeneficioPaquete, BeneficioPaqueteRequest>(x)).ToList()
+                                   Beneficios = beneficiosDelPaquete.Select(x => AppMapper.Map<BeneficioPaquete, BeneficioPaqueteRequest>(x)).ToList()
 
 
 
@@ -185,6 +187,77 @@ namespace _4toExpoApi.Core.Services
 
             #endregion
 
+        }
+
+        public async Task<GenericResponse> EliminarPaquete(int id)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+                var response = new GenericResponse();
+
+                var paqueteEliminado = await _basePaqueteRepository.GetById(id,_logger);
+
+                paqueteEliminado.Activo = false;
+
+                var eliminar = await _basePaqueteRepository.Update(paqueteEliminado, _logger);
+
+                if(eliminar.Id > 0 )
+                {
+                    response.Success = true;
+                    response.DeletedId = paqueteEliminado.ToString();
+                    response.Message = "Se elimino correctamente el paquete";
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "No se puedo eliminar el paquete";
+                }
+                
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+        public async Task<GenericResponse> EliminarBeneficio(int id)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+                var response = new GenericResponse();
+
+                var beneficioEliminado = await _baseBeneficioRepository.GetById(id, _logger);
+
+                beneficioEliminado.Activo = false;
+
+                var eliminar = await _baseBeneficioRepository.Update(beneficioEliminado, _logger);
+
+                if (eliminar.Id > 0)
+                {
+                    response.Success = true;
+                    response.DeletedId = beneficioEliminado.ToString();
+                    response.Message = "Se elimino correctamente el beneficio";
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "No se puedo eliminar el beneficio";
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
         }
     }
 }

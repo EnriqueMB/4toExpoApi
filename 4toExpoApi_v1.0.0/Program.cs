@@ -22,6 +22,8 @@ builder.Services.AddScoped<ReservaService>();
 builder.Services.AddScoped<ServicioService>();
 builder.Services.AddScoped<PaquetePatrocinadorService>();
 builder.Services.AddScoped<ContadorService>();
+builder.Services.AddScoped<PaqueteGeneralService>();
+
 builder.Services.AddScoped<HotelService>();
 #endregion
 #region <-- Repositories -->
@@ -32,7 +34,11 @@ builder.Services.AddScoped<HotelService>();
 builder.Services.AddScoped<IBaseRepository<Reservas>, BaseRepository<Reservas>>();
 builder.Services.AddScoped<IBaseRepository<Servicios>, BaseRepository<Servicios>>();
 builder.Services.AddScoped<IBaseRepository<Contador>, BaseRepository<Contador>>();
+builder.Services.AddScoped<IBaseRepository<IncluyePaquete>, BaseRepository<IncluyePaquete>>();
 builder.Services.AddScoped<IReservaRepository, ReservaRepository>();
+builder.Services.AddScoped<IBaseRepository<PaqueteGeneral>, BaseRepository<PaqueteGeneral>>();
+builder.Services.AddScoped<IPaqueteGeneralRepository, PaqueteGeneralRepository>();
+
 builder.Services.AddScoped<IHotelRepository, HotelRepository>();
 builder.Services.AddScoped<IBaseRepository<TipoPaquete>, BaseRepository<TipoPaquete>>();
 builder.Services.AddScoped<IBaseRepository<BeneficioPaquete>, BaseRepository<BeneficioPaquete>>();
