@@ -1,10 +1,10 @@
 ﻿
-using _4toExpoApi.Core.ViewModels;
 
-namespace _4toExpoApi.Core.Request
+namespace _4toExpoApi.Core.ViewModels
 {
-    public class HotelRequest
+    public class HotelVM
     {
+        public int Id { get; set; }
         public string Nombre { set; get; }
         public string Tipo { set; get; }
         public string Ubicacion { set; get; }
@@ -15,8 +15,7 @@ namespace _4toExpoApi.Core.Request
         public string Imagen { set; get; }
         public string? Tarifa { set; get; }
 
-        public required List<RequestHabitacion> listaHabitacion { set; get; }
-        public required List<RequestDistancia> listaDistancia { set; get; }
-
+        public List<HabitacionVM> listaHabitacion { set; get; }
+        public  List<DistanciaVM> listaDistancia { set; get; }
     }
 }

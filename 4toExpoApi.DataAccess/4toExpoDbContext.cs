@@ -23,5 +23,10 @@ namespace _4toExpoApi.DataAccess
         public DbSet<Contador> Contador { get; set;}
 
         public DbSet<Hotel> Hotel { get; set; }
+
+        public DbSet<Habitacion> Habitacion { get; set; }
+
+        public DbSet<Distancia> Distancia { get; set; }
+
     }
 }

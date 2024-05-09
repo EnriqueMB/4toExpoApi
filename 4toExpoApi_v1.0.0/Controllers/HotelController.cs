@@ -10,7 +10,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
     [ApiController]
     public class HotelController : Controller
     {
-        
+
 
         #region <---Variables--->
         private readonly HotelService hotelService;
@@ -33,6 +33,35 @@ namespace _4toExpoApi_v1._0._0.Controllers
 
 
                 var response = await hotelService.AgregarHotel(request, 1);
+
+                if (response.Success)
+                {
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                    return Ok(response);
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+
+
+        [HttpGet("ListaHotel")]
+        public async Task<IActionResult> ListaHotel()
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+
+                var response = await hotelService.ListaHotel();
 
                 if (response.Success)
                 {
