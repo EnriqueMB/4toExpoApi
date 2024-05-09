@@ -5,6 +5,7 @@ using _4toExpoApi.DataAccess.Entities;
 using _4toExpoApi.DataAccess.IRepositories;
 using _4toExpoApi.DataAccess.Response;
 using Microsoft.Extensions.Logging;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _4toExpoApi.Core.Services
+namespace _4toExpoApi.Core.Services 
 {
     public class InformacionConfigService
     {

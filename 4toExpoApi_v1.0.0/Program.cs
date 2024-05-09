@@ -21,6 +21,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddScoped<ReservaService>();
 builder.Services.AddScoped<ServicioService>();
 builder.Services.AddScoped<ContadorService>();
+builder.Services.AddScoped<InformacionConfigService>();
 
 #endregion
 #region <-- Repositories -->

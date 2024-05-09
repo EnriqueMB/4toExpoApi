@@ -10,6 +10,7 @@ namespace _4toExpoApi.Core.Request
     {
         public int Id { get; set; }
         public string Descripcion { get; set; }
+
         public DateTime? Fecha { get; set; }
         public int? UserAlt { get; set; }
         public DateTime? FechaAlt { get; set; }
