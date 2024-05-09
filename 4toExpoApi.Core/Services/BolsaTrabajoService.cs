@@ -1,18 +1,19 @@
+
 ﻿using _4toExpoApi.Core.Helpers;
 using _4toExpoApi.Core.Request;
 using _4toExpoApi.Core.Response;
 using _4toExpoApi.Core.ViewModels;
-using _4toExpoApi.DataAccess.Entities;
-using _4toExpoApi.DataAccess.IRepositories;
-using _4toExpoApi.DataAccess.Response;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+
+﻿using _4toExpoApi.Core.Request;
+
+
 using System.Linq.Expressions;
+using _4toExpoApi.DataAccess.IRepositories;
+using _4toExpoApi.DataAccess.Entities;
+using Microsoft.Extensions.Logging;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+
+
 
 namespace _4toExpoApi.Core.Services
 {
@@ -32,11 +33,14 @@ namespace _4toExpoApi.Core.Services
         #endregion
 
         #region <-----Metodos----->
+
         public async Task<GenericResponse>AgregarBolsaTrabajo(BolsaTrabajoRequest request, int IdUsuario)
+
         {
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
 
                 var response = new GenericResponse();
                 BolsaTrabajo bolsaTrabajo = new BolsaTrabajo
@@ -74,8 +78,6 @@ namespace _4toExpoApi.Core.Services
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
                 return response;
-
-
 
 
             }
@@ -186,6 +188,7 @@ namespace _4toExpoApi.Core.Services
             }
         }
 
+
         public async Task<ListResponse<BolsaTrabajoVM>> ObtenerBolsaTrabajo()
         {
             try
@@ -222,6 +225,7 @@ namespace _4toExpoApi.Core.Services
 
 
         }
+
         #endregion
 
 

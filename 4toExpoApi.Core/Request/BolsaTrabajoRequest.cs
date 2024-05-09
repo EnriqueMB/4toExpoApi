@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace _4toExpoApi.Core.Request
 {
+
     public class BolsaTrabajoRequest
+
     {
         public int IdBolsaTrabajo { get; set; }
         public string Puesto { get; set; }
