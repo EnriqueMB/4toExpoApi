@@ -21,10 +21,14 @@ builder.Services.AddHttpClient();
 builder.Services.AddScoped<ReservaService>();
 builder.Services.AddScoped<ServicioService>();
 builder.Services.AddScoped<TalleresService>();
+
 builder.Services.AddScoped<ProductoServise>();
 builder.Services.AddScoped<PaquetePatrocinadorService>();
 builder.Services.AddScoped<ContadorService>();
 builder.Services.AddScoped<PaqueteGeneralService>();
+builder.Services.AddScoped<IAzureBlobStorageService, AzureBlobStorageService>();    
+builder.Services.AddScoped<InformacionService>();
+
 
 builder.Services.AddScoped<HotelService>();
 #endregion
@@ -36,9 +40,13 @@ builder.Services.AddScoped<HotelService>();
 builder.Services.AddScoped<IBaseRepository<Reservas>, BaseRepository<Reservas>>();
 builder.Services.AddScoped<IBaseRepository<Servicios>, BaseRepository<Servicios>>();
 builder.Services.AddScoped<IBaseRepository<Talleres>, BaseRepository<Talleres>>();
+
 builder.Services.AddScoped<IBaseRepository<Productos>, BaseRepository<Productos>>();
 builder.Services.AddScoped<IBaseRepository<Contador>, BaseRepository<Contador>>();
 builder.Services.AddScoped<IBaseRepository<IncluyePaquete>, BaseRepository<IncluyePaquete>>();
+
+builder.Services.AddScoped<IBaseRepository<Informacion>,BaseRepository<Informacion>>();
+
 builder.Services.AddScoped<IReservaRepository, ReservaRepository>();
 builder.Services.AddScoped<IBaseRepository<PaqueteGeneral>, BaseRepository<PaqueteGeneral>>();
 builder.Services.AddScoped<IPaqueteGeneralRepository, PaqueteGeneralRepository>();

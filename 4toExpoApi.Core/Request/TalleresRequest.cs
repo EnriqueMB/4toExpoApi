@@ -13,7 +13,6 @@ namespace _4toExpoApi.Core.Request
         public string Descripcion { get; set; }
         public DateTime Fecha { get; set; }
         public TimeSpan Hora { get; set; }
-        public string Detalles { get; set; }
 
     }
 }
