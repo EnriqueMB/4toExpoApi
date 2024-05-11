@@ -8,13 +8,26 @@ namespace _4toExpoApi.Core.Request
 {
     public class PagoRequest
     {
-        public string nombre { get; set; }
-        public string apellidos { get; set;}
-        public int edad { get; set; }
-        public string telefono { get; set;}
-        public string correo { get; set; }
-        public int monto { get; set; }
-        public string producto { get; set; }
-        public int cantidad { get; set; }
+
+        public int? IdReserva { get; set; }
+        public string? id { get; set; }
+        public string? TitularTarjeta { get; set; }
+        public string? EmailTajeta { get; set; }
+        public int? amount { get; set; }
+        public string? payment_status { get; set; }
+        public string? RefBancaria { get; set; }
+        public string? Pasarela { get; set; }
+        public CustomerInfo customer_info { get; set; }
+
+
+    }
+
+
+    public class CustomerInfo
+    {
+        public string email { get; set; }
+        public string  phone { get; set; }
+        public string name { get; set; }
+
     }
 }
