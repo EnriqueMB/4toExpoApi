@@ -28,21 +28,21 @@ namespace _4toExpoApi.Core.Services
         #endregion
 
         #region <-----Metodos----->
-        public async Task<GenericResponse> BolsaTrabajo(BolsaTrabajoRequest request, int idUsuario)
-        {
-            try
-            {
-                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+        //public async Task<GenericResponse> BolsaTrabajo(BolsaTrabajoRequest request, int idUsuario)
+        //{
+        //    try
+        //    {
+        //        _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
 
 
-            }
-            catch (Exception ex)
-            {
+        //    }
+        //    catch (Exception ex)
+        //    {
 
-                throw;
-            }
-        }
+        //        throw;
+        //    }
+        //}
         #endregion
 
 

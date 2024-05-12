@@ -24,6 +24,7 @@ builder.Services.AddScoped<ProductoServise>();
 builder.Services.AddScoped<PaquetePatrocinadorService>();
 builder.Services.AddScoped<ContadorService>();
 builder.Services.AddScoped<PaqueteGeneralService>();
+builder.Services.AddScoped<MultimediaServise>();
 
 builder.Services.AddScoped<HotelService>();
 #endregion
@@ -40,7 +41,7 @@ builder.Services.AddScoped<IBaseRepository<IncluyePaquete>, BaseRepository<Inclu
 builder.Services.AddScoped<IReservaRepository, ReservaRepository>();
 builder.Services.AddScoped<IBaseRepository<PaqueteGeneral>, BaseRepository<PaqueteGeneral>>();
 builder.Services.AddScoped<IPaqueteGeneralRepository, PaqueteGeneralRepository>();
-
+builder.Services.AddScoped<IBaseRepository<CMultimedia>, BaseRepository<CMultimedia>>();
 builder.Services.AddScoped<IHotelRepository, HotelRepository>();
 builder.Services.AddScoped<IBaseRepository<TipoPaquete>, BaseRepository<TipoPaquete>>();
 builder.Services.AddScoped<IBaseRepository<BeneficioPaquete>, BaseRepository<BeneficioPaquete>>();

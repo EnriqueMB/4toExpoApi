@@ -31,5 +31,7 @@ namespace _4toExpoApi.DataAccess
 
         public DbSet<Distancia> Distancia { get; set; }
 
+        public DbSet<CMultimedia> CMultimedia { get; set; }
+
     }
 }
