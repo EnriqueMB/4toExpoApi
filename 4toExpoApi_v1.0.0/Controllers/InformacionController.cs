@@ -50,7 +50,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
             }
         }
 
-        [HttpGet("obtenerInformacion")]
+        [HttpGet("ObtenerInformacion")]
         public async Task<IActionResult> ObtenerInformacion()
         {
             try

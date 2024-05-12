@@ -75,7 +75,6 @@ namespace _4toExpoApi.Core.Services
 
                 informacion.Titulo = request.Titulo;
                 informacion.SubTitulo = request.SubTitulo;
-                informacion.UrlImagen = request.UrlImagen;
                 informacion.Texto = request.Texto;
 
                 if (request.ImagenFile != null)
