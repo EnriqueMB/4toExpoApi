@@ -35,33 +35,21 @@ namespace _4toExpoApi.Core.Services
         #endregion
 
         #region <---Metodos--->
-        public async Task<List<InformacionRequest>> ObtenerInformacion()
+        public async Task<Informacion> Informacion()
         {
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " Started Success");
 
-                var informacion = await _InformacionRepository.GetAll(_logger);
+                var informacion = await _InformacionRepository.GetById(1,_logger);
 
-                if (informacion == null || !informacion.Any())
-                {
-                    return null;
-                }
+               
 
-                //var informacionActivos = informacion.Where(x => x.Activo).ToList();
-                var listaInformacion = informacion.Select(t => new InformacionRequest
-                {
-                    Id = t.Id,
-                    Titulo = t.Titulo,
-                    SubTitulo = t.SubTitulo,
-                    UrlImagen = t.UrlImagen,
-                    Texto = t.Texto,
-
-                }).ToList();
+              
 
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " Finished Success");
 
-                return listaInformacion;
+                return informacion;
             }
             catch (Exception ex)
             {
