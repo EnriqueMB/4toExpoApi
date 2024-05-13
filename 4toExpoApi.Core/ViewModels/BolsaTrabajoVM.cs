@@ -13,9 +13,9 @@ namespace _4toExpoApi.Core.ViewModels
         public string Tipo { get; set; }
         public string Requisitos { get; set; }
         public string Descripcion { get; set; }
-        public string? DiasLaborales { get; set; }
-        public string HoraInicio { get; set; }
-        public string HoraFinal { get; set; }
+        public DateTime DiasLaborales { get; set; }
+        public DateTime HoraInicio { get; set; }
+        public DateTime HoraFinal { get; set; }
         public string Ciudad { get; set; }
         public string Direccion { get; set; }
     }
