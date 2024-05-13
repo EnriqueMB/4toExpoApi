@@ -61,6 +61,7 @@ namespace _4toExpoApi.Core.Services
                     return response;
                 }
 
+
                 var usuario = AppMapper.Map<UsuarioRequest, Usuarios>(request);
 
                 CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
