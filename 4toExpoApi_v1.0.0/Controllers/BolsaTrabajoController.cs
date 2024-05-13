@@ -54,7 +54,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
             }
         }
         //Actualizar BolsaTrabajo
-        [HttpPost]
+        [HttpPut]
         [Route("ActualizarBolsaTrabajo")]
         
         public async Task<IActionResult> ActualizarBolsaTrabajo(BolsaTrabajoRequest request)
