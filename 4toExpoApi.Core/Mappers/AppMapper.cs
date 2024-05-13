@@ -27,6 +27,8 @@ namespace _4toExpoApi.Core.Mappers
                 cfg.CreateMap<PagoRequest, Pagos>().ReverseMap();
                 cfg.CreateMap<ServicioRequest, Servicios>().ReverseMap();
                 cfg.CreateMap<Servicios, ServicioRequest>().ReverseMap();
+                cfg.CreateMap<ProductosRequest, Productos>().ReverseMap();
+                cfg.CreateMap<Productos, ProductosRequest>().ReverseMap();
                 cfg.CreateMap<BeneficioPaqueteRequest, BeneficioPaquete>().ReverseMap();
                 cfg.CreateMap<BeneficioPaquete, BeneficioPaqueteRequest>().ReverseMap();
                 cfg.CreateMap<PaquetePatrocinadoresRequest, PaquetePatrocinadores>().ReverseMap();

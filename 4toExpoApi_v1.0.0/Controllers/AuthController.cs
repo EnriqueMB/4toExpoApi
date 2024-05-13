@@ -14,7 +14,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
         private readonly AuthService _authService;
         private ILogger<AuthController> _logger;
         #endregion
-
+        
         #region <--- Constructor --->
         public AuthController(PermisosService permisosService,
             ILogger<AuthController> logger,
