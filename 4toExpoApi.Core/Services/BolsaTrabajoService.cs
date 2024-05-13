@@ -50,8 +50,8 @@ namespace _4toExpoApi.Core.Services
                     Requisitos = request.Requisitos,
                     Descripcion = request.Descripcion,
                     DiasLaborales = request.DiasLaborales,
-                    HoraInicio = request.HoraInicio,
-                    HoraFinal = request.HoraFinal,
+                    HoraInicio = TimeSpan.Parse(request.HoraInicio),
+                    HoraFinal = TimeSpan.Parse(request.HoraFinal),
                     Ciudad = request.Ciudad,
                     Direccion = request.Direccion,
 
@@ -108,8 +108,8 @@ namespace _4toExpoApi.Core.Services
                 entity.Requisitos = request.Requisitos;
                 entity.Descripcion = request.Descripcion;   
                 entity.DiasLaborales = request.DiasLaborales;   
-                entity.HoraInicio = request.HoraInicio; 
-                entity.HoraFinal = request.HoraFinal;
+                entity.HoraInicio = TimeSpan.Parse( request.HoraInicio); 
+                entity.HoraFinal = TimeSpan.Parse( request.HoraFinal);
                 entity.Ciudad = request.Ciudad;
                 entity.Direccion = request.Direccion;
                 entity.UserUpd = userMod;
@@ -205,7 +205,16 @@ namespace _4toExpoApi.Core.Services
                 response.Data = result.Select(x => new BolsaTrabajoVM
                 {
                     IdBolsaTrabajo = x.IdBolsaTrabajo,
+                    Tipo = x.Tipo,
                     Descripcion = x.Descripcion,
+                    Puesto = x.Puesto,
+                    Requisitos = x.Requisitos,
+                    DiasLaborales = x.DiasLaborales,
+                    HoraInicio = x.HoraInicio.ToString(),
+                    HoraFinal = x.HoraFinal.ToString(),
+                    Ciudad = x.Ciudad,
+                    Direccion = x.Direccion,
+                    
                 }).ToList();
                 
                

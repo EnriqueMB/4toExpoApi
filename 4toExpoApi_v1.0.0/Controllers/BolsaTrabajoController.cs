@@ -31,16 +31,16 @@ namespace _4toExpoApi_v1._0._0.Controllers
         //Agregar Bolsa trabajo
         [HttpPost]
         [Route("AgregarBolsaTrabajo")]
-        [Authorize]
+        
         public async Task<IActionResult> AgregarBolsaTrabajo(BolsaTrabajoRequest request)
         {
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
-                var idUsuario = User.Claims.FirstOrDefault(x => x.Type == "Id").Value;
+                var IdUseralta = "1"; /*User.Claims.FirstOrDefault(x => x.Type == "Id").Value;*/
 
-                var response = await _bolsaTrabajoService.AgregarBolsaTrabajo(request, int.Parse(idUsuario));
+                var response = await _bolsaTrabajoService.AgregarBolsaTrabajo(request, int.Parse(IdUseralta));
 
                 if (response.Success)
                     return Ok(response);
@@ -56,14 +56,14 @@ namespace _4toExpoApi_v1._0._0.Controllers
         //Actualizar BolsaTrabajo
         [HttpPost]
         [Route("ActualizarBolsaTrabajo")]
-        [Authorize]
+        
         public async Task<IActionResult> ActualizarBolsaTrabajo(BolsaTrabajoRequest request)
         {
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
-                var idUsuario = User.Claims.FirstOrDefault(x => x.Type == "Id").Value;
+                var idUsuario = "1"; /*User.Claims.FirstOrDefault(x => x.Type == "Id").Value;*/
 
                 var response = await _bolsaTrabajoService.ActualizarBolsaTrabajo(request, int.Parse(idUsuario));
 
@@ -107,14 +107,14 @@ namespace _4toExpoApi_v1._0._0.Controllers
         //Eliminar Bolsa Trabajo
         [HttpDelete]
         [Route("EliminarBolsaTrabajo")]
-        [Authorize]
+        
         public async Task<IActionResult> EliminarBolsaTrabajo(int id)
         {
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
-                var idUsuario = User.Claims.FirstOrDefault(x => x.Type == "Id").Value;
+                var idUsuario = "1"; /*User.Claims.FirstOrDefault(x => x.Type == "Id").Value;*/
 
                 var response = await _bolsaTrabajoService.EliminarBolsaTrabajo(id, int.Parse(idUsuario));
 
