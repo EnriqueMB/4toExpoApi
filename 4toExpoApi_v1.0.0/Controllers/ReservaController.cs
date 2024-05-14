@@ -133,7 +133,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
                 }
                 else if(request.TipoPago=="Paypal")
                 {
-                    var response = await _payService.reservaProductoPaypal(request);
+                    var response = await _payService.reservaProductoPaypal(request,1);
 
                     if (response.Success)
                     {
@@ -148,7 +148,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
                 }
                 else
                 {
-                    var response = await _payService.reservaProductoPaypal(request);
+                    var response = await _payService.reservaProductoPaypal(request,1);
 
                     if (response.Success)
                     {

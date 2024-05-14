@@ -21,9 +21,8 @@ namespace _4toExpoApi.Core.Request
         public int? Cantidad { get; set; }
         public string? Telefono { get; set; }
         public string? Correo { get; set; }
-        public string?  IdTransaccion { get; set;}
+        public string?  IdTransaction { get; set;}
 
-        public string? Status { get; set;}
 
     }
 }
