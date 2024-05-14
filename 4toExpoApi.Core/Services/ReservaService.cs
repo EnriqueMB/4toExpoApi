@@ -57,7 +57,7 @@ namespace _4toExpoApi.Core.Services
                     pagos.Pasarela = "OxxoPay";
                     pagos.StatusPago = requestPago.payment_status;
                     pagos.IdTransaccion = requestPago.id;
-                    pagos.Monto = requestPago.amount;
+                    pagos.Monto = requestPago.amount/100;
                     pagos.FechaAlt = DateTime.Now;
                     pagos.UserAlt = usrAlta;
                     pagos.Activo = true;
@@ -92,7 +92,7 @@ namespace _4toExpoApi.Core.Services
                 var clientes = new Clientes
                 {
                     Identificador = nuevoConsecutivo,
-                    Nombre = request.NombreTitular,
+                    Nombre = request.Nombre,
                     Apellidos = request.Apellidos,
                     Telefono = request.Telefono,
                     Correo = request.Correo,
