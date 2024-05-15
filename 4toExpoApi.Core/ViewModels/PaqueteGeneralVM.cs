@@ -15,5 +15,7 @@ namespace _4toExpoApi.Core.ViewModels
         public decimal Precio { get; set; }
 
         public List<IncluyePaqueteRequest> listaPaquetes {  get; set; }
+
+        public string PrecioFormateado => Precio.ToString("N2");
     }
 }

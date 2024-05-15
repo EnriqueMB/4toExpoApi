@@ -64,7 +64,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
                         {
                         new
                         {
-                            name = request.Nombre,
+                            name = request.Producto,
                             unit_price = request.Monto * 100,
                             quantity = request.Cantidad
                         }
@@ -72,7 +72,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
                         currency = "MXN",
                         customer_info = new
                         {
-                            name = request.NombreTitular,
+                            name = request.Nombre,
                             email = request.Correo,
                             phone = request.Telefono
                         },
@@ -133,7 +133,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
                 }
                 else if(request.TipoPago=="Paypal")
                 {
-                    var response = await _payService.reservaProductoPaypal(request);
+                    var response = await _payService.reservaProductoPaypal(request,1);
 
                     if (response.Success)
                     {
@@ -148,7 +148,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
                 }
                 else
                 {
-                    var response = await _payService.reservaProductoPaypal(request);
+                    var response = await _payService.reservaProductoPaypal(request,1);
 
                     if (response.Success)
                     {
