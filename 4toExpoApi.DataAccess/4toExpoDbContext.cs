@@ -33,6 +33,7 @@ namespace _4toExpoApi.DataAccess
         public DbSet<Habitacion> Habitacion { get; set; }
 
         public DbSet<Distancia> Distancia { get; set; }
+        public DbSet<Patrocinadores> Patrocinadores { get; set;}
 
     }
 }

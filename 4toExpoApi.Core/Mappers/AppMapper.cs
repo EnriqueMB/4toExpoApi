@@ -41,6 +41,7 @@ namespace _4toExpoApi.Core.Mappers
                 cfg.CreateMap<PaqueteGeneralRequest, PaqueteGeneral>().ReverseMap();
                 cfg.CreateMap<IncluyePaqueteRequest, IncluyePaquete>().ReverseMap();
                 cfg.CreateMap<IncluyePaquete, IncluyePaqueteRequest>().ReverseMap();
+                cfg.CreateMap<Patrocinadores, PatrocinadorRequest>().ReverseMap();
             });
 
             _mapper = new Mapper(config);
