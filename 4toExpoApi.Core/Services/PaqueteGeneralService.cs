@@ -28,8 +28,8 @@ namespace _4toExpoApi.Core.Services
 
         #region <-- Constructor-->
         public PaqueteGeneralService(IPaqueteGeneralRepository paqueteGeneralRepository,
-            ILogger<PaqueteGeneralService> logger,IBaseRepository<IncluyePaquete> incluyePaquete) 
-        { 
+            ILogger<PaqueteGeneralService> logger, IBaseRepository<IncluyePaquete> incluyePaquete)
+        {
             _paqueteGeneralRepository = paqueteGeneralRepository;
             _logger = logger;
             _incluyePaqueteRepository = incluyePaquete;
@@ -37,7 +37,7 @@ namespace _4toExpoApi.Core.Services
         #endregion
 
         #region
-        public async Task<GenericResponse> AgregarPaquetesGeneral(PaqueteGeneralRequest request,int userAlt)
+        public async Task<GenericResponse> AgregarPaquetesGeneral(PaqueteGeneralRequest request, int userAlt)
         {
             try
             {
@@ -52,14 +52,14 @@ namespace _4toExpoApi.Core.Services
 
                 var listaPaquetes = AppMapper.Map<List<IncluyePaqueteRequest>, List<IncluyePaquete>>(request.ListaPaquetes);
 
-                foreach( var item in listaPaquetes)
+                foreach (var item in listaPaquetes)
                 {
                     item.UserAlt = userAlt;
                     item.FechaAlt = DateTime.Now;
                     item.Activo = true;
                 }
 
-                var result = await _paqueteGeneralRepository.AgregarPaqueteGeneral(paqueteGeneral, listaPaquetes,_logger);
+                var result = await _paqueteGeneralRepository.AgregarPaqueteGeneral(paqueteGeneral, listaPaquetes, _logger);
 
                 if (result.Success)
                 {
@@ -71,23 +71,23 @@ namespace _4toExpoApi.Core.Services
 
                 return response;
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
                 throw;
             }
         }
 
-        public async Task<GenericResponse> EditarPaqueteGeneral(PaqueteGeneralRequest request,int UserUpd)
+        public async Task<GenericResponse> EditarPaqueteGeneral(PaqueteGeneralRequest request, int UserUpd)
         {
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
-                
+
                 var response = new GenericResponse();
                 var paqueteGeneral = await _paqueteGeneralRepository.GetById(request.Id, _logger);
 
-                if(paqueteGeneral == null)
+                if (paqueteGeneral == null)
                 {
                     response.Message = "El paquete no existe";
                     return response;
@@ -133,9 +133,9 @@ namespace _4toExpoApi.Core.Services
 
                 var update = await _paqueteGeneralRepository.Update(paqueteGeneral, _logger);
 
-                if (update != null )
+                if (update != null)
                 {
-                  
+
 
                     response.Message = "Se edito correctamente el paquete";
                     response.Success = true;
@@ -153,7 +153,7 @@ namespace _4toExpoApi.Core.Services
 
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
                 throw;
@@ -170,31 +170,75 @@ namespace _4toExpoApi.Core.Services
 
                 var listaIncluye = await _incluyePaqueteRepository.GetAll(_logger);
 
-                var listaPaquetesGeneralActivo =  listaPaquetesGeneral.Where(x => x.Activo == true).ToList();
-               var listaIncluyeActivo = listaIncluye.Where(x => x.Activo ==true).ToList();
-               
+                var listaPaquetesGeneralActivo =listaPaquetesGeneral.Where(x => x.Activo == true).ToList();
+                var listaIncluyeActivo = listaIncluye.Where(x => x.Activo ==true).ToList();
+
 
 
                 var listaPaqueteVM = (from paqueteGeneral in listaPaquetesGeneralActivo
                                       join incluyePaquete in listaIncluyeActivo on paqueteGeneral.Id equals incluyePaquete.PaqueteId into listaIncluyePaquete
-                               
-                                       select new PaqueteGeneralVM
-                                       {
-                                           Id = paqueteGeneral.Id,
 
-                                           Nombre = paqueteGeneral.Nombre,
-                                           Descripcion = paqueteGeneral.Descripcion,
-                                           Precio = paqueteGeneral.Precio,
-                                           listaPaquetes = listaIncluyePaquete.Select(x => AppMapper.Map<IncluyePaquete, IncluyePaqueteRequest>(x)).ToList()
+                                      select new PaqueteGeneralVM
+                                      {
+                                          Id = paqueteGeneral.Id,
 
-                                       }).ToList();
+                                          Nombre = paqueteGeneral.Nombre,
+                                          Descripcion = paqueteGeneral.Descripcion,
+                                          Precio = paqueteGeneral.Precio,
+                                          listaPaquetes = listaIncluyePaquete.Select(x => AppMapper.Map<IncluyePaquete, IncluyePaqueteRequest>(x)).ToList()
+
+                                      }).ToList();
 
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
 
                 return listaPaqueteVM;
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+
+        }
+
+        public async Task<List<PaqueteGeneralVM>> ObtenerPorId(int id)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var listaPaquetesGeneral = await _paqueteGeneralRepository.GetById(id,_logger);
+
+                if (listaPaquetesGeneral != null)
+                {
+                    var listaIncluye = await _incluyePaqueteRepository.GetAll(_logger);
+
+
+                    var listaIncluyeActivo = listaIncluye.Where(x => x.Activo == true && x.PaqueteId == listaPaquetesGeneral.Id).ToList();
+
+
+                    var listaPaqueteVM = new List<PaqueteGeneralVM>();
+
+                    listaPaqueteVM.Add(new PaqueteGeneralVM
+                    {
+                        Id = listaPaquetesGeneral.Id,
+                        Nombre = listaPaquetesGeneral.Nombre,
+                        Descripcion = listaPaquetesGeneral.Descripcion,
+                        Precio = listaPaquetesGeneral.Precio,
+                        listaPaquetes = listaIncluyeActivo.Select(x => AppMapper.Map<IncluyePaquete,IncluyePaqueteRequest>(x)).ToList()
+                    });
+
+                    return listaPaqueteVM;
+
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return null;
+
+            }
+            catch (Exception ex)
             {
                 _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
                 throw;
