@@ -10,7 +10,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using _4toExpoApi.Core.Enums;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace _4toExpoApi.Core.Services
 {
@@ -20,14 +22,16 @@ namespace _4toExpoApi.Core.Services
         #region <---Variables--->
         private readonly IBaseRepository<BannerConfig> _bannerConfigRepository;
         private ILogger<BannerConfigService> _logger;
-       // private readonly IAzureBlobStorageService _azureBlobStorageService;
+        private readonly IAzureBlobStorageService _azureBlobStorageService;
+        private IConfiguration _configuration;
         #endregion
         #region <---Constructor--->
-        public BannerConfigService(IBaseRepository<BannerConfig> bannerConfigRepository, ILogger<BannerConfigService> logger)
+        public BannerConfigService(IBaseRepository<BannerConfig> bannerConfigRepository, ILogger<BannerConfigService> logger, IAzureBlobStorageService azureStorageBlobService, IConfiguration configuration)
         {
             _bannerConfigRepository = bannerConfigRepository;
             _logger = logger;
-           // _azureBlobStorageService = azureStorageBlobService;
+            _azureBlobStorageService = azureStorageBlobService;
+            _configuration = configuration;
         }
         #endregion
 
@@ -103,13 +107,13 @@ namespace _4toExpoApi.Core.Services
                 }
 
 
-                //if (request.ImagenFile != null)
-                //{
-                //    if (request.UrlImg == "null" || request.UrlImg == null)
-                //        request.UrlImg = await this._azureBlobStorageService.UploadAsync(request.ImagenFile, ContainerEnum.INBOXACONTECIMIENTO);
-                //    else
-                //        request.UrlImg = await this._azureBlobStorageService.UploadAsync(request.ImagenFile, ContainerEnum.INBOXACONTECIMIENTO, bannerConfig.Imagen);
-                //}
+                if (request.imagenFile != null)
+                {
+                    if (request.Imagen == "null" || request.Imagen == null)
+                        request.Imagen = await this._azureBlobStorageService.UploadAsync(request.imagenFile, ContainerEnum.banner);
+                    else
+                        request.Imagen = await this._azureBlobStorageService.UploadAsync(request.imagenFile, ContainerEnum.banner, bannerConfig.Imagen);
+                }
 
                 bannerConfig.Titulo = request.Titulo;
                 bannerConfig.SubTitulo = request.SubTitulo;

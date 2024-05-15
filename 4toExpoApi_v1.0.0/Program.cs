@@ -50,6 +50,7 @@ builder.Services.AddScoped<IBaseRepository<BeneficioPaquete>, BaseRepository<Ben
 builder.Services.AddScoped<IBaseRepository<PaquetePatrocinadores>, BaseRepository<PaquetePatrocinadores>>();
 builder.Services.AddScoped<IPaquetePatrocinadoresRepository, PaquetesPatrocinadoresRepository>();
 builder.Services.AddScoped<IBaseRepository<BolsaTrabajo>,BaseRepository<BolsaTrabajo>>();
+builder.Services.AddScoped<IAzureBlobStorageService, AzureBlobStorageService>();
 #endregion
 #region <-- Context -->
 
