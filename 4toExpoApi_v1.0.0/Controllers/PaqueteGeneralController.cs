@@ -108,6 +108,34 @@ namespace _4toExpoApi_v1._0._0.Controllers
             }
         }
 
+        [HttpGet("ObtenerPaquetesPorId")]
+
+        public async Task<List<PaqueteGeneralVM>> ObtenerPaquetePorId(int id)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var response = await _paqueteGeneralService.ObtenerPorId(id);
+
+                if(response != null)
+                {
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                    return response;
+                }
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return null;
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+
+        } 
+
         [HttpDelete("EliminarPaquete")]
         public async Task<IActionResult> EliminarPaquete(int id)
         {

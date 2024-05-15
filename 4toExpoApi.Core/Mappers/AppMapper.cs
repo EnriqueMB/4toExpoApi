@@ -33,6 +33,7 @@ namespace _4toExpoApi.Core.Mappers
                 cfg.CreateMap<BeneficioPaquete, BeneficioPaqueteRequest>().ReverseMap();
                 cfg.CreateMap<PaquetePatrocinadoresRequest, PaquetePatrocinadores>().ReverseMap();
                 cfg.CreateMap<ContadorRequets, Contador>().ReverseMap();
+                cfg.CreateMap<BannerConfigRequest, BannerConfig>().ReverseMap();
                 cfg.CreateMap<RequestHabitacion, Habitacion>().ReverseMap();
                 cfg.CreateMap<RequestDistancia, Distancia>().ReverseMap();
                 cfg.CreateMap<Habitacion, HabitacionVM>().ReverseMap();
