@@ -74,7 +74,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
 
 
         [HttpPut("EditarBannerConfig")]
-public async Task<IActionResult> EditarBannerConfig(BannerConfigRequest request)
+public async Task<IActionResult> EditarBannerConfig([FromForm] BannerConfigRequest request)
 {
     try
     {

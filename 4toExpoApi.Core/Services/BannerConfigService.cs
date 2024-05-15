@@ -20,12 +20,14 @@ namespace _4toExpoApi.Core.Services
         #region <---Variables--->
         private readonly IBaseRepository<BannerConfig> _bannerConfigRepository;
         private ILogger<BannerConfigService> _logger;
+       // private readonly IAzureBlobStorageService _azureBlobStorageService;
         #endregion
         #region <---Constructor--->
         public BannerConfigService(IBaseRepository<BannerConfig> bannerConfigRepository, ILogger<BannerConfigService> logger)
         {
             _bannerConfigRepository = bannerConfigRepository;
             _logger = logger;
+           // _azureBlobStorageService = azureStorageBlobService;
         }
         #endregion
 
@@ -99,6 +101,16 @@ namespace _4toExpoApi.Core.Services
                     response.Message = "El Banner no existe";
                     return response;
                 }
+
+
+                //if (request.ImagenFile != null)
+                //{
+                //    if (request.UrlImg == "null" || request.UrlImg == null)
+                //        request.UrlImg = await this._azureBlobStorageService.UploadAsync(request.ImagenFile, ContainerEnum.INBOXACONTECIMIENTO);
+                //    else
+                //        request.UrlImg = await this._azureBlobStorageService.UploadAsync(request.ImagenFile, ContainerEnum.INBOXACONTECIMIENTO, bannerConfig.Imagen);
+                //}
+
                 bannerConfig.Titulo = request.Titulo;
                 bannerConfig.SubTitulo = request.SubTitulo;
                 bannerConfig.Descripcion = request.Descripcion;
