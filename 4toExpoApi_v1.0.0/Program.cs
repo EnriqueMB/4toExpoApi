@@ -25,6 +25,7 @@ builder.Services.AddScoped<PaquetePatrocinadorService>();
 builder.Services.AddScoped<ContadorService>();
 builder.Services.AddScoped<PaqueteGeneralService>();
 builder.Services.AddScoped<BolsaTrabajoService>();
+builder.Services.AddScoped<PatrocinadorService>();
 
 builder.Services.AddScoped<HotelService>();
 #endregion
@@ -48,6 +49,7 @@ builder.Services.AddScoped<IBaseRepository<BeneficioPaquete>, BaseRepository<Ben
 builder.Services.AddScoped<IBaseRepository<PaquetePatrocinadores>, BaseRepository<PaquetePatrocinadores>>();
 builder.Services.AddScoped<IPaquetePatrocinadoresRepository, PaquetesPatrocinadoresRepository>();
 builder.Services.AddScoped<IBaseRepository<BolsaTrabajo>,BaseRepository<BolsaTrabajo>>();
+builder.Services.AddScoped<IBaseRepository<Patrocinadores>,BaseRepository<Patrocinadores>>();
 #endregion
 #region <-- Context -->
 
