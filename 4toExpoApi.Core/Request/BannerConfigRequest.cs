@@ -11,5 +11,7 @@ namespace _4toExpoApi.Core.Request
         public int CantidadExpositores { get; set; }
         public int CantidadParticipantes { get; set; }
         public int Orden { get; set; }
+        public int Dias { get; set; }
+        public int CantidadConstructoras { get; set; }
     }
 }

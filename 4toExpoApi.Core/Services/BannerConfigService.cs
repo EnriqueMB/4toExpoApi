@@ -3,6 +3,7 @@ using _4toExpoApi.Core.Request;
 using _4toExpoApi.DataAccess.Entities;
 using _4toExpoApi.DataAccess.IRepositories;
 using _4toExpoApi.DataAccess.Response;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -105,8 +106,11 @@ namespace _4toExpoApi.Core.Services
                 bannerConfig.CantidadExpositores = request.CantidadExpositores;
                 bannerConfig.CantidadParticipantes = request.CantidadParticipantes;
                 bannerConfig.Orden = request.Orden;
+                bannerConfig.Dias = request.Dias;
+                bannerConfig.CantidadConstructoras = request.CantidadConstructoras;
                 bannerConfig.UserUpd = UserUpd;
                 bannerConfig.FechaUpd = DateTime.Now;
+              
                 var update = await _bannerConfigRepository.Update(bannerConfig, _logger);
                 if (update != null)
                 {
@@ -171,5 +175,7 @@ namespace _4toExpoApi.Core.Services
             }
         }
         #endregion
+
+
     }
 }
