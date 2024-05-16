@@ -235,6 +235,38 @@ namespace _4toExpoApi.Core.Services
 
         }
 
+
+        public async Task<BolsaTrabajoVM> ObtenerBolsaTrabajoPorId(int id)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var bolsa = await _bolsaTrabajoRepository.GetById(id, _logger);
+
+                var response = new BolsaTrabajoVM
+                {
+                    IdBolsaTrabajo = bolsa.IdBolsaTrabajo,
+                    Tipo = bolsa.Tipo,
+                    Descripcion = bolsa.Descripcion,
+                    Puesto = bolsa.Puesto,
+                    Requisitos = bolsa.Requisitos,
+                    DiasLaborales = bolsa.DiasLaborales,
+                    HoraInicio = bolsa.HoraInicio.ToString(),
+                    HoraFinal = bolsa.HoraFinal.ToString(),
+                    Ciudad = bolsa.Ciudad,
+                    Direccion = bolsa.Direccion,
+
+                };
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Error: " + ex.Message);
+                throw;
+            }
+        }
         #endregion
 
 
