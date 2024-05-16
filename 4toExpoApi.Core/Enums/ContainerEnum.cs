@@ -11,6 +11,7 @@ namespace _4toExpoApi.Core.Enums
         banner = 1,
         hoteles = 2,
         multimedia = 3,
-        patrocinadores = 4
+        patrocinadores = 4,
+        logo = 5,
     }
 }

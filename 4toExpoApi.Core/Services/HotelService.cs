@@ -129,6 +129,102 @@ namespace _4toExpoApi.Core.Services
         }
 
 
+        public async Task<GenericResponse<HotelResponse>> HotelPorID(int id)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var response = new GenericResponse<HotelResponse>();
+
+
+                var add = await _hotelRepository.HotelPorID(id, _logger);
+                if (add.Success)
+                {
+                    response.Data = add.Data;
+                    response.Message = "success";
+                    response.Success = true;
+                    response.CreatedId = add.CreatedId;
+                }
+                else
+                {
+                    response.Data = add.Data;
+                    response.Message = "No se encontraron datos";
+                    response.Success = false;
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+
+
+        public async Task<GenericResponse<HotelRequest>> ActualizarHotel(HotelRequest request, int userAlt)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var response = new GenericResponse<HotelRequest>();
+
+
+                var NuevoHotel = new Hotel()
+                {
+                    Nombre = request.Nombre,
+                    Tipo = request.Tipo,
+                    Ubicacion = request.Ubicacion,
+                    Telefono = request.Telefono,
+                    LinkWhatsapp = request.LinkWhatsapp,
+                    CodigoReserva = request.CodigoReserva,
+                    Imagen = request.Imagen,
+                    Tarifa = request.Tarifa,
+                };
+
+                NuevoHotel.FechaAlt = DateTime.Now;
+                NuevoHotel.UserAlt = userAlt;
+                NuevoHotel.Activo = true;
+
+                List<Habitacion> listaHabitacion = request.listaHabitacion
+                .Select(habitacion => AppMapper.Map<RequestHabitacion, Habitacion>(habitacion))
+                .ToList();
+
+                List<Distancia> listaDistancia = request.listaDistancia
+                .Select(distancia => AppMapper.Map<RequestDistancia, Distancia>(distancia))
+                .ToList();
+
+                var add = await _hotelRepository.AgregarHotel(NuevoHotel, listaHabitacion, listaDistancia, userAlt, _logger);
+                if (add.Success)
+                {
+                    response.Data = request;
+                    response.Message = "Se agrego Hotel";
+                    response.Success = true;
+                    response.CreatedId = add.CreatedId;
+                }
+                else
+                {
+                    response.Data = request;
+                    response.Message = "No se pudo agregar el hotel";
+                    response.Success = false;
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+
+
         #endregion
 
     }
