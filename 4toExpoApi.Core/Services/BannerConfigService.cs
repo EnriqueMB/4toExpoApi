@@ -136,7 +136,7 @@ namespace _4toExpoApi.Core.Services
                 }
                 else
                 {
-                    response.Message = "No se editó correctamente el Banner";
+                    response.Message = "No se editó el Banner";
                     response.Success = false;
                 }
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " Finished Success");
