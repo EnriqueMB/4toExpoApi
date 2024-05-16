@@ -24,6 +24,7 @@ builder.Services.AddScoped<PaquetePatrocinadorService>();
 builder.Services.AddScoped<ContadorService>();
 builder.Services.AddScoped<PaqueteGeneralService>();
 builder.Services.AddScoped<BolsaTrabajoService>();
+builder.Services.AddScoped<EmailService>();
 
 builder.Services.AddScoped<HotelService>();
 #endregion
