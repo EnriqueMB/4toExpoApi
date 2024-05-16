@@ -80,7 +80,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
             }
         }
         [HttpPut("EditarPatrocinador")]
-        public async Task<IActionResult> EditarPatrocinador(PatrocinadorRequest request)
+        public async Task<IActionResult> EditarPatrocinador([FromForm] PatrocinadorRequest request)
         {
             try
             {

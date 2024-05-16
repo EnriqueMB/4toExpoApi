@@ -1,4 +1,5 @@
-﻿using _4toExpoApi.Core.Mappers;
+﻿using _4toExpoApi.Core.Enums;
+using _4toExpoApi.Core.Mappers;
 using _4toExpoApi.Core.Request;
 using _4toExpoApi.Core.ViewModels;
 using _4toExpoApi.DataAccess.Entities;
@@ -22,13 +23,15 @@ namespace _4toExpoApi.Core.Services
       
         private readonly IBaseRepository<Patrocinadores> _patrocinadorRepository;
         private ILogger<PatrocinadorService> _logger;
-       
+        private readonly IAzureBlobStorageService _azureBlobStorageService;
+
         #endregion
         #region <---Constructor--->
 
-        public PatrocinadorService(IBaseRepository<Patrocinadores> patrocinadorRepository, ILogger<PatrocinadorService> logger) {
+        public PatrocinadorService(IBaseRepository<Patrocinadores> patrocinadorRepository, ILogger<PatrocinadorService> logger, IAzureBlobStorageService azureStorageBlobService) {
             _patrocinadorRepository = patrocinadorRepository;
             _logger = logger;
+            _azureBlobStorageService = azureStorageBlobService;
         }
         #endregion
 
@@ -44,8 +47,14 @@ namespace _4toExpoApi.Core.Services
 
                 var addPatrocinador = AppMapper.Map<PatrocinadorRequest, Patrocinadores>(request);
 
+                if (request.UrlImg != null)
+                {
+                    request.UrlLogo = await this._azureBlobStorageService.UploadAsync(request.UrlImg, ContainerEnum.logo);  
+                }
+
                 addPatrocinador.FechaAlt = DateTime.Now;
                 addPatrocinador.UserAlt = userAlt;
+                addPatrocinador.UrlLogo = request.UrlLogo;
                 addPatrocinador.Activo = true;
 
                 var add = await _patrocinadorRepository.Add(addPatrocinador, _logger);
@@ -115,10 +124,19 @@ namespace _4toExpoApi.Core.Services
                     response.Message = "El patrocinador no existe";
                     return response;
                 }
+
+                if (request.UrlImg != null)
+                {
+                    if (request.UrlLogo == "null" || request.UrlImg == null)
+                        request.UrlLogo = await this._azureBlobStorageService.UploadAsync(request.UrlImg, ContainerEnum.logo);
+                    else
+                        request.UrlLogo = await this._azureBlobStorageService.UploadAsync(request.UrlImg, ContainerEnum.logo, patrocinador.UrlLogo);
+                }
+
                 patrocinador.NombreCompleto = request.NombreCompleto;
                 patrocinador.Email = request.Email;
                 patrocinador.NombreEmpresa = request.NombreEmpresa;
-              
+                patrocinador.UrlLogo = request.UrlLogo;
                 patrocinador.FechaUpd = DateTime.Now;
                 patrocinador.UserUpd = UserUpd;
                 
