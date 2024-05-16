@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace _4toExpoApi.DataAccess
 {
-    public  class _4toExpoDbContext: DbContext
+    public class _4toExpoDbContext : DbContext
     {
-        public _4toExpoDbContext(DbContextOptions<_4toExpoDbContext> options):base(options)
+        public _4toExpoDbContext(DbContextOptions<_4toExpoDbContext> options) : base(options)
         {
-            
+
         }
         public DbSet<Usuarios> Usuarios { get; set; }
         public DbSet<Permisos> Permisos { get; set; }
@@ -17,6 +17,8 @@ namespace _4toExpoApi.DataAccess
         public DbSet<Pagos> Pagos { get; set; }
         public DbSet<Clientes> Clientes { get; set; }
         public DbSet<Servicios> Servicios { get; set; }
+      
+        public DbSet<BannerConfig> BannerConfig { get; set;}
         public DbSet<Productos> Productos { get; set; }
         public DbSet<PaquetePatrocinadores> PaquetePatrocinadores { get; set; }
         public DbSet<TipoPaquete> TipoPaquete { get; set; }
@@ -31,6 +33,7 @@ namespace _4toExpoApi.DataAccess
         public DbSet<Habitacion> Habitacion { get; set; }
 
         public DbSet<Distancia> Distancia { get; set; }
+        public DbSet<Patrocinadores> Patrocinadores { get; set;}
 
     }
 }

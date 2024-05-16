@@ -23,8 +23,11 @@ builder.Services.AddScoped<ServicioService>();
 builder.Services.AddScoped<ProductoServise>();
 builder.Services.AddScoped<PaquetePatrocinadorService>();
 builder.Services.AddScoped<ContadorService>();
+builder.Services.AddScoped<BannerConfigService>();
 builder.Services.AddScoped<PaqueteGeneralService>();
 builder.Services.AddScoped<BolsaTrabajoService>();
+builder.Services.AddScoped<EmailService>();
+builder.Services.AddScoped<PatrocinadorService>();
 
 builder.Services.AddScoped<HotelService>();
 #endregion
@@ -37,6 +40,7 @@ builder.Services.AddScoped<IBaseRepository<Reservas>, BaseRepository<Reservas>>(
 builder.Services.AddScoped<IBaseRepository<Servicios>, BaseRepository<Servicios>>();
 builder.Services.AddScoped<IBaseRepository<Productos>, BaseRepository<Productos>>();
 builder.Services.AddScoped<IBaseRepository<Contador>, BaseRepository<Contador>>();
+builder.Services.AddScoped<IBaseRepository<BannerConfig>, BaseRepository<BannerConfig>>();
 builder.Services.AddScoped<IBaseRepository<IncluyePaquete>, BaseRepository<IncluyePaquete>>();
 builder.Services.AddScoped<IReservaRepository, ReservaRepository>();
 builder.Services.AddScoped<IBaseRepository<PaqueteGeneral>, BaseRepository<PaqueteGeneral>>();
@@ -47,7 +51,9 @@ builder.Services.AddScoped<IBaseRepository<TipoPaquete>, BaseRepository<TipoPaqu
 builder.Services.AddScoped<IBaseRepository<BeneficioPaquete>, BaseRepository<BeneficioPaquete>>();
 builder.Services.AddScoped<IBaseRepository<PaquetePatrocinadores>, BaseRepository<PaquetePatrocinadores>>();
 builder.Services.AddScoped<IPaquetePatrocinadoresRepository, PaquetesPatrocinadoresRepository>();
-builder.Services.AddScoped<IBaseRepository<BolsaTrabajo>,BaseRepository<BolsaTrabajo>>();
+builder.Services.AddScoped<IBaseRepository<BolsaTrabajo>, BaseRepository<BolsaTrabajo>>();
+builder.Services.AddScoped<IBaseRepository<Patrocinadores>, BaseRepository<Patrocinadores>>();
+builder.Services.AddScoped<IAzureBlobStorageService, AzureBlobStorageService>();
 #endregion
 #region <-- Context -->
 
