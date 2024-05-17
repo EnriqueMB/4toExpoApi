@@ -12,11 +12,11 @@ namespace _4toExpoApi.DataAccess.Entities
         [Key]
         public int Id { get; set; }
         [MaxLength(250)]
-        public string Nombre { get; set; }
+        public string Producto { get; set; }
         public string? Consecutivo { get; set; }
         public int? IdTipoPaquete { get; set; }
      
-        public string? NombreTitular { get; set; }
+        public string? Nombre { get; set; }
         public string? Apellidos { get; set; }
         public int? Monto { get; set; }
         public string? TipoPago { get; set; }

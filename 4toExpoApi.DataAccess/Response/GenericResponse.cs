@@ -14,5 +14,6 @@ namespace _4toExpoApi.DataAccess.Response
         public string DeletedId { get; set; }
         public string Message { get; set; }
         public bool Success { get; set; }
+
     }
 }

@@ -4,6 +4,10 @@ using _4toExpoApi.DataAccess.IRepositories;
 using _4toExpoApi.DataAccess.Repositories;
 using _4toExpoApi.DataAccess;
 using Microsoft.EntityFrameworkCore;
+using _4toExpoApi.Core.Helpers;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
+using _4toExpoApi.Core.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +18,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
+builder.Services.AddJWTTokenServices(builder.Configuration);
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
 #region <-- Services -->
 //builder.Services.AddScoped<AuthService>();
@@ -23,8 +29,11 @@ builder.Services.AddScoped<ServicioService>();
 builder.Services.AddScoped<ProductoServise>();
 builder.Services.AddScoped<PaquetePatrocinadorService>();
 builder.Services.AddScoped<ContadorService>();
+builder.Services.AddScoped<BannerConfigService>();
 builder.Services.AddScoped<PaqueteGeneralService>();
 builder.Services.AddScoped<BolsaTrabajoService>();
+builder.Services.AddScoped<EmailService>();
+builder.Services.AddScoped<PatrocinadorService>();
 
 builder.Services.AddScoped<HotelService>();
 #endregion
@@ -37,6 +46,7 @@ builder.Services.AddScoped<IBaseRepository<Reservas>, BaseRepository<Reservas>>(
 builder.Services.AddScoped<IBaseRepository<Servicios>, BaseRepository<Servicios>>();
 builder.Services.AddScoped<IBaseRepository<Productos>, BaseRepository<Productos>>();
 builder.Services.AddScoped<IBaseRepository<Contador>, BaseRepository<Contador>>();
+builder.Services.AddScoped<IBaseRepository<BannerConfig>, BaseRepository<BannerConfig>>();
 builder.Services.AddScoped<IBaseRepository<IncluyePaquete>, BaseRepository<IncluyePaquete>>();
 builder.Services.AddScoped<IReservaRepository, ReservaRepository>();
 builder.Services.AddScoped<IBaseRepository<PaqueteGeneral>, BaseRepository<PaqueteGeneral>>();
@@ -47,7 +57,9 @@ builder.Services.AddScoped<IBaseRepository<TipoPaquete>, BaseRepository<TipoPaqu
 builder.Services.AddScoped<IBaseRepository<BeneficioPaquete>, BaseRepository<BeneficioPaquete>>();
 builder.Services.AddScoped<IBaseRepository<PaquetePatrocinadores>, BaseRepository<PaquetePatrocinadores>>();
 builder.Services.AddScoped<IPaquetePatrocinadoresRepository, PaquetesPatrocinadoresRepository>();
-builder.Services.AddScoped<IBaseRepository<BolsaTrabajo>,BaseRepository<BolsaTrabajo>>();
+builder.Services.AddScoped<IBaseRepository<BolsaTrabajo>, BaseRepository<BolsaTrabajo>>();
+builder.Services.AddScoped<IBaseRepository<Patrocinadores>, BaseRepository<Patrocinadores>>();
+builder.Services.AddScoped<IAzureBlobStorageService, AzureBlobStorageService>();
 #endregion
 #region <-- Context -->
 
@@ -57,6 +69,8 @@ builder.Services.AddDbContext<_4toExpoDbContext>(options =>
 });
 
 #endregion
+
+builder.Services.AddMvc();
 
 builder.Services.AddCors(options =>
 {
@@ -70,17 +84,32 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+#region CultureSetup
+var supportedCultures = new[]
+{
+ new CultureInfo("es-MX")
+};
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("es-MX"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures
+});
 
+#endregion
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction() || app.Environment.EnvironmentName.Equals("QA"))
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
+app.UseRouting();
 app.UseCors("AllowAll");
-
+#region MIDDLEWARE FILTER
+app.UseLimitMiddleware();
+#endregion
 app.UseAuthorization();
 
 app.MapControllers();
