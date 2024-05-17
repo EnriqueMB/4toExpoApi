@@ -123,6 +123,7 @@ namespace _4toExpoApi.Core.Services
                 bannerConfig.CantidadParticipantes = request.CantidadParticipantes;
                 bannerConfig.Orden = request.Orden;
                 bannerConfig.Dias = request.Dias;
+                bannerConfig.CenaGala = request.CenaGala;
                 bannerConfig.CantidadConstructoras = request.CantidadConstructoras;
                 bannerConfig.UserUpd = UserUpd;
                 bannerConfig.FechaUpd = DateTime.Now;

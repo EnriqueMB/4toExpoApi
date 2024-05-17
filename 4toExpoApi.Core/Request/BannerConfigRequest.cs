@@ -14,6 +14,7 @@ namespace _4toExpoApi.Core.Request
         public int? CantidadParticipantes { get; set; }
         public int? Orden { get; set; }
         public int? Dias { get; set; }
+        public string? CenaGala { get; set; }
         public int? CantidadConstructoras { get; set; }
         public IFormFile? imagenFile { get; set; }
     }
