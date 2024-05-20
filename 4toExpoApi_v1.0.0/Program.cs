@@ -4,6 +4,10 @@ using _4toExpoApi.DataAccess.IRepositories;
 using _4toExpoApi.DataAccess.Repositories;
 using _4toExpoApi.DataAccess;
 using Microsoft.EntityFrameworkCore;
+using _4toExpoApi.Core.Helpers;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
+using _4toExpoApi.Core.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +18,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
+builder.Services.AddJWTTokenServices(builder.Configuration);
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
 #region <-- Services -->
 //builder.Services.AddScoped<AuthService>();
@@ -64,6 +70,8 @@ builder.Services.AddDbContext<_4toExpoDbContext>(options =>
 
 #endregion
 
+builder.Services.AddMvc();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
@@ -76,17 +84,32 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+#region CultureSetup
+var supportedCultures = new[]
+{
+ new CultureInfo("es-MX")
+};
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("es-MX"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures
+});
 
+#endregion
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction() || app.Environment.EnvironmentName.Equals("QA"))
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
+app.UseRouting();
 app.UseCors("AllowAll");
-
+#region MIDDLEWARE FILTER
+app.UseLimitMiddleware();
+#endregion
 app.UseAuthorization();
 
 app.MapControllers();

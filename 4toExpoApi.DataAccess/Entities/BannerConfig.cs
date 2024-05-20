@@ -18,6 +18,7 @@ namespace _4toExpoApi.DataAccess.Entities
         public int? CantidadExpositores { get; set; }
         public int? CantidadParticipantes { get; set; }
         public int? Orden{ get; set; }
+        public string? CenaGala { get; set; }
         public int? UserAlt { get; set; }
         public DateTime? FechaAlt { get; set; }
         public int? UserUpd { get; set; }
