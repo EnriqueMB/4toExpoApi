@@ -34,14 +34,15 @@ builder.Services.AddScoped<PaqueteGeneralService>();
 builder.Services.AddScoped<BolsaTrabajoService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<PatrocinadorService>();
+builder.Services.AddScoped<AuthService>();
 
 builder.Services.AddScoped<HotelService>();
 #endregion
 #region <-- Repositories -->
 //builder.Services.AddScoped<IBaseRepository<Permisos>, BaseRepository<Permisos>>();
-//builder.Services.AddScoped<IBaseRepository<Usuarios>, BaseRepository<Usuarios>>();
+builder.Services.AddScoped<IBaseRepository<Usuarios>, BaseRepository<Usuarios>>();
 //builder.Services.AddScoped<IBaseRepository<UsuarioPermisos>, BaseRepository<UsuarioPermisos>>();
-//builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IBaseRepository<Reservas>, BaseRepository<Reservas>>();
 builder.Services.AddScoped<IBaseRepository<Servicios>, BaseRepository<Servicios>>();
 builder.Services.AddScoped<IBaseRepository<Productos>, BaseRepository<Productos>>();

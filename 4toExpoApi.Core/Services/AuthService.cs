@@ -49,7 +49,7 @@ namespace _4toExpoApi.Core.Services
 
                 var response = new GenericResponse();
 
-                var userDb = await _usuarioRepository.ExistsByNombreUsuario(request.NombreUsuario, _logger);
+                var userDb = await _usuarioRepository.ExistsByNombreUsuario(request.correo, _logger);
 
                 if (userDb != null)
                 {
@@ -72,9 +72,17 @@ namespace _4toExpoApi.Core.Services
                 usuario.UserAlt = usrAlta;
                 usuario.Activo = true;
 
-                var permisos = AppMapper.Map<List<UsuarioPermisosVM>, List<UsuarioPermisos>>(request.Permisos);
+                var reserva = new Reservas
+                {
+                    Producto = request.producto,
+                    Monto = request.monto,
+                    NombreCompleto = request.NombreCompleto,
+                    FechaAlt = DateTime.Now,
+                    UserAlt = usrAlta,
+                    Activo = true
+                };
 
-                var result = await _usuarioRepository.AgregarUsuario(usuario, permisos, _logger);
+                var result = await _usuarioRepository.AgregarUsuario(usuario, reserva,  _logger);
 
                 if (result.Success)
                 {
@@ -94,73 +102,7 @@ namespace _4toExpoApi.Core.Services
             }
         }
 
-        public async Task<GenericResponse> ActualizarUsuario(UsuarioRequest request, int usrMod)
-        {
-            try
-            {
-                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
-
-                var response = new GenericResponse();
-
-                var usuario = await _usuarioRepository.GetById(request.Id, _logger);
-
-                if (usuario == null)
-                {
-                    response.Message = "El usuario no existe";
-                    response.Success = false;
-
-                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
-                    return response;
-                }
-
-                var userDb = await _usuarioRepository.ExistsByNombreUsuario(request.NombreUsuario, _logger);
-
-                if (userDb != null && userDb.Id != request.Id)
-                {
-                    response.Message = "El nombre de usuario ya existe";
-                    response.Success = false;
-
-                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
-                    return response;
-                }
-
-                if (!VerifyPasswordHash(request.Password, usuario.PasswordHash, usuario.PasswordSalt))
-                {
-                    CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
-
-                    usuario.PasswordHash = passwordHash;
-                    usuario.PasswordSalt = passwordSalt;
-                }
-
-                usuario.NombreUsuario = request.NombreUsuario;
-                usuario.NombreCompleto = request.NombreCompleto;
-                usuario.Correo = request.Correo;
-                usuario.UserUpd = usrMod;
-                usuario.FechaUpd = DateTime.Now;
-
-                var permisos = AppMapper.Map<List<UsuarioPermisosVM>, List<UsuarioPermisos>>(request.Permisos);
-
-                var result = await _usuarioRepository.ActualizarUsuario(usuario, permisos, _logger);
-
-                if (result.Success)
-                {
-                    response.Message = "Usuario actualizado correctamente";
-                    response.Success = true;
-                    response.UpdatedId = result.UpdatedId;
-                }
-
-                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
-                return response;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
-                throw;
-            }
-        }
+     
 
         public async Task<AuthResponse> Login(AuthRequest request)
         {
@@ -192,28 +134,22 @@ namespace _4toExpoApi.Core.Services
                     return response;
                 }
 
-                var permisos = await _usuarioRepository.ObtenerPermisosUsuario(usuario.Id, _logger);
+           
                 var roles = await _usuarioRepository.ObtenerRolesUsuario(usuario.Id, _logger);
 
                 var token = JwtHelper.GenTokenkey(new UserToken
                 {
-                    UserName = usuario.NombreUsuario,
+                    UserName = usuario.Correo,
                     Id = usuario.Id,
-                    Permisos = permisos.Data,
                     Roles = roles.Data
                 }, _jwtSettings, _configuration);
 
                 response.Token = token.Token;
-                response.UserName = usuario.NombreUsuario;
+                response.UserName = usuario.Correo;
                 response.UserId = usuario.Id.ToString();
                 response.Permisos = token.Permisos;
                 response.Roles = token.Roles;
 
-                if (!string.IsNullOrEmpty(response.Token))
-                {
-                    await _usuarioRepository.ActualizarUltimoAcceso(usuario.Id, _logger);
-
-                }
 
                 response.Message = "Login correcto";
                 response.Success = true;
@@ -355,38 +291,6 @@ namespace _4toExpoApi.Core.Services
             }
         }
 
-        //Obtener permisos por tipo permiso
-        public async Task<ListResponse<PermisosVM>> ObtenerPermisosPorTipoPermiso(int tipoPermiso)
-        {
-            try
-            {
-                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
-
-                var response = await _usuarioRepository.ObtenerPermisosPorTipoPermiso(tipoPermiso, _logger);
-
-                if (response != null)
-                {
-                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
-                    var list = AppMapper.Map<List<Permisos>, List<PermisosVM>>(response.Data);
-
-                    return new ListResponse<PermisosVM>
-                    {
-                        Data = list,
-                        Total = list.Count
-                    };
-                }
-
-                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
-                return new ListResponse<PermisosVM>();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
-                throw;
-            }
-        }
 
         public void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace _4toExpoApi.DataAccess.Repositories
 {
-    public class ReservaRepository : BaseRepository<Reservas> ,IReservaRepository
+    public class ReservaRepository : BaseRepository<Pagos> ,IReservaRepository
     {
         private readonly _4toExpoDbContext _dbContext;
 
@@ -22,59 +22,26 @@ namespace _4toExpoApi.DataAccess.Repositories
 
         }
 
-        public async Task<GenericResponse<Reservas>> AgregarReserva(Reservas Reserva,Pagos pagos,Clientes clientes, ILogger logger)
+        public async Task<GenericResponse<Pagos>> AgregarReserva(Pagos pagos, ILogger logger)
         {
             using var transaction = _context.Database.BeginTransaction();
             try
             {
                 logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
-                var response = new GenericResponse<Reservas>();
+                var response = new GenericResponse<Pagos>();
 
-                var addReserva = _context.Add(Reserva);
+                var addPagos = _context.Add(pagos);
 
                 var addResult = await _context.SaveChangesAsync();
 
                 if (addResult > 0)
                 {
 
-                    var reservaId = addReserva.Entity.Id;
-                    pagos.IdReserva = reservaId;
-
-                    var addPagos = _context.Add(pagos);
-                    var addResultPagos = await _context.SaveChangesAsync();
-
-                    if(addResultPagos > 0)
-                    {
-                        clientes.IdReserva = reservaId;
-
-                        var addCliente = _context.Add(clientes);
-                        var addResultCliente = await _context.SaveChangesAsync();
-
-                        if(addResultCliente > 0)
-                        {
-                            await transaction.CommitAsync();
-                            response.Success = true;
-                            response.CreatedId = addReserva.Entity.Id.ToString();
-                            response.Data = addReserva.Entity;
-                        }
-                        else
-                        {
-                            await transaction.RollbackAsync();
-                            response.Success = false;
-                            response.Message = "No se pudo agregar el cliente";
-                        }
-
-                        
-                    }
-                    else
-                    {
-                        await transaction.RollbackAsync();
-                        response.Success = false;
-                        response.Message = "No se puso agregar el pago";
-                    }
-
-                    
+                    await transaction.CommitAsync();
+                    response.Success = true;
+                    response.CreatedId = addPagos.Entity.Id.ToString();
+                    response.Data = addPagos.Entity;
 
                 }
                 else

@@ -12,10 +12,23 @@ namespace _4toExpoApi.Core.Request
     {
         public int Id { get; set; }
         public string NombreCompleto { get; set; }
-        public string Correo { get; set; }
+        public string? producto { get; set; }
+        public int? monto { get; set; } 
+        public int? idUniversidad { get;set; }
+        public string? semestre {  get; set; }
+        public string? coloniaMunicipio { get; set; }
+        public string? telefono { get; set; }
+
+        public string correo { get; set; }
+        public string? urlImg { get; set; }
+        public string? asociacion { get; set; }
+        public string? contactoEmergencia { get; set; }
+        public string? alergia { get; set; }
+        public bool? asesoria { get; set; }
+        public string? sugerencia { get; set; }
+
         public string Password { get; set; }
-        public string NombreUsuario { get; set; }
-        public DateTime UltimoAcceso { get; set; }
-        public List<UsuarioPermisosVM> Permisos { get; set; }
+        public int? idTipoUsuario { get; set; }
+       
     }
 }
