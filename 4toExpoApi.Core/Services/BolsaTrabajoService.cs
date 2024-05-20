@@ -246,6 +246,7 @@ namespace _4toExpoApi.Core.Services
 
                 var response = new BolsaTrabajoVM
                 {
+
                     IdBolsaTrabajo = bolsa.IdBolsaTrabajo,
                     Tipo = bolsa.Tipo,
                     Descripcion = bolsa.Descripcion,

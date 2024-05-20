@@ -3,6 +3,7 @@ namespace _4toExpoApi.DataAccess.Response.Hotel
 {
     public class HabitacionResponse
     {
+        public int Id { get; set; }
         public string Nombre { set; get; }
         public int? Precio { set; get; }
         public int? Impuesto { set; get; }
