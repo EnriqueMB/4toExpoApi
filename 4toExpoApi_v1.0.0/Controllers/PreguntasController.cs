@@ -1,42 +1,39 @@
 ﻿using _4toExpoApi.Core.Request;
 using _4toExpoApi.Core.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections;
 using System.Reflection;
 
 namespace _4toExpoApi_v1._0._0.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class PreguntasController : Controller
     {
-        #region <--- Variables --->
-        private readonly AuthService _authService;
-        private ILogger<AuthController> _logger;
+        #region <---Variables--->
+        private readonly PreguntasService _preguntasService;
+        private readonly ILogger<PreguntasController> _logger;
         #endregion
-        
-        #region <--- Constructor --->
-        public AuthController(
-            ILogger<AuthController> logger,
-            AuthService authService)
+
+        #region <---Constructor--->
+        public PreguntasController(PreguntasService preguntasService, ILogger<PreguntasController> logger)
         {
+            _preguntasService = preguntasService;
             _logger = logger;
-            _authService = authService;
         }
         #endregion
 
+        #region <---Metodos--->
 
-        #region <--- Metodos --->
-        //Agregar usuario
-        [HttpPost("AgregarUsuario")]
-        public async Task<IActionResult> AgregarUsuario([FromForm]UsuarioRequest request)
+        [HttpPost("AgregarPregunta")]
+        public async Task<IActionResult> AgregarPregunta(PreguntasRequest request)
         {
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
 
-
-                var response = await _authService.AgregarUsuario(request, 1);
+                var response = await _preguntasService.AgregarPregunta(request, 1);
 
                 if (response.Success)
                 {
@@ -56,27 +53,26 @@ namespace _4toExpoApi_v1._0._0.Controllers
             }
         }
 
-
-        //Obtener usuarios
-        [HttpGet("ObtenerUsuarios")]
-        public async Task<IActionResult> ObtenerUsuarios()
+        [HttpGet("ObtenerPreguntas")]
+        public async Task<IEnumerable> ObtenerPreguntas()
         {
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
-                var response = await _authService.ObtenerUsuarios();
+
+                var response = await _preguntasService.ObtenerPreguntas();
 
                 if (response != null)
                 {
                     _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
 
-                    return Ok(response);
+                    return response;
                 }
 
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
 
-                return NotFound();
+                return null;
             }
             catch (Exception ex)
             {
@@ -85,71 +81,15 @@ namespace _4toExpoApi_v1._0._0.Controllers
             }
         }
 
-        //Obtener usuario por id
-        [HttpGet("ObtenerUsuarioPorId")]
-        public async Task<IActionResult> ObtenerUsuarioPorId(int id)
+        [HttpPut("EditarPregunta")]
+        public async Task<IActionResult> EditarPregunta(PreguntasRequest request)
         {
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
-                var response = await _authService.ObtenerUsuarioPorId(id);
 
-                if (response != null)
-                {
-                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
-                    return Ok(response);
-                }
-
-                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
-                throw;
-            }
-        }
-
-        //Obtener usuario por nombre de usuario
-        [HttpGet("ExistsNombreUsuario")]
-        public async Task<IActionResult> ExistsNombreUsuario(string nombreUsuario, int idUsuario)
-        {
-            try
-            {
-                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
-
-                var response = await _authService.ExistsNombreUsuario(nombreUsuario, idUsuario);
-
-                if (response != null)
-                {
-                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
-                    return Ok(response);
-                }
-
-                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
-                throw;
-            }
-        }
-
-        //Eliminar usuario
-        [HttpDelete("EliminarUsuario")]
-        public async Task<IActionResult> EliminarUsuario(int id)
-        {
-            try
-            {
-                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
-
-                var response = await _authService.EliminarUsuario(id, 1);
+                var response = await _preguntasService.EditarPregunta(request, 1);
 
                 if (response.Success)
                 {
@@ -169,15 +109,15 @@ namespace _4toExpoApi_v1._0._0.Controllers
             }
         }
 
-        //Login
-        [HttpPost("Login")]
-        public async Task<IActionResult> Login(AuthRequest request)
+        [HttpDelete("EliminarPregunta")]
+        public async Task<IActionResult> EliminarPregunta(int id)
         {
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
-                var response = await _authService.Login(request);
+
+                var response = await _preguntasService.EliminarPregunta(id);
 
                 if (response.Success)
                 {
@@ -196,7 +136,6 @@ namespace _4toExpoApi_v1._0._0.Controllers
                 throw;
             }
         }
-
         #endregion
     }
 }

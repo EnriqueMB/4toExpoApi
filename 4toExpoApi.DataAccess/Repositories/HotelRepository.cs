@@ -103,6 +103,7 @@ namespace _4toExpoApi.DataAccess.Repositories
                     CodigoReserva = hotel.CodigoReserva,
                     listaHabitacion = dbContext.Habitacion.Where(habitacion => habitacion.IdHotel == hotel.Id).Select(v => new HabitacionResponse()
                     {
+                        Id = v.Id,
                         Nombre = v.Nombre,
                         Adicional = v.Adicional,
                         Impuesto = v.Impuesto,

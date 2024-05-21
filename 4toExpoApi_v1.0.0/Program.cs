@@ -34,19 +34,24 @@ builder.Services.AddScoped<PaqueteGeneralService>();
 builder.Services.AddScoped<BolsaTrabajoService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<PatrocinadorService>();
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<UniversidadService>();
+builder.Services.AddScoped<PreguntasService>();
+//builder.Services.AddScoped<>
 
 builder.Services.AddScoped<HotelService>();
 #endregion
 #region <-- Repositories -->
 //builder.Services.AddScoped<IBaseRepository<Permisos>, BaseRepository<Permisos>>();
-//builder.Services.AddScoped<IBaseRepository<Usuarios>, BaseRepository<Usuarios>>();
+builder.Services.AddScoped<IBaseRepository<Usuarios>, BaseRepository<Usuarios>>();
 //builder.Services.AddScoped<IBaseRepository<UsuarioPermisos>, BaseRepository<UsuarioPermisos>>();
-//builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IBaseRepository<Reservas>, BaseRepository<Reservas>>();
 builder.Services.AddScoped<IBaseRepository<Servicios>, BaseRepository<Servicios>>();
 builder.Services.AddScoped<IBaseRepository<Productos>, BaseRepository<Productos>>();
 builder.Services.AddScoped<IBaseRepository<Contador>, BaseRepository<Contador>>();
 builder.Services.AddScoped<IBaseRepository<BannerConfig>, BaseRepository<BannerConfig>>();
+builder.Services.AddScoped<IBaseRepository<Universidad>, BaseRepository<Universidad>>();
 builder.Services.AddScoped<IBaseRepository<IncluyePaquete>, BaseRepository<IncluyePaquete>>();
 builder.Services.AddScoped<IReservaRepository, ReservaRepository>();
 builder.Services.AddScoped<IBaseRepository<PaqueteGeneral>, BaseRepository<PaqueteGeneral>>();
@@ -60,6 +65,7 @@ builder.Services.AddScoped<IPaquetePatrocinadoresRepository, PaquetesPatrocinado
 builder.Services.AddScoped<IBaseRepository<BolsaTrabajo>, BaseRepository<BolsaTrabajo>>();
 builder.Services.AddScoped<IBaseRepository<Patrocinadores>, BaseRepository<Patrocinadores>>();
 builder.Services.AddScoped<IAzureBlobStorageService, AzureBlobStorageService>();
+builder.Services.AddScoped<IBaseRepository<Preguntas>, BaseRepository<Preguntas>>();
 #endregion
 #region <-- Context -->
 
