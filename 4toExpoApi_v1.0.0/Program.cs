@@ -34,6 +34,8 @@ builder.Services.AddScoped<PaqueteGeneralService>();
 builder.Services.AddScoped<BolsaTrabajoService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<PatrocinadorService>();
+builder.Services.AddScoped<PreguntasService>();
+//builder.Services.AddScoped<>
 
 builder.Services.AddScoped<HotelService>();
 #endregion
@@ -60,6 +62,7 @@ builder.Services.AddScoped<IPaquetePatrocinadoresRepository, PaquetesPatrocinado
 builder.Services.AddScoped<IBaseRepository<BolsaTrabajo>, BaseRepository<BolsaTrabajo>>();
 builder.Services.AddScoped<IBaseRepository<Patrocinadores>, BaseRepository<Patrocinadores>>();
 builder.Services.AddScoped<IAzureBlobStorageService, AzureBlobStorageService>();
+builder.Services.AddScoped<IBaseRepository<Preguntas>, BaseRepository<Preguntas>>();
 #endregion
 #region <-- Context -->
 
