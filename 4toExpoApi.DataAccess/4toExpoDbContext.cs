@@ -36,5 +36,7 @@ namespace _4toExpoApi.DataAccess
         public DbSet<Patrocinadores> Patrocinadores { get; set;}
         public DbSet<Universidad> Universidad { get; set;}
 
+        public DbSet<Preguntas> Preguntas { get; set;}
+
     }
 }
