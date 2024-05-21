@@ -11,16 +11,13 @@ namespace _4toExpoApi.DataAccess.IRepositories
 {
     public interface IUsuarioRepository : IBaseRepository<Usuarios>
     {
-        Task<Usuarios> ExistsByNombreUsuario(string nombreUsuario, ILogger logger);
-        Task<GenericResponse<Usuarios>> AgregarUsuario(Usuarios usuario, List<UsuarioPermisos> permisos, ILogger logger);
+        Task<Usuarios> ExistsByNombreUsuario(string correo, ILogger logger);
+        Task<GenericResponse<Usuarios>> AgregarUsuario(Usuarios usuario,Reservas reserva, ILogger logger);
         Task<GenericResponse<Usuarios>> ActualizarUsuario(Usuarios usuario, List<UsuarioPermisos> permisos, ILogger logger);
-        Task<GenericResponse<Usuarios>> ActualizarUltimoAcceso(int id, ILogger logger);
-        Task<GenericResponse<List<long>>> ObtenerPermisosUsuario(int id, ILogger logger);
         Task<GenericResponse<List<int>>> ObtenerRolesUsuario(int id, ILogger logger);
         Task<GenericResponse<List<Usuarios>>> ObtenerUsuarios(ILogger logger);
         Task<GenericResponse<Usuarios>> ObtenerUsuarioPorId(int id, ILogger logger);
         Task<GenericResponse<Usuarios>> ExistsNombreUsuario(string nombreUsuario, int idUsuario, ILogger logger);
         Task<GenericResponse<Usuarios>> EliminarUsuario(int id, int userMod, ILogger logger);
-        Task<GenericResponse<List<Permisos>>> ObtenerPermisosPorTipoPermiso(int tipoPermiso, ILogger logger);
     }
 }

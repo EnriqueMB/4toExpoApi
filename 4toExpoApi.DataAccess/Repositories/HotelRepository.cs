@@ -103,6 +103,7 @@ namespace _4toExpoApi.DataAccess.Repositories
                     CodigoReserva = hotel.CodigoReserva,
                     listaHabitacion = dbContext.Habitacion.Where(habitacion => habitacion.IdHotel == hotel.Id).Select(v => new HabitacionResponse()
                     {
+                        Id = v.Id,
                         Nombre = v.Nombre,
                         Adicional = v.Adicional,
                         Impuesto = v.Impuesto,
@@ -144,6 +145,146 @@ namespace _4toExpoApi.DataAccess.Repositories
                 throw;
             }
         }
+
+        public async Task<GenericResponse<HotelResponse>> HotelPorID(int idHotel, ILogger logger)
+        {
+            try
+            {
+
+                logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var response = new GenericResponse<HotelResponse>();
+
+                var dataListHotel = await dbContext.Hotel.Where(hotel=> hotel.Id == idHotel).Select(hotel => new HotelResponse
+                {
+                    Id = hotel.Id,
+                    Nombre = hotel.Nombre,
+                    Tipo = hotel.Tipo,
+                    Ubicacion = hotel.Ubicacion,
+                    Tarifa = hotel.Tarifa,
+                    Telefono = hotel.Telefono,
+                    LinkWhatsapp = hotel.LinkWhatsapp,
+                    Correo = hotel.Correo,
+                    Imagen = hotel.Imagen,
+                    CodigoReserva = hotel.CodigoReserva,
+                    listaHabitacion = dbContext.Habitacion.Where(habitacion => habitacion.IdHotel == hotel.Id).Select(v => new HabitacionResponse()
+                    {
+                        Nombre = v.Nombre,
+                        Adicional = v.Adicional,
+                        Impuesto = v.Impuesto,
+                        incluye = v.incluye,
+                        Precio = v.Precio,
+                    }).ToList(),
+                    listaDistancia = dbContext.Distancia.Where(distancia => distancia.IdHotel == hotel.Id).Select(v => new DistanciaResponse()
+                    {
+                        Id = v.Id,
+                        Icono = v.Icono,
+                        Tiempo = v.Tiempo,
+                        Tipo = v.Tipo,
+
+
+                    }).ToList(),
+
+                }).FirstAsync();
+
+                if (dataListHotel != null)
+                {
+                    response.Data = dataListHotel;
+                    response.Message = "success";
+                    response.Success = true;
+                }
+                else
+                {
+
+                    response.Message = "No se encontraron datos";
+                    response.Success = false;
+                }
+
+
+                return response;
+            }
+            catch (SqlException ex)
+            {
+
+                logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<GenericResponse<Hotel>> ActualizarHotel(Hotel hotel, List<Habitacion> listHabitacion, List<Distancia> listaDistancia, int userAlt, ILogger logger)
+        {
+            try
+            {
+                using var transaction = dbContext.Database.BeginTransaction();
+                logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+                var itemsGuardados = 0;
+                var response = new GenericResponse<Hotel>();
+                var addHotel = dbContext.Update(hotel);
+                var addResult = await dbContext.SaveChangesAsync();
+
+                foreach (var item in listHabitacion)
+                {
+                    
+                    if(item.Id > 0)
+                    {
+                        item.UserUpd = userAlt;
+                        item.FechaUpd = DateTime.Now;
+                        dbContext.Habitacion.Update(item);
+                    }
+                    else
+                    {
+                        item.Activo = true;
+                        item.UserAlt = userAlt;
+                        item.FechaAlt = DateTime.Now;
+                        dbContext.Habitacion.Add(item);
+                    }
+                }
+
+                foreach (var item in listaDistancia)
+                {
+                    if (item.Id > 0)
+                    {
+                        item.UserUpd = userAlt;
+                        item.FechaUpd = DateTime.Now;
+                        dbContext.Distancia.Update(item);
+                    }
+                    else
+                    {
+                        item.Activo = true;
+                        item.UserAlt = userAlt;
+                        item.FechaAlt = DateTime.Now;
+                        dbContext.Distancia.Add(item);
+                    }
+                }
+                 
+                
+                itemsGuardados = await _context.SaveChangesAsync();
+
+                if (itemsGuardados > 0)
+                {
+                    transaction.Commit();
+                    response.Success = true;
+                    
+                }
+                else
+                {
+                    transaction.Rollback();
+                    response.Success = false;
+                }
+
+
+                response.Data = addHotel.Entity;
+
+                return response;
+            }
+            catch (SqlException ex)
+            {
+
+                logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+
 
     }
 }

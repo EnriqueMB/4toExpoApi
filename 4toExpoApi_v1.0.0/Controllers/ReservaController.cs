@@ -9,6 +9,8 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Runtime.InteropServices;
 using System.Text.Unicode;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
+using Newtonsoft.Json.Linq;
 
 
 namespace _4toExpoApi_v1._0._0.Controllers
@@ -64,7 +66,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
                         {
                         new
                         {
-                            name = request.Nombre,
+                            name = request.Producto,
                             unit_price = request.Monto * 100,
                             quantity = request.Cantidad
                         }
@@ -72,7 +74,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
                         currency = "MXN",
                         customer_info = new
                         {
-                            name = request.NombreTitular,
+                            name = request.Nombre,
                             email = request.Correo,
                             phone = request.Telefono
                         },
@@ -133,7 +135,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
                 }
                 else if(request.TipoPago=="Paypal")
                 {
-                    var response = await _payService.reservaProductoPaypal(request);
+                    var response = await _payService.reservaProductoPaypal(request,1);
 
                     if (response.Success)
                     {
@@ -148,7 +150,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
                 }
                 else
                 {
-                    var response = await _payService.reservaProductoPaypal(request);
+                    var response = await _payService.reservaProductoPaypal(request,1);
 
                     if (response.Success)
                     {
@@ -170,6 +172,137 @@ namespace _4toExpoApi_v1._0._0.Controllers
             }
 
         }
+
+        [HttpPost("webhook")]
+        public async Task<IActionResult> ConektaWebhook()
+
+        {
+            try
+            {
+                // Dentro de tu método ConektaWebhook o donde necesites realizar la solicitud HTTP
+                var apiUrl = "https://api.conekta.io/webhooks";
+                var acceptHeader = "application/vnd.conekta-v2.1.0+json";
+                var privateKey = "key_iRVbKuhPBqkrw8N4CSGAIXZ";
+
+                var client = new HttpClient();
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Post,
+                    RequestUri = new Uri(apiUrl),
+                    Headers =
+                    {
+                        { "Authorization", "Bearer " + privateKey },
+                        { "accept", acceptHeader },
+                        { "Accept-Language", "es" },
+                    },
+                    Content = new StringContent("{\"synchronous\":false,\"url\":\"https://api-evento.azurewebsites.netReserva/webhook\"}")
+                    {
+                        Headers =
+                        {
+                            ContentType = new MediaTypeHeaderValue("application/json")
+                        }
+                    }
+                };
+
+                // Envía la solicitud HTTP y maneja la respuesta
+                using (var response = await client.SendAsync(request))
+                {
+                    // Verifica si la solicitud fue exitosa
+                    if (response.IsSuccessStatusCode)
+                    {
+                        response.EnsureSuccessStatusCode();
+                        // Lee el cuerpo de la respuesta
+                        var body = await response.Content.ReadAsStringAsync();
+                        var respuesta = JsonConvert.DeserializeObject<Dictionary<string, object>>(body);
+
+                        var eventosSuscritos = respuesta["subscribed_events"] as JArray;
+
+                        if (eventosSuscritos != null && eventosSuscritos.Any(e => e.ToString() == "charge.paid"))
+                        {
+                            // Aquí puedes realizar acciones específicas para eventos de pago
+                        }
+                        return Ok(response);
+                    }
+                    else
+                    {
+                      
+                       
+                        return StatusCode((int)response.StatusCode);
+                    }
+
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error processing Conekta webhook: " + ex.Message);
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet("getwebhook")]
+        public async Task<IActionResult> getConektaWebhook()
+
+        {
+            try
+            {
+                // Dentro de tu método ConektaWebhook o donde necesites realizar la solicitud HTTP
+                var apiUrl = "https://api.conekta.io/webhooks";
+                var acceptHeader = "application/vnd.conekta-v2.1.0+json";
+                var privateKey = "key_iRVbKuhPBqkrw8N4CSGAIXZ";
+
+                var client = new HttpClient();
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = new Uri(apiUrl),
+                    Headers =
+                    {
+                        { "Authorization", "Bearer " + privateKey },
+                        { "accept", acceptHeader },
+                        { "Accept-Language", "es" },
+                    },
+                    Content = new StringContent("{\"synchronous\":false,\"url\":\"https://api-evento.azurewebsites.netReserva/webhook\"}")
+                    {
+                        Headers =
+                        {
+                            ContentType = new MediaTypeHeaderValue("application/json")
+                        }
+                    }
+                };
+
+                // Envía la solicitud HTTP y maneja la respuesta
+                using (var response = await client.SendAsync(request))
+                {
+                    // Verifica si la solicitud fue exitosa
+                    if (response.IsSuccessStatusCode)
+                    {
+                        response.EnsureSuccessStatusCode();
+                        // Lee el cuerpo de la respuesta
+                        var body = await response.Content.ReadAsStringAsync();
+                        var respuesta = JsonConvert.SerializeObject(body);
+
+                      
+                        return Ok(respuesta);
+                    }
+                    else
+                    {
+
+
+                        return StatusCode((int)response.StatusCode);
+                    }
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error processing Conekta webhook: " + ex.Message);
+                return StatusCode(500);
+            }
+        }
+
+
 
         #endregion
     }
