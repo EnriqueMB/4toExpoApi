@@ -1,4 +1,5 @@
-﻿using _4toExpoApi.Core.Helpers;
+﻿using _4toExpoApi.Core.Enums;
+using _4toExpoApi.Core.Helpers;
 using _4toExpoApi.Core.Mappers;
 using _4toExpoApi.Core.Request;
 using _4toExpoApi.Core.Response;
@@ -23,6 +24,7 @@ namespace _4toExpoApi.Core.Services
         #region <-- Variables -->
         private readonly IUsuarioRepository _usuarioRepository;
         private ILogger<AuthService> _logger;
+        private readonly IAzureBlobStorageService _azureBlobStorageService;
         private readonly JwtSettings _jwtSettings;
         private IConfiguration _configuration;
         #endregion
@@ -30,12 +32,13 @@ namespace _4toExpoApi.Core.Services
         #region <-- Constructor -->
         public AuthService(IUsuarioRepository usuarioRepository,
             ILogger<AuthService> logger, JwtSettings jwtSettings,
-            IConfiguration configuration)
+            IConfiguration configuration, IAzureBlobStorageService azureBlobStorageService)
         {
             _usuarioRepository = usuarioRepository;
             _logger = logger;
             _jwtSettings = jwtSettings;
             _configuration = configuration;
+            _azureBlobStorageService = azureBlobStorageService;
         }
         #endregion
 
@@ -64,8 +67,14 @@ namespace _4toExpoApi.Core.Services
 
                 var usuario = AppMapper.Map<UsuarioRequest, Usuarios>(request);
 
+                if(request.ImagenFile != null)
+                {
+                    request.urlImg = await this._azureBlobStorageService.UploadAsync(request.ImagenFile, ContainerEnum.multimedia);
+                }
+
                 CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
+                usuario.UrlImg = request.urlImg;
                 usuario.PasswordHash = passwordHash;
                 usuario.PasswordSalt = passwordSalt;
                 usuario.FechaAlt = DateTime.Now;

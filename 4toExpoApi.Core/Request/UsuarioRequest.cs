@@ -1,5 +1,6 @@
 ﻿using _4toExpoApi.Core.ViewModels;
 using _4toExpoApi.DataAccess.Entities;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace _4toExpoApi.Core.Request
     {
         public int Id { get; set; }
         public string NombreCompleto { get; set; }
+        public int? edad { get; set; }
         public string? producto { get; set; }
         public int? monto { get; set; } 
         public int? idUniversidad { get;set; }
@@ -29,6 +31,9 @@ namespace _4toExpoApi.Core.Request
 
         public string Password { get; set; }
         public int? idTipoUsuario { get; set; }
-       
+
+        public IFormFile? ImagenFile { get; set; }
+
+
     }
 }

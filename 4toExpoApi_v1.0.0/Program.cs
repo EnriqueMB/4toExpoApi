@@ -35,6 +35,7 @@ builder.Services.AddScoped<BolsaTrabajoService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<PatrocinadorService>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<UniversidadService>();
 
 builder.Services.AddScoped<HotelService>();
 #endregion
@@ -48,6 +49,7 @@ builder.Services.AddScoped<IBaseRepository<Servicios>, BaseRepository<Servicios>
 builder.Services.AddScoped<IBaseRepository<Productos>, BaseRepository<Productos>>();
 builder.Services.AddScoped<IBaseRepository<Contador>, BaseRepository<Contador>>();
 builder.Services.AddScoped<IBaseRepository<BannerConfig>, BaseRepository<BannerConfig>>();
+builder.Services.AddScoped<IBaseRepository<Universidad>, BaseRepository<Universidad>>();
 builder.Services.AddScoped<IBaseRepository<IncluyePaquete>, BaseRepository<IncluyePaquete>>();
 builder.Services.AddScoped<IReservaRepository, ReservaRepository>();
 builder.Services.AddScoped<IBaseRepository<PaqueteGeneral>, BaseRepository<PaqueteGeneral>>();

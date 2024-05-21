@@ -13,6 +13,7 @@ namespace _4toExpoApi.DataAccess.Entities
         public int Id { get; set; }
         [MaxLength(250)]
         public string NombreCompleto { get; set; }
+        public int? Edad { get; set; }
         public int? IdUniversidad { get; set; }
         public string? Semestre { get; set; }
         public string? ColoniaMunicipio { get; set; }

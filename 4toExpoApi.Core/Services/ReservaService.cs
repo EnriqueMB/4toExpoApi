@@ -96,10 +96,12 @@ namespace _4toExpoApi.Core.Services
 
                 var pagos = new Pagos
                 {
+                    IdReserva = request.idReserva,
                     IdTransaccion = request.IdTransaction,
                     TitularTarjeta = request.Nombre,
                     EmailTarjeta = request.Correo,
                     Monto = request.Monto,
+                    LogResponse = request.apiResponse,
                     StatusPago = request.StatusReserva,
                     Pasarela = "Paypal",
                     FechaAlt = DateTime.Now,

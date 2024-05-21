@@ -28,7 +28,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
         #region <--- Metodos --->
         //Agregar usuario
         [HttpPost("AgregarUsuario")]
-        public async Task<IActionResult> AgregarUsuario(UsuarioRequest request)
+        public async Task<IActionResult> AgregarUsuario([FromForm]UsuarioRequest request)
         {
             try
             {
