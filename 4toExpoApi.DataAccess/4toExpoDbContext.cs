@@ -38,5 +38,7 @@ namespace _4toExpoApi.DataAccess
 
         public DbSet<Preguntas> Preguntas { get; set;}
 
+        public DbSet<CMultimedia> CMultimedia { get; set; }
+
     }
 }
