@@ -9,6 +9,7 @@ namespace _4toExpoApi.Core.Request
 {
     public class ReservaRequest
     {
+        public int? idReserva { get; set; }
         public string Producto { get; set; }
         public string? Apellidos { get; set;}
         public int? IdTipoPaquete { get; set; }
@@ -22,6 +23,7 @@ namespace _4toExpoApi.Core.Request
         public string? Telefono { get; set; }
         public string? Correo { get; set; }
         public string?  IdTransaction { get; set;}
+        public string? apiResponse { get; set; }
 
 
     }

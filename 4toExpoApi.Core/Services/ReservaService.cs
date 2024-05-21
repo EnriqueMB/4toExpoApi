@@ -42,11 +42,6 @@ namespace _4toExpoApi.Core.Services
 
                 var response = new GenericResponse();
 
-                var consecutivo = await _reservaRepository.GetAll(_logger);
-                var ultimoConsecutivo = consecutivo.OrderByDescending(x => x.Id).FirstOrDefault();
-
-            
-
                 var persona = AppMapper.Map<ReservaRequest, Reservas>(request);
 
                
@@ -54,55 +49,21 @@ namespace _4toExpoApi.Core.Services
 
                 var pagos = new Pagos
                 {
+                    IdReserva = request.idReserva,
                     Pasarela = "OxxoPay",
                     StatusPago = requestPago.payment_status,
                     IdTransaccion = requestPago.id,
                     Monto = requestPago.amount / 100,
+                    LogRequest = requestDataDb,
+                    LogResponse = responseContent,
                     FechaAlt = DateTime.Now,
                     UserAlt = usrAlta,
                     Activo = true
                 };
                 
 
-                //***************  DATOS ´PARA TABLA RESERVA ********************/
-                string nuevoConsecutivo;
 
-                if (ultimoConsecutivo.Consecutivo != null)
-                {
-                    string numeroConsecutivoString = ultimoConsecutivo.Consecutivo.Substring(6);
-                    int numeroConsecutivo = int.Parse(numeroConsecutivoString);
-                   
-                    numeroConsecutivo++;
-
-                    nuevoConsecutivo = "ECIES-" +numeroConsecutivo.ToString();
-                }
-                else
-                {
-                    nuevoConsecutivo = "ECIES-1";
-                }
-                persona.Consecutivo = nuevoConsecutivo;
-                persona.LogRequest = requestDataDb;
-                persona.LogResponse = responseContent;
-                persona.StatusReserva = requestPago.payment_status;
-                persona.FechaAlt = DateTime.Now;
-                persona.UserAlt = usrAlta;
-                persona.Activo = true;
-
-                //***************  DATOS ´PARA TABLA CLIENTES ********************/
-
-                var clientes = new Clientes
-                {
-                    Identificador = nuevoConsecutivo,
-                    Nombre = request.Nombre,
-                    Apellidos = request.Apellidos,
-                    Telefono = request.Telefono,
-                    Correo = request.Correo,
-                    FechaAlt = DateTime.Now,
-                    Activo = true
-                };
-
-
-                var result = await _reservaRepository.AgregarReserva(persona, pagos, clientes, _logger);
+                var result = await _reservaRepository.AgregarReserva(pagos, _logger);
 
                 if (result.Success)
                 {
@@ -129,41 +90,18 @@ namespace _4toExpoApi.Core.Services
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
                 var response = new GenericResponse();
 
-                var reserva = AppMapper.Map<ReservaRequest,Reservas>(request);
-
-                var consecutivo = await _reservaRepository.GetAll(_logger);
-                var ultimoConsecutivo = consecutivo.OrderByDescending(x => x.Id).FirstOrDefault();
-                
-                
-                /***************  DATOS ´PARA TABLA RESERVA ********************/
-                string nuevoConsecutivo;
-
-                if (ultimoConsecutivo.Consecutivo != null)
-                {
-                    string numeroConsecutivoString = ultimoConsecutivo.Consecutivo.Substring(6);
-                    int numeroConsecutivo = int.Parse(numeroConsecutivoString);
-
-                    numeroConsecutivo++;
-
-                    nuevoConsecutivo = "ECIES-" + numeroConsecutivo.ToString();
-                }
-                else
-                {
-                    nuevoConsecutivo = "ECIES-1";
-                }
-                reserva.Consecutivo = nuevoConsecutivo;
-                reserva.FechaAlt = DateTime.Now;
-                reserva.UserAlt = usrAlta;
-                reserva.Activo = true;
+                var reserva = AppMapper.Map<ReservaRequest, Reservas>(request);
 
                 /***************  DATOS PARA LA TABLA PAGOS ********************/
 
                 var pagos = new Pagos
                 {
+                    IdReserva = request.idReserva,
                     IdTransaccion = request.IdTransaction,
                     TitularTarjeta = request.Nombre,
                     EmailTarjeta = request.Correo,
                     Monto = request.Monto,
+                    LogResponse = request.apiResponse,
                     StatusPago = request.StatusReserva,
                     Pasarela = "Paypal",
                     FechaAlt = DateTime.Now,
@@ -171,20 +109,8 @@ namespace _4toExpoApi.Core.Services
                     Activo = true
                 };
 
-                /***************  DATOS PARA LA TABLA CLIENTES******/
-               
-                var clientes = new Clientes
-                {
-                    Identificador = nuevoConsecutivo,
-                    Nombre = request.Nombre,
-                    Apellidos = request.Apellidos,
-                    Telefono = request.Telefono,
-                    Correo = request.Correo,
-                    FechaAlt = DateTime.Now,
-                    Activo = true
-                };
 
-                var result = await _reservaRepository.AgregarReserva(reserva,pagos, clientes,_logger);
+                var result = await _reservaRepository.AgregarReserva(pagos, _logger);
 
                 if (result.Success)
                 {
