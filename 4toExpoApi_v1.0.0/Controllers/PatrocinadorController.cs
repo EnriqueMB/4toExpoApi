@@ -1,42 +1,38 @@
 ﻿using _4toExpoApi.Core.Request;
 using _4toExpoApi.Core.Services;
+using _4toExpoApi.Core.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections;
 using System.Reflection;
 
 namespace _4toExpoApi_v1._0._0.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class PatrocinadorController : Controller
     {
-        #region <--- Variables --->
-        private readonly AuthService _authService;
-        private ILogger<AuthController> _logger;
+
+        #region <---Variables--->
+        private readonly PatrocinadorService _patrocinadorService;
+        private readonly ILogger<PatrocinadorController> _logger;
         #endregion
-        
-        #region <--- Constructor --->
-        public AuthController(
-            ILogger<AuthController> logger,
-            AuthService authService)
+        #region <---Constructor--->
+        public PatrocinadorController(PatrocinadorService patrocinadorService, ILogger<PatrocinadorController> logger)
         {
+            _patrocinadorService = patrocinadorService;
             _logger = logger;
-            _authService = authService;
         }
         #endregion
 
-
-        #region <--- Metodos --->
-        //Agregar usuario
-        [HttpPost("AgregarUsuario")]
-        public async Task<IActionResult> AgregarUsuario([FromForm]UsuarioRequest request)
+        [HttpPost("AgregarPatrocinador")]
+        public async Task<IActionResult> AgregarPatrocinador([FromForm] PatrocinadorRequest request)
         {
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
-
-
-                var response = await _authService.AgregarUsuario(request, 1);
+            
+                var response = await _patrocinadorService.AgregarPatrocinador(request, 1);
 
                 if (response.Success)
                 {
@@ -56,27 +52,26 @@ namespace _4toExpoApi_v1._0._0.Controllers
             }
         }
 
-
-        //Obtener usuarios
-        [HttpGet("ObtenerUsuarios")]
-        public async Task<IActionResult> ObtenerUsuarios()
+        [HttpGet("ObtenerPatrocinador")]
+        public async Task<IEnumerable> ObtenerPatrocinador()
         {
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
-                var response = await _authService.ObtenerUsuarios();
+
+                var response = await _patrocinadorService.ObtenerPatrocinador();
 
                 if (response != null)
                 {
                     _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
 
-                    return Ok(response);
+                    return response;
                 }
 
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
 
-                return NotFound();
+                return null;
             }
             catch (Exception ex)
             {
@@ -84,72 +79,15 @@ namespace _4toExpoApi_v1._0._0.Controllers
                 throw;
             }
         }
-
-        //Obtener usuario por id
-        [HttpGet("ObtenerUsuarioPorId")]
-        public async Task<IActionResult> ObtenerUsuarioPorId(int id)
+        [HttpPut("EditarPatrocinador")]
+        public async Task<IActionResult> EditarPatrocinador([FromForm] PatrocinadorRequest request)
         {
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
-                var response = await _authService.ObtenerUsuarioPorId(id);
 
-                if (response != null)
-                {
-                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
-                    return Ok(response);
-                }
-
-                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
-                throw;
-            }
-        }
-
-        //Obtener usuario por nombre de usuario
-        [HttpGet("ExistsNombreUsuario")]
-        public async Task<IActionResult> ExistsNombreUsuario(string nombreUsuario, int idUsuario)
-        {
-            try
-            {
-                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
-
-                var response = await _authService.ExistsNombreUsuario(nombreUsuario, idUsuario);
-
-                if (response != null)
-                {
-                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
-                    return Ok(response);
-                }
-
-                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
-                throw;
-            }
-        }
-
-        //Eliminar usuario
-        [HttpDelete("EliminarUsuario")]
-        public async Task<IActionResult> EliminarUsuario(int id)
-        {
-            try
-            {
-                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
-
-                var response = await _authService.EliminarUsuario(id, 1);
+                var response = await _patrocinadorService.EditarPatrocinador(request, 1);
 
                 if (response.Success)
                 {
@@ -168,16 +106,15 @@ namespace _4toExpoApi_v1._0._0.Controllers
                 throw;
             }
         }
-
-        //Login
-        [HttpPost("Login")]
-        public async Task<IActionResult> Login(AuthRequest request)
+        [HttpDelete("EliminarPatrocinador")]
+        public async Task<IActionResult> EliminarPatrocinador(int id)
         {
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
-                var response = await _authService.Login(request);
+
+                var response = await _patrocinadorService.EliminarPatrocinador(id);
 
                 if (response.Success)
                 {
@@ -196,7 +133,6 @@ namespace _4toExpoApi_v1._0._0.Controllers
                 throw;
             }
         }
-
-        #endregion
+       
     }
 }

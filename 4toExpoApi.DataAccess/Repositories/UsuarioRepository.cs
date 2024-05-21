@@ -21,13 +21,13 @@ namespace _4toExpoApi.DataAccess.Repositories
         {
             _dbContext = context;
         }
-        public async Task<Usuarios> ExistsByNombreUsuario(string nombreUsuario, ILogger logger)
+        public async Task<Usuarios> ExistsByNombreUsuario(string correo, ILogger logger)
         {
             try
             {
                 logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
-                var user = EntitySet.AsNoTracking().Where(x => x.NombreUsuario == nombreUsuario && x.Activo == true).FirstOrDefault();
+                var user = EntitySet.AsNoTracking().Where(x => x.Correo == correo && x.Activo == true).FirstOrDefault();
 
                 if (user != null)
                 {
@@ -45,7 +45,7 @@ namespace _4toExpoApi.DataAccess.Repositories
             }
         }
 
-        public async Task<GenericResponse<Usuarios>> AgregarUsuario(Usuarios usuario, List<UsuarioPermisos> permisos, ILogger logger)
+        public async Task<GenericResponse<Usuarios>> AgregarUsuario(Usuarios usuario, Reservas reservas, ILogger logger)
         {
             using var transaction = _context.Database.BeginTransaction();
             try
@@ -60,29 +60,29 @@ namespace _4toExpoApi.DataAccess.Repositories
 
                 if (addResult > 0)
                 {
-                    foreach (var item in permisos)
-                    {
-                        item.IdUsuario = add.Entity.Id;
-                    }
 
-                    _context.AddRange(permisos);
+                    var idUsuario = add.Entity.Id;
 
-                    var addPermisosResult = await _context.SaveChangesAsync();
+                    reservas.IdUsuario = idUsuario;
 
-                    if (addPermisosResult == permisos.Count)
+                    var addReserva = _context.Add(reservas);
+                    var addReservaResult = await _context.SaveChangesAsync();
+
+                    if(addReservaResult > 0)
                     {
                         await transaction.CommitAsync();
                         response.Success = true;
-                        response.CreatedId = add.Entity.Id.ToString();
+                        response.CreatedId = addReserva.Entity.Id.ToString();
                         response.Data = add.Entity;
-                        response.Message = "Se agrego el usuario correctamente";
+                        response.Message = "Se agrego la reserva correctamente";
                     }
                     else
                     {
                         await transaction.RollbackAsync();
                         response.Success = false;
-                        response.Message = "No se pudo agregar los permisos del usuario";
+                        response.Message = "No se pudo agregar la reserva";
                     }
+                  
                 }
                 else
                 {
@@ -117,7 +117,7 @@ namespace _4toExpoApi.DataAccess.Repositories
                 if (usr != null)
                 {
                     usr.NombreCompleto = usuario.NombreCompleto;
-                    usr.NombreUsuario = usuario.NombreUsuario;
+                    usr.Correo = usuario.Correo;
                     usr.PasswordHash = usuario.PasswordHash;
                     usr.PasswordSalt = usuario.PasswordSalt;
                     usr.Correo = usuario.Correo;
@@ -196,75 +196,8 @@ namespace _4toExpoApi.DataAccess.Repositories
             }
         }
 
-        public async Task<GenericResponse<Usuarios>> ActualizarUltimoAcceso(int id, ILogger logger)
-        {
-            try
-            {
-                logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
-
-                var response = new GenericResponse<Usuarios>();
-
-                var usr = await base.GetById(id, logger);
-
-                if (usr != null)
-                {
-                    usr.UltimoAcceso = DateTime.UtcNow.AddHours(-6);
-
-                    var update = _context.Update(usr);
-
-                    var updateResult = await _context.SaveChangesAsync();
-
-                    if (updateResult == 1)
-                    {
-                        response.Success = true;
-                        response.UpdatedId = usr.Id.ToString();
-                        response.Data = usr;
-                        response.Message = "Se modifico el ultimo acceso del usuario correctamente";
-                    }
-                    else
-                    {
-                        response.Success = false;
-                        response.Message = "No se pudo modificar el ultimo acceso del usuario";
-                    }
-                }
-                else
-                {
-                    response.Success = false;
-                    response.Message = "No se encontro el usuario";
-                }
-
-                return response;
-            }
-            catch (SqlException ex)
-            {
-                logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
-                throw;
-            }
-        }
-
-        public async Task<GenericResponse<List<long>>> ObtenerPermisosUsuario(int id, ILogger logger)
-        {
-            try
-            {
-                logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
-
-                var response = new GenericResponse<List<long>>();
-
-                var permisos = await _context.UsuarioPermisos.Where(x => x.IdUsuario == id).Select(x => x.IdPermiso).ToListAsync();
-
-                response.Success = true;
-                response.Data = permisos;
-
-                logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
-                return response;
-            }
-            catch (SqlException ex)
-            {
-                logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
-                throw;
-            }
-        }
+      
+      
 
         public async Task<GenericResponse<List<int>>> ObtenerRolesUsuario(int id, ILogger logger)
         {
@@ -357,7 +290,7 @@ namespace _4toExpoApi.DataAccess.Repositories
 
                 var response = new GenericResponse<Usuarios>();
 
-                var usuario = await EntitySet.AsNoTracking().Where(x => x.NombreUsuario == nombreUsuario && x.Id != idUsuario && x.Activo == true).FirstOrDefaultAsync();
+                var usuario = await EntitySet.AsNoTracking().Where(x => x.Correo == nombreUsuario && x.Id != idUsuario && x.Activo == true).FirstOrDefaultAsync();
 
                 if (usuario != null)
                 {
@@ -452,29 +385,5 @@ namespace _4toExpoApi.DataAccess.Repositories
             }
         }
 
-        //Obtener permisos por tipo permiso
-        public async Task<GenericResponse<List<Permisos>>> ObtenerPermisosPorTipoPermiso(int tipoPermiso, ILogger logger)
-        {
-            try
-            {
-                logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
-
-                var response = new GenericResponse<List<Permisos>>();
-
-                var permisos = await _context.Permisos.Where(x => x.TipoPermiso == tipoPermiso).ToListAsync();
-
-                response.Success = true;
-                response.Data = permisos;
-
-                logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
-                return response;
-            }
-            catch (SqlException ex)
-            {
-                logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
-                throw;
-            }
-        }
     }
 }
