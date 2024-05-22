@@ -172,23 +172,20 @@ namespace _4toExpoApi.Core.Services
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
                 var response = new GenericResponse<HotelRequest>();
+                var hotel = await _hotelRepository.GetById(request.Id, _logger);
+                    hotel.Id = request.Id;    
+                    hotel.Nombre = request.Nombre;
+                    hotel.Tipo = request.Tipo;
+                    hotel.Ubicacion = request.Ubicacion;
+                    hotel.Telefono = request.Telefono;
+                    hotel.LinkWhatsapp = request.LinkWhatsapp;
+                    hotel.CodigoReserva = request.CodigoReserva;
+                    hotel.Imagen = request.Imagen;
+                hotel.Tarifa = request.Tarifa;
 
-
-                var NuevoHotel = new Hotel()
-                {
-                    Nombre = request.Nombre,
-                    Tipo = request.Tipo,
-                    Ubicacion = request.Ubicacion,
-                    Telefono = request.Telefono,
-                    LinkWhatsapp = request.LinkWhatsapp,
-                    CodigoReserva = request.CodigoReserva,
-                    Imagen = request.Imagen,
-                    Tarifa = request.Tarifa,
-                };
-
-                NuevoHotel.FechaAlt = DateTime.Now;
-                NuevoHotel.UserAlt = userAlt;
-                NuevoHotel.Activo = true;
+                hotel.FechaUpd = DateTime.Now;
+                hotel.UserUpd = userAlt;
+                
 
                 List<Habitacion> listaHabitacion = request.listaHabitacion
                 .Select(habitacion => AppMapper.Map<RequestHabitacion, Habitacion>(habitacion))
@@ -198,7 +195,7 @@ namespace _4toExpoApi.Core.Services
                 .Select(distancia => AppMapper.Map<RequestDistancia, Distancia>(distancia))
                 .ToList();
 
-                var add = await _hotelRepository.AgregarHotel(NuevoHotel, listaHabitacion, listaDistancia, userAlt, _logger);
+                var add = await _hotelRepository.ActualizarHotel(hotel, listaHabitacion, listaDistancia, userAlt, _logger);
                 if (add.Success)
                 {
                     response.Data = request;
