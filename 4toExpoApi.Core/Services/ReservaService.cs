@@ -5,6 +5,7 @@ using _4toExpoApi.Core.Request;
 using _4toExpoApi.Core.Response;
 using _4toExpoApi.DataAccess.Entities;
 using _4toExpoApi.DataAccess.IRepositories;
+using Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -13,6 +14,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace _4toExpoApi.Core.Services
 {
@@ -22,6 +24,7 @@ namespace _4toExpoApi.Core.Services
         private readonly IReservaRepository _reservaRepository;
         private readonly IAzureBlobStorageService _azureBlobStorageService;
         private ILogger<ReservaService> _logger;
+        private IConfiguration _configuration;
         #endregion
 
         #region <-- Constructor -->
@@ -33,6 +36,7 @@ namespace _4toExpoApi.Core.Services
             _reservaRepository = reservaRepository;
             _logger = logger;
             _azureBlobStorageService = azureBlobStorageService;
+            _configuration = configuration;
         }
         #endregion
 
@@ -116,11 +120,26 @@ namespace _4toExpoApi.Core.Services
 
                 var result = await _reservaRepository.AgregarReserva(pagos, _logger);
 
+                var enviarCorreo = await EnviarBaucherCorreo(pagos);
+
                 if (result.Success)
                 {
-                    response.Message = "Reserva agregado correctamente";
+                    if(enviarCorreo.Success)
+                    {
+                        response.Message = "Pago guardado correctamente y se envio el baucher de pago al correo";
+                    }
+                    else
+                    {
+                        response.Message = "Pago guardado correctamente";
+                    }
                     response.Success = true;
                     response.CreatedId = result.CreatedId;
+
+                }
+                else
+                {
+                    response.Message = "Error al guardar el pago";
+                    response.Success = false;
                 }
 
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
@@ -135,7 +154,42 @@ namespace _4toExpoApi.Core.Services
             }
         }
 
-        public async Task<GenericResponse> pagarTranferencia(ReservaRequest request)
+        public async Task<GenericResponse> EnviarBaucherCorreo(Pagos pagos)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "started Success");
+
+                var response = new GenericResponse();
+
+                if (pagos != null)
+                {
+                    // Obtener credenciales de correo
+                    var host = _configuration["EmailSettings:Host"];
+                    var port = _configuration["EmailSettings:Port"];
+                    var usuario = _configuration["EmailSettings:UserName"];
+                    var contraseña = _configuration["EmailSettings:Password"];
+                    string nombrePlantilla = "plantilla_correo.html";
+
+                    // Enviar correo
+                    MailHelper.EnviarEmailPago(host, port, usuario, contraseña, pagos, nombrePlantilla);
+
+                    response.Message = "Baucher de pago enviado";
+                    response.Success = true;
+                }
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<GenericResponse> pagarTranferencia(TranferRequest request)
         {
             try
             {
@@ -169,7 +223,7 @@ namespace _4toExpoApi.Core.Services
 
                 if (result.Success)
                 {
-                    response.Message = "Reserva agregado correctamente";
+                    response.Message = "Pago guardado correctamente";
                     response.Success = true;
                     response.CreatedId = result.CreatedId;
                 }

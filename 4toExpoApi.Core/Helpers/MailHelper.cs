@@ -1,4 +1,5 @@
 ﻿using _4toExpoApi.Core.Request;
+using _4toExpoApi.DataAccess.Entities;
 using MailKit.Security;
 using MimeKit;
 using System;
@@ -56,5 +57,52 @@ namespace _4toExpoApi.Core.Helpers
             smtp.Send(email);
             smtp.Disconnect(true);
         }
+
+        public static void EnviarEmailPago(string host, string port, string user, string password, Pagos pago, string nombrePlantilla)
+        {
+            //Obtener plantilla de html de la carpeta de recursos
+            string htmlFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Recursos", nombrePlantilla);
+
+            string htmlContent = string.Empty;
+
+            using (StreamReader reader = new StreamReader(htmlFilePath))
+            {
+                htmlContent = reader.ReadToEnd();
+            }
+
+            var fecha = DateTime.Now;
+            var fechaFormateada = (fecha.ToString("dddd") + " " + fecha.Day + " " + fecha.ToString("MMMM") + " del " + fecha.Year);
+
+            //Reemplazar los valores de la plantilla
+            htmlContent = htmlContent.Replace("{{ $motivo }}", "Baucher de pago");
+
+            htmlContent = htmlContent.Replace("{{ $NombreCliente }}", pago.TitularTarjeta);
+            htmlContent = htmlContent.Replace("{{ $ReferenciaPago }}", pago.IdTransaccion);
+            htmlContent = htmlContent.Replace("{{ $Monto }}", pago.Monto.ToString());
+
+            var builder = new BodyBuilder();
+
+            builder.HtmlBody = htmlContent;
+
+            //Enviar correo
+            var email = new MimeMessage();
+
+            email.From.Add(MailboxAddress.Parse(user));
+            email.To.Add(MailboxAddress.Parse(pago.EmailTarjeta));
+            email.Subject = "Baucher de pago";
+
+            email.Body = builder.ToMessageBody();
+
+            using var smtp = new MailKit.Net.Smtp.SmtpClient();
+
+            smtp.Connect(host, int.Parse(port), SecureSocketOptions.StartTls);
+
+            smtp.Authenticate(user, password);
+
+            smtp.Send(email);
+            smtp.Disconnect(true);
+        }
+
+
     }
 }
