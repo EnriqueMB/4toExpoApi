@@ -40,5 +40,7 @@ namespace _4toExpoApi.DataAccess
 
         public DbSet<CMultimedia> CMultimedia { get; set; }
 
+        public DbSet<Banner> Banner { get; set; }
+        public DbSet<RedSocial> RedSocial { get; set; }
     }
 }
