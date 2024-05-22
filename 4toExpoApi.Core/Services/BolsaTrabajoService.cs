@@ -176,9 +176,9 @@ namespace _4toExpoApi.Core.Services
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
                 return response;
 
-        //    }
-        //    catch (Exception ex)
-        //    {
+            }
+            catch (Exception ex)
+            {
 
                 _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Error: " + ex.Message);
 
