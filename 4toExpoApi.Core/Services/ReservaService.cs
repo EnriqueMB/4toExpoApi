@@ -1,4 +1,5 @@
-﻿using _4toExpoApi.Core.Helpers;
+﻿using _4toExpoApi.Core.Enums;
+using _4toExpoApi.Core.Helpers;
 using _4toExpoApi.Core.Mappers;
 using _4toExpoApi.Core.Request;
 using _4toExpoApi.Core.Response;
@@ -19,16 +20,19 @@ namespace _4toExpoApi.Core.Services
     {
         #region<--Variables-->
         private readonly IReservaRepository _reservaRepository;
+        private readonly IAzureBlobStorageService _azureBlobStorageService;
         private ILogger<ReservaService> _logger;
         #endregion
 
         #region <-- Constructor -->
         public ReservaService(IReservaRepository reservaRepository,
             ILogger<ReservaService> logger,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IAzureBlobStorageService azureBlobStorageService)
         {
             _reservaRepository = reservaRepository;
             _logger = logger;
+            _azureBlobStorageService = azureBlobStorageService;
         }
         #endregion
 
@@ -106,6 +110,57 @@ namespace _4toExpoApi.Core.Services
                     Pasarela = "Paypal",
                     FechaAlt = DateTime.Now,
                     UserAlt = usrAlta,
+                    Activo = true
+                };
+
+
+                var result = await _reservaRepository.AgregarReserva(pagos, _logger);
+
+                if (result.Success)
+                {
+                    response.Message = "Reserva agregado correctamente";
+                    response.Success = true;
+                    response.CreatedId = result.CreatedId;
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<GenericResponse> pagarTranferencia(ReservaRequest request)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+                var response = new GenericResponse();
+
+                if (request.ImgFile != null)
+                {
+                    request.baucherPago = await this._azureBlobStorageService.UploadAsync(request.ImgFile, ContainerEnum.multimedia);
+                }
+
+                /***************  DATOS PARA LA TABLA PAGOS ********************/
+
+                var pagos = new Pagos
+                {
+                    IdReserva = request.idReserva,
+                    Monto = request.Monto,
+                    StatusPago = "COMPLETADO",
+                    Pasarela = "Transfrencia",
+                    Banco = request.banco,
+                    Cuenta = request.cuenta,
+                    ClaveBancaria = request.claveBancaria,
+                    BaucherPago = request.baucherPago,
+                    FechaAlt = DateTime.Now,
+                    UserAlt = 1,
                     Activo = true
                 };
 

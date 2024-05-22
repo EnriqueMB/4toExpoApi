@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Primitives;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,12 @@ namespace _4toExpoApi.Core.Request
         public string? Correo { get; set; }
         public string?  IdTransaction { get; set;}
         public string? apiResponse { get; set; }
+        public string? claveBancaria { get; set; }
+        public string? banco { get; set; }
+        public string? cuenta { get; set; }
+        public string? baucherPago { get; set; }
+        public IFormFile? ImgFile { get; set; }
+
 
 
     }
