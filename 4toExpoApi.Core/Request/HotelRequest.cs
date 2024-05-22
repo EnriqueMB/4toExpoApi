@@ -5,6 +5,7 @@ namespace _4toExpoApi.Core.Request
 {
     public class HotelRequest
     {
+        public int Id { get; set; }
         public string Nombre { set; get; }
         public string Tipo { set; get; }
         public string Ubicacion { set; get; }

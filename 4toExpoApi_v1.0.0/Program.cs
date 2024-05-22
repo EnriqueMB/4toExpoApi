@@ -26,11 +26,17 @@ builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSet
 //builder.Services.AddScoped<PermisosService>();
 builder.Services.AddScoped<ReservaService>();
 builder.Services.AddScoped<ServicioService>();
+builder.Services.AddScoped<TalleresService>();
+
 builder.Services.AddScoped<ProductoServise>();
 builder.Services.AddScoped<PaquetePatrocinadorService>();
 builder.Services.AddScoped<ContadorService>();
 builder.Services.AddScoped<BannerConfigService>();
 builder.Services.AddScoped<PaqueteGeneralService>();
+builder.Services.AddScoped<IAzureBlobStorageService, AzureBlobStorageService>();    
+builder.Services.AddScoped<InformacionService>();
+
+builder.Services.AddScoped<MultimediaServise>();
 builder.Services.AddScoped<BolsaTrabajoService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<PatrocinadorService>();
@@ -48,15 +54,20 @@ builder.Services.AddScoped<IBaseRepository<Usuarios>, BaseRepository<Usuarios>>(
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IBaseRepository<Reservas>, BaseRepository<Reservas>>();
 builder.Services.AddScoped<IBaseRepository<Servicios>, BaseRepository<Servicios>>();
+builder.Services.AddScoped<IBaseRepository<Talleres>, BaseRepository<Talleres>>();
+
 builder.Services.AddScoped<IBaseRepository<Productos>, BaseRepository<Productos>>();
 builder.Services.AddScoped<IBaseRepository<Contador>, BaseRepository<Contador>>();
 builder.Services.AddScoped<IBaseRepository<BannerConfig>, BaseRepository<BannerConfig>>();
 builder.Services.AddScoped<IBaseRepository<Universidad>, BaseRepository<Universidad>>();
 builder.Services.AddScoped<IBaseRepository<IncluyePaquete>, BaseRepository<IncluyePaquete>>();
+
+builder.Services.AddScoped<IBaseRepository<Informacion>,BaseRepository<Informacion>>();
+
 builder.Services.AddScoped<IReservaRepository, ReservaRepository>();
 builder.Services.AddScoped<IBaseRepository<PaqueteGeneral>, BaseRepository<PaqueteGeneral>>();
 builder.Services.AddScoped<IPaqueteGeneralRepository, PaqueteGeneralRepository>();
-
+builder.Services.AddScoped<IBaseRepository<CMultimedia>, BaseRepository<CMultimedia>>();
 builder.Services.AddScoped<IHotelRepository, HotelRepository>();
 builder.Services.AddScoped<IBaseRepository<TipoPaquete>, BaseRepository<TipoPaquete>>();
 builder.Services.AddScoped<IBaseRepository<BeneficioPaquete>, BaseRepository<BeneficioPaquete>>();

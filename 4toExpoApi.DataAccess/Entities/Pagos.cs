@@ -18,8 +18,11 @@ namespace _4toExpoApi.DataAccess.Entities
         public string? EmailTarjeta { get; set; }
         public int? Monto { get; set; }
         public string? StatusPago { get; set; }
-        public string? RefBancaria { get; set; }
+        public string? ClaveBancaria { get; set; }
         public string? Pasarela { get; set; }
+        public string? Banco { get; set; }
+        public string? BaucherPago { get; set; }
+        public string? Cuenta { get; set; }
         public string? LogRequest { get; set; }
         public string? LogResponse { get; set; }
         public int? UserAlt { get; set; }
