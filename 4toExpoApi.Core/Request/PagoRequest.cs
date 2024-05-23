@@ -8,8 +8,6 @@ namespace _4toExpoApi.Core.Request
 {
     public class PagoRequest
     {
-
-        public int? IdReserva { get; set; }
         public string? id { get; set; }
         public string? TitularTarjeta { get; set; }
         public string? EmailTajeta { get; set; }

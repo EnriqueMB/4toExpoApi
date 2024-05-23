@@ -48,8 +48,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
                 
-                if (request.TipoPago == "OxxoPay")
-                {
+               
                     var apiUrl = "https://api.conekta.io/orders";
                     var privateKey = "key_iRVbKuhPBqkrw8N4CSGAIXZ";
 
@@ -132,37 +131,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
                         }
                     }
 
-                }
-                else if(request.TipoPago=="Paypal")
-                {
-                    var response = await _payService.reservaProductoPaypal(request,1);
-
-                    if (response.Success)
-                    {
-                        _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
-                        return Ok(response);
-                    }
-
-                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
-                    return BadRequest(response);
-                }
-                else
-                {
-                    var response = await _payService.reservaProductoPaypal(request,1);
-
-                    if (response.Success)
-                    {
-                        _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
-                        return Ok(response);
-                    }
-
-                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
-                    return BadRequest(response);
-                }
+                
 
             }
             catch (Exception ex)
@@ -171,6 +140,58 @@ namespace _4toExpoApi_v1._0._0.Controllers
                 throw;
             }
 
+        }
+
+        [HttpPost("Paypal")]
+        public async Task<IActionResult> guardarPagoPaypal(ReservaRequest request)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+                
+                var response = await _payService.reservaProductoPaypal(request,1);
+
+                if (response.Success)
+                {
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                    return Ok(response);
+                }
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+
+        [HttpPost("PagarTransferencia")]
+        public async Task<IActionResult> guardarPagoTransfer([FromForm] TranferRequest request)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+               
+                var response = await _payService.pagarTranferencia(request);
+
+                if (response.Success)
+                {
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                    return Ok(response);
+                }
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
         }
 
         [HttpPost("webhook")]

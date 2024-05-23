@@ -27,6 +27,7 @@ namespace _4toExpoApi.Core.Mappers
                 cfg.CreateMap<PagoRequest, Pagos>().ReverseMap();
                 cfg.CreateMap<ServicioRequest, Servicios>().ReverseMap();
                 cfg.CreateMap<Servicios, ServicioRequest>().ReverseMap();
+                cfg.CreateMap<TalleresRequest, Talleres>().ReverseMap();
                 cfg.CreateMap<ProductosRequest, Productos>().ReverseMap();
                 cfg.CreateMap<Productos, ProductosRequest>().ReverseMap();
                 cfg.CreateMap<BeneficioPaqueteRequest, BeneficioPaquete>().ReverseMap();
@@ -42,6 +43,8 @@ namespace _4toExpoApi.Core.Mappers
                 cfg.CreateMap<IncluyePaqueteRequest, IncluyePaquete>().ReverseMap();
                 cfg.CreateMap<IncluyePaquete, IncluyePaqueteRequest>().ReverseMap();
                 cfg.CreateMap<Patrocinadores, PatrocinadorRequest>().ReverseMap();
+                cfg.CreateMap<Usuarios, PatrocinadorRequest>().ReverseMap();
+                cfg.CreateMap<Preguntas, PreguntasRequest>().ReverseMap();
             });
 
             _mapper = new Mapper(config);

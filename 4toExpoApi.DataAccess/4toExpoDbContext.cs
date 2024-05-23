@@ -17,6 +17,9 @@ namespace _4toExpoApi.DataAccess
         public DbSet<Pagos> Pagos { get; set; }
         public DbSet<Clientes> Clientes { get; set; }
         public DbSet<Servicios> Servicios { get; set; }
+        public DbSet<Informacion> Informacion { get; set; }
+
+        public DbSet<Talleres> Talleres { get; set; }   
       
         public DbSet<BannerConfig> BannerConfig { get; set;}
         public DbSet<Productos> Productos { get; set; }
@@ -34,6 +37,11 @@ namespace _4toExpoApi.DataAccess
 
         public DbSet<Distancia> Distancia { get; set; }
         public DbSet<Patrocinadores> Patrocinadores { get; set;}
+        public DbSet<Universidad> Universidad { get; set;}
+
+        public DbSet<Preguntas> Preguntas { get; set;}
+
+        public DbSet<CMultimedia> CMultimedia { get; set; }
 
     }
 }

@@ -1,9 +1,11 @@
-﻿using _4toExpoApi.Core.Helpers;
+﻿using _4toExpoApi.Core.Enums;
+using _4toExpoApi.Core.Helpers;
 using _4toExpoApi.Core.Mappers;
 using _4toExpoApi.Core.Request;
 using _4toExpoApi.Core.Response;
 using _4toExpoApi.DataAccess.Entities;
 using _4toExpoApi.DataAccess.IRepositories;
+using Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,6 +14,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace _4toExpoApi.Core.Services
 {
@@ -19,16 +22,21 @@ namespace _4toExpoApi.Core.Services
     {
         #region<--Variables-->
         private readonly IReservaRepository _reservaRepository;
+        private readonly IAzureBlobStorageService _azureBlobStorageService;
         private ILogger<ReservaService> _logger;
+        private IConfiguration _configuration;
         #endregion
 
         #region <-- Constructor -->
         public ReservaService(IReservaRepository reservaRepository,
             ILogger<ReservaService> logger,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IAzureBlobStorageService azureBlobStorageService)
         {
             _reservaRepository = reservaRepository;
             _logger = logger;
+            _azureBlobStorageService = azureBlobStorageService;
+            _configuration = configuration;
         }
         #endregion
 
@@ -42,11 +50,6 @@ namespace _4toExpoApi.Core.Services
 
                 var response = new GenericResponse();
 
-                var consecutivo = await _reservaRepository.GetAll(_logger);
-                var ultimoConsecutivo = consecutivo.OrderByDescending(x => x.Id).FirstOrDefault();
-
-            
-
                 var persona = AppMapper.Map<ReservaRequest, Reservas>(request);
 
                
@@ -54,55 +57,21 @@ namespace _4toExpoApi.Core.Services
 
                 var pagos = new Pagos
                 {
+                    IdReserva = request.idReserva,
                     Pasarela = "OxxoPay",
                     StatusPago = requestPago.payment_status,
                     IdTransaccion = requestPago.id,
                     Monto = requestPago.amount / 100,
+                    LogRequest = requestDataDb,
+                    LogResponse = responseContent,
                     FechaAlt = DateTime.Now,
                     UserAlt = usrAlta,
                     Activo = true
                 };
                 
 
-                //***************  DATOS ´PARA TABLA RESERVA ********************/
-                string nuevoConsecutivo;
 
-                if (ultimoConsecutivo.Consecutivo != null)
-                {
-                    string numeroConsecutivoString = ultimoConsecutivo.Consecutivo.Substring(6);
-                    int numeroConsecutivo = int.Parse(numeroConsecutivoString);
-                   
-                    numeroConsecutivo++;
-
-                    nuevoConsecutivo = "ECIES-" +numeroConsecutivo.ToString();
-                }
-                else
-                {
-                    nuevoConsecutivo = "ECIES-1";
-                }
-                persona.Consecutivo = nuevoConsecutivo;
-                persona.LogRequest = requestDataDb;
-                persona.LogResponse = responseContent;
-                persona.StatusReserva = requestPago.payment_status;
-                persona.FechaAlt = DateTime.Now;
-                persona.UserAlt = usrAlta;
-                persona.Activo = true;
-
-                //***************  DATOS ´PARA TABLA CLIENTES ********************/
-
-                var clientes = new Clientes
-                {
-                    Identificador = nuevoConsecutivo,
-                    Nombre = request.Nombre,
-                    Apellidos = request.Apellidos,
-                    Telefono = request.Telefono,
-                    Correo = request.Correo,
-                    FechaAlt = DateTime.Now,
-                    Activo = true
-                };
-
-
-                var result = await _reservaRepository.AgregarReserva(persona, pagos, clientes, _logger);
+                var result = await _reservaRepository.AgregarReserva(pagos, _logger);
 
                 if (result.Success)
                 {
@@ -129,41 +98,18 @@ namespace _4toExpoApi.Core.Services
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
                 var response = new GenericResponse();
 
-                var reserva = AppMapper.Map<ReservaRequest,Reservas>(request);
-
-                var consecutivo = await _reservaRepository.GetAll(_logger);
-                var ultimoConsecutivo = consecutivo.OrderByDescending(x => x.Id).FirstOrDefault();
-                
-                
-                /***************  DATOS ´PARA TABLA RESERVA ********************/
-                string nuevoConsecutivo;
-
-                if (ultimoConsecutivo.Consecutivo != null)
-                {
-                    string numeroConsecutivoString = ultimoConsecutivo.Consecutivo.Substring(6);
-                    int numeroConsecutivo = int.Parse(numeroConsecutivoString);
-
-                    numeroConsecutivo++;
-
-                    nuevoConsecutivo = "ECIES-" + numeroConsecutivo.ToString();
-                }
-                else
-                {
-                    nuevoConsecutivo = "ECIES-1";
-                }
-                reserva.Consecutivo = nuevoConsecutivo;
-                reserva.FechaAlt = DateTime.Now;
-                reserva.UserAlt = usrAlta;
-                reserva.Activo = true;
+                var reserva = AppMapper.Map<ReservaRequest, Reservas>(request);
 
                 /***************  DATOS PARA LA TABLA PAGOS ********************/
 
                 var pagos = new Pagos
                 {
+                    IdReserva = request.idReserva,
                     IdTransaccion = request.IdTransaction,
                     TitularTarjeta = request.Nombre,
                     EmailTarjeta = request.Correo,
                     Monto = request.Monto,
+                    LogResponse = request.apiResponse,
                     StatusPago = request.StatusReserva,
                     Pasarela = "Paypal",
                     FechaAlt = DateTime.Now,
@@ -171,24 +117,113 @@ namespace _4toExpoApi.Core.Services
                     Activo = true
                 };
 
-                /***************  DATOS PARA LA TABLA CLIENTES******/
-               
-                var clientes = new Clientes
-                {
-                    Identificador = nuevoConsecutivo,
-                    Nombre = request.Nombre,
-                    Apellidos = request.Apellidos,
-                    Telefono = request.Telefono,
-                    Correo = request.Correo,
-                    FechaAlt = DateTime.Now,
-                    Activo = true
-                };
 
-                var result = await _reservaRepository.AgregarReserva(reserva,pagos, clientes,_logger);
+                var result = await _reservaRepository.AgregarReserva(pagos, _logger);
+
+                var enviarCorreo = await EnviarBaucherCorreo(pagos);
 
                 if (result.Success)
                 {
-                    response.Message = "Reserva agregado correctamente";
+                    if(enviarCorreo.Success)
+                    {
+                        response.Message = "Pago guardado correctamente y se envio el baucher de pago al correo";
+                    }
+                    else
+                    {
+                        response.Message = "Pago guardado correctamente";
+                    }
+                    response.Success = true;
+                    response.CreatedId = result.CreatedId;
+
+                }
+                else
+                {
+                    response.Message = "Error al guardar el pago";
+                    response.Success = false;
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<GenericResponse> EnviarBaucherCorreo(Pagos pagos)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "started Success");
+
+                var response = new GenericResponse();
+
+                if (pagos != null)
+                {
+                    // Obtener credenciales de correo
+                    var host = _configuration["EmailSettings:Host"];
+                    var port = _configuration["EmailSettings:Port"];
+                    var usuario = _configuration["EmailSettings:UserName"];
+                    var contraseña = _configuration["EmailSettings:Password"];
+                    string nombrePlantilla = "plantilla_correo.html";
+
+                    // Enviar correo
+                    MailHelper.EnviarEmailPago(host, port, usuario, contraseña, pagos, nombrePlantilla);
+
+                    response.Message = "Baucher de pago enviado";
+                    response.Success = true;
+                }
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<GenericResponse> pagarTranferencia(TranferRequest request)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+                var response = new GenericResponse();
+
+                if (request.ImgFile != null)
+                {
+                    request.baucherPago = await this._azureBlobStorageService.UploadAsync(request.ImgFile, ContainerEnum.multimedia);
+                }
+
+                /***************  DATOS PARA LA TABLA PAGOS ********************/
+
+                var pagos = new Pagos
+                {
+                    IdReserva = request.idReserva,
+                    Monto = request.Monto,
+                    StatusPago = "COMPLETADO",
+                    Pasarela = "Transfrencia",
+                    Banco = request.banco,
+                    Cuenta = request.cuenta,
+                    ClaveBancaria = request.claveBancaria,
+                    BaucherPago = request.baucherPago,
+                    FechaAlt = DateTime.Now,
+                    UserAlt = 1,
+                    Activo = true
+                };
+
+
+                var result = await _reservaRepository.AgregarReserva(pagos, _logger);
+
+                if (result.Success)
+                {
+                    response.Message = "Pago guardado correctamente";
                     response.Success = true;
                     response.CreatedId = result.CreatedId;
                 }
