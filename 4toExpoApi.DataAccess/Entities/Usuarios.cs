@@ -27,7 +27,7 @@ namespace _4toExpoApi.DataAccess.Entities
 
         [MaxLength(250)]
         public string Correo { get; set; }
-        public int? idTipoUsuario { get; set; }
+        public int IdTipoUsuario { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
         public int? UserAlt { get; set; }

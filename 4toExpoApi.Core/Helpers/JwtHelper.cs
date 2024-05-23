@@ -41,10 +41,10 @@ namespace _4toExpoApi.Core.Helpers
             {
                 claims.Add(new Claim(ClaimTypes.Role, rol.ToString()));
             }
-            foreach (var permiso in userAccounts.Permisos)
-            {
-                claims.Add(new Claim("Permisos", permiso.ToString()));
-            }
+            //foreach (var permiso in userAccounts.Permisos)
+            //{
+             //   claims.Add(new Claim("Permisos", permiso.ToString()));
+            //}
 
             return claims;
         }

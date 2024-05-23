@@ -12,7 +12,7 @@ namespace _4toExpoApi.DataAccess.Entities
         [Key]
         public int Id { get; set; }
         [MaxLength(250)]
-        public string Producto { get; set; }
+        public string? Producto { get; set; }
         public int? IdTipoPaquete { get; set; }
         public int? IdUsuario {  get; set; }
         public string? NombreCompleto { get; set; }
