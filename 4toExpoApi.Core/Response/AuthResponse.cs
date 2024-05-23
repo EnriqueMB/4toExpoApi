@@ -13,6 +13,7 @@ namespace _4toExpoApi.Core.Response
         public string Token { get; set; }
         public List<long> Permisos { get; set; }
         public List<int> Roles { get; set; }
+        public int IdTipoUsuario { get; set; }
         public string Message { get; set; }
         public bool Success { get; set; }
     }

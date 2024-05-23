@@ -144,20 +144,21 @@ namespace _4toExpoApi.Core.Services
                 }
 
            
-                var roles = await _usuarioRepository.ObtenerRolesUsuario(usuario.Id, _logger);
+                //var roles = await _usuarioRepository.ObtenerRolesUsuario(usuario.Id, _logger);
 
                 var token = JwtHelper.GenTokenkey(new UserToken
                 {
                     UserName = usuario.Correo,
                     Id = usuario.Id,
-                    Roles = roles.Data
+                    Roles = new List<int>()//roles.Data
                 }, _jwtSettings, _configuration);
 
                 response.Token = token.Token;
                 response.UserName = usuario.Correo;
                 response.UserId = usuario.Id.ToString();
-                response.Permisos = token.Permisos;
-                response.Roles = token.Roles;
+                response.Permisos = new List<long>();
+                response.IdTipoUsuario = usuario.IdTipoUsuario;
+                response.Roles = new List<int>();
 
 
                 response.Message = "Login correcto";
