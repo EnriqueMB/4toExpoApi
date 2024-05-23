@@ -25,7 +25,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
 
         #region Metodos
         [HttpPost("EnviarEmail")]
-        public async Task<IActionResult> EnviarEmail(DatosEmailRequest request)
+        public async Task<IActionResult> EnviarEmail(DatosEmailRequest.Emails request)
         {
             try
             {
