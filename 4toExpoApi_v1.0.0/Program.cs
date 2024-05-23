@@ -80,6 +80,7 @@ builder.Services.AddScoped<IAzureBlobStorageService, AzureBlobStorageService>();
 builder.Services.AddScoped<IBaseRepository<Preguntas>, BaseRepository<Preguntas>>();
 builder.Services.AddScoped<IBaseRepository<Banner>, BaseRepository<Banner>>();
 builder.Services.AddScoped<IBaseRepository<RedSocial>, BaseRepository<RedSocial>>();
+builder.Services.AddScoped<IPatrocinadoresRepository, PatrocinadoresRepository>();
 #endregion
 #region <-- Context -->
 
