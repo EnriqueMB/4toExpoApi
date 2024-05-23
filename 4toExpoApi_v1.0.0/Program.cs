@@ -77,6 +77,7 @@ builder.Services.AddScoped<IBaseRepository<BolsaTrabajo>, BaseRepository<BolsaTr
 builder.Services.AddScoped<IBaseRepository<Patrocinadores>, BaseRepository<Patrocinadores>>();
 builder.Services.AddScoped<IAzureBlobStorageService, AzureBlobStorageService>();
 builder.Services.AddScoped<IBaseRepository<Preguntas>, BaseRepository<Preguntas>>();
+builder.Services.AddScoped<IPatrocinadoresRepository, PatrocinadoresRepository>();
 #endregion
 #region <-- Context -->
 
