@@ -81,7 +81,7 @@ namespace _4toExpoApi.Core.Services
                 throw;
             }
         }
-        public async Task<List<BannerVM>> ObtenerBanner()
+        public async Task<BannerVM> ObtenerBanner()
         {
             try
             {
@@ -103,7 +103,7 @@ namespace _4toExpoApi.Core.Services
                                   NombreRedSocial = red.Nombre ?? null,
                                   UrlRedSocial = red.UrlRedSocial ?? null,
 
-                              }).ToList();
+                              }).FirstOrDefault();
 
 
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
