@@ -268,6 +268,7 @@ namespace _4toExpoApi.Core.Services
                 var usuario = await _usuariosRepository.GetById(IdUser, _logger);
 
                 var reserva = reservaId.Where(x => x.IdUsuario == IdUser).FirstOrDefault();
+
                 var paqueteUsuario = paquete.Where(x => x.Nombre == reserva.Producto).FirstOrDefault();
                 var incluyeUsuario = incluye
                                      .Where(x => x.PaqueteId == paqueteUsuario.Id)
@@ -277,7 +278,7 @@ namespace _4toExpoApi.Core.Services
                 var responseReserva = new ReservaVM()
                 {
                     NombrePaquete = paqueteUsuario.Nombre,
-                    IdTipoPaquete = reserva.IdTipoPaquete,
+                    IdTipoPaquete = reserva.IdPaquete,
                     Monto = paqueteUsuario.Precio,
                     Descripcion = paqueteUsuario.Descripcion,
                     Beneficios = incluyeUsuario,
