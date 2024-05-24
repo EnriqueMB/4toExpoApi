@@ -18,8 +18,4 @@
     <ProjectReference Include="..\4toExpoApi.DataAccess\4toExpoApi.DataAccess.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Request\EmailRequest\" />
-  </ItemGroup>
-
 </Project>

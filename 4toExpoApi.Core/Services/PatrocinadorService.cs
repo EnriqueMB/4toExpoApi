@@ -71,7 +71,7 @@ namespace _4toExpoApi.Core.Services
                 addUsuario.UrlImg = request.UrlLogo;
                 addUsuario.PasswordHash = passwordHash;
                 addUsuario.PasswordSalt = passwordSalt;
-                addUsuario.idTipoUsuario = 2;
+                addUsuario.IdTipoUsuario = 2;
                 addUsuario.FechaAlt = DateTime.Now;
                 addUsuario.UserAlt = userAlt;
                 addUsuario.Activo = true;
@@ -167,7 +167,7 @@ namespace _4toExpoApi.Core.Services
                 addUsuario.UrlImg = request.UrlLogo;
                 addUsuario.PasswordHash = passwordHash;
                 addUsuario.PasswordSalt = passwordSalt;
-                addUsuario.idTipoUsuario = 2;
+                addUsuario.IdTipoUsuario = 2;
                 addUsuario.FechaUpd = DateTime.Now;
                 addUsuario.UserUpd = UserUpd;
                 addUsuario.Activo = true;
