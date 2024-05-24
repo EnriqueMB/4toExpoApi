@@ -38,7 +38,7 @@ namespace _4toExpoApi.DataAccess.Repositories
                 {
                     response.Data =user;
                     response.Success = false;
-                    response.Message = "Email ya exite";
+                    response.Message = "Email ya existe";
                     logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
 
                 }
