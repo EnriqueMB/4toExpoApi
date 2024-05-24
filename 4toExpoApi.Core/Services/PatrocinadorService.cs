@@ -48,12 +48,12 @@ namespace _4toExpoApi.Core.Services
 
                 var response = new GenericResponse<PatrocinadorRequest>();
 
-                var userDb = await _patrocinadorRepository.ExistsByNombreUsuario(request.Email, _logger);
+                var userDb = await _patrocinadorRepository.ExistsByNombreUsuario(request.Email, _logger, 0);
 
-                if (userDb != null)
+                if (!userDb.Success)
                 {
-                    response.Message = "El correo ya exixte";
-                    response.Success = false;
+                    response.Message = userDb.Message;
+                    response.Success = userDb.Success;
                    
                     _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
                     return response;
