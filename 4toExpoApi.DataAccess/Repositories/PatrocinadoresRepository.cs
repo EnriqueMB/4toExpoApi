@@ -25,7 +25,7 @@ namespace _4toExpoApi.DataAccess.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<Usuarios> ExistsByNombreUsuario(string email, ILogger logger)
+        public async Task<GenericResponse<Usuarios>> ExistsByNombreUsuario(string email, ILogger logger, int Id)
         {
          
             try
@@ -33,16 +33,24 @@ namespace _4toExpoApi.DataAccess.Repositories
                 logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
                 var response = new GenericResponse<Usuarios>();
 
-                var user = await _context.Usuarios.Where(x => x.Correo == email && x.Activo == true).FirstOrDefaultAsync();
+                var user = await _context.Usuarios.Where(x => x.Correo == email && (Id != 0? x.Id != Id && x.Activo == true : x.Activo == true) ).FirstOrDefaultAsync();
                 if (user != null)
                 {
+                    response.Data =user;
+                    response.Success = false;
+                    response.Message = "Email ya existe";
                     logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-                    return user;
+
+                }
+                else
+                {
+                    response.Data = new Usuarios();
+                    response.Success = true;
                 }
                 
 
                 logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-                return null;
+                return response;
             }
             catch (SqlException ex)
             {

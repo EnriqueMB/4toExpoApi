@@ -54,6 +54,27 @@ namespace _4toExpoApi.Core.Helpers
             if (datos.EmailAlquiler != null)
             {
                 htmlContent = htmlContent.Replace("{{ $motivo }}", "Alquieler eventos");
+                htmlContent = htmlContent.Replace("{{ $nombre }}", datos.EmailAlquiler.Nombre);
+                htmlContent = htmlContent.Replace("{{ $email }}", datos.EmailAlquiler.Email);
+                htmlContent = htmlContent.Replace("{{ $mensaje }}", datos.EmailAlquiler.Mensaje);
+
+                if(datos.EmailAlquiler.Empresa != null)
+                    htmlContent = htmlContent.Replace("{{ $empresa }}", datos.EmailAlquiler.Empresa);
+                else
+                    htmlContent = htmlContent.Replace("{{ $empresa }}", " ");
+
+                if (datos.EmailAlquiler.Servicio != null)
+                {
+                    htmlContent = htmlContent.Replace("{{ $nombreServicio }}", datos.EmailAlquiler!.Servicio!.Nombre);
+                    htmlContent = htmlContent.Replace("{{ $descripcion }}", datos.EmailAlquiler!.Servicio!.Descripcion);
+                    htmlContent = htmlContent.Replace("{{ $diasAtencion }}", datos.EmailAlquiler!.Servicio!.DiasAtencion);
+                    htmlContent = htmlContent.Replace("{{ $horarios }}", datos.EmailAlquiler!.Servicio!.Horarios);
+                    //htmlContent = htmlContent.Replace("{{ $servicio }}",
+                    //    datos.EmailAlquiler!.Servicio!.Nombre
+                    //    + "<p>" + datos.EmailAlquiler!.Servicio!.Descripcion + "</p>"
+                    //    + "<p>" + datos.EmailAlquiler!.Servicio!.DiasAtencion + "</p>"
+                    //    + "<p>" + datos.EmailAlquiler!.Servicio!.Horarios + "</p>");
+                }
 
                 email.Subject = "Notificación de alquiler";
             }
@@ -61,6 +82,16 @@ namespace _4toExpoApi.Core.Helpers
             if (datos.EmailProductos != null)
             {
                 htmlContent = htmlContent.Replace("{{ $motivo }}", "Productos eventos");
+                htmlContent = htmlContent.Replace("{{ $nombre }}", datos.EmailProductos.Nombres);
+                htmlContent = htmlContent.Replace("{{ $apellido }}", datos.EmailProductos.Apellidos);
+                htmlContent = htmlContent.Replace("{{ $email }}", datos.EmailProductos.Email);
+                htmlContent = htmlContent.Replace("{{ $telefono }}", datos.EmailProductos.Telefono);
+                htmlContent = htmlContent.Replace("{{ $estado }}", datos.EmailProductos.Estado);
+                htmlContent = htmlContent.Replace("{{ $municipio }}", datos.EmailProductos.Municipio);
+                htmlContent = htmlContent.Replace("{{ $codigoPostal }}", datos.EmailProductos.CodigoPostal);
+                htmlContent = htmlContent.Replace("{{ $totalArticulos }}", datos.EmailProductos.TotalArticulos.ToString());
+                htmlContent = htmlContent.Replace("{{ $direccion }}", datos.EmailProductos.Direccion);
+                htmlContent = htmlContent.Replace("{{ $descripcionDireccion }}", datos.EmailProductos.DescripcionDireccion);
 
                 email.Subject = "Notificación de producto";
             }
