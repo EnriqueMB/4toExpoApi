@@ -30,9 +30,10 @@ namespace _4toExpoApi.Core.Request
             public string Nombre { get; set; }
             [DataType(DataType.EmailAddress)]
             public string Email { get; set; }
-            public int Tipo { get; set; }
-            public string Empresa { get; set; }
+            //public int Tipo { get; set; }
+            public string? Empresa { get; set; }
             public string Mensaje { get; set; }
+            public ServicioAlquiler? Servicio { get; set; }
         }
 
         public class EmailProductos
@@ -42,10 +43,10 @@ namespace _4toExpoApi.Core.Request
             [DataType(DataType.EmailAddress)]
             public string Email { get; set; }
             [DataType(DataType.PhoneNumber)]
-            public int Telefono { get; set; }
+            public string Telefono { get; set; }
             public string Estado { get; set; }
             public string Municipio { get; set; }
-            public int CodigoPostal { get; set; }
+            public string CodigoPostal { get; set; }
             public int TotalArticulos { get; set; }
             public string Direccion { get; set; }
             public string DescripcionDireccion { get; set; }
@@ -54,6 +55,15 @@ namespace _4toExpoApi.Core.Request
         public class EmailBolsaDeTrabajo
         {
 
+        }
+
+        public class ServicioAlquiler
+        {
+            public int? Id { get; set; }
+            public string? Nombre { get; set; }
+            public string? Descripcion { get; set; }
+            public string? DiasAtencion { get; set; }
+            public string? Horarios { get; set; }
         }
     }
 }
