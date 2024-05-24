@@ -48,8 +48,18 @@ namespace _4toExpoApi.Core.Services
 
                 var response = new GenericResponse<PatrocinadorRequest>();
 
+                var userDb = await _patrocinadorRepository.ExistsByNombreUsuario(request.Email, _logger, 0);
+
+                if (!userDb.Success)
+                {
+                    response.Message = userDb.Message;
+                    response.Success = userDb.Success;
+                   
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                    return response;
+                }
+
                 var addPatrocinador = AppMapper.Map<PatrocinadorRequest, Patrocinadores>(request);
-                
 
                 if (request.UrlImg != null)
                 {

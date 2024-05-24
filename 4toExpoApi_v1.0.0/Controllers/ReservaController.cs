@@ -322,8 +322,31 @@ namespace _4toExpoApi_v1._0._0.Controllers
                 return StatusCode(500);
             }
         }
+        [HttpGet("ObtenerDatosPaqueteUsuario")]
+        public async Task<IActionResult> ObtenerDatosPaqueteUsuario(int idUser)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
+                var response = await _payService.ObtenerReservaPorId(idUser);
 
+                if (response != null)
+                {
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                    return Ok(response);
+                }
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
 
         #endregion
     }

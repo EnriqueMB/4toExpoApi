@@ -11,6 +11,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using System.IO;
 
 namespace _4toExpoApi.DataAccess.Repositories
 {
@@ -21,6 +23,40 @@ namespace _4toExpoApi.DataAccess.Repositories
         public PatrocinadoresRepository(_4toExpoDbContext dbContext) : base(dbContext)
         {
             _dbContext = dbContext;
+        }
+
+        public async Task<GenericResponse<Usuarios>> ExistsByNombreUsuario(string email, ILogger logger, int Id)
+        {
+         
+            try
+            {
+                logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+                var response = new GenericResponse<Usuarios>();
+
+                var user = await _context.Usuarios.Where(x => x.Correo == email && (Id != 0? x.Id != Id && x.Activo == true : x.Activo == true) ).FirstOrDefaultAsync();
+                if (user != null)
+                {
+                    response.Data =user;
+                    response.Success = false;
+                    response.Message = "Email ya existe";
+                    logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                }
+                else
+                {
+                    response.Data = new Usuarios();
+                    response.Success = true;
+                }
+                
+
+                logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                return response;
+            }
+            catch (SqlException ex)
+            {
+                logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
         }
 
         public async Task<GenericResponse<Patrocinadores>> AgregarPatrocinador(Patrocinadores patrocinadores, Usuarios usuarios, ILogger _logger)
