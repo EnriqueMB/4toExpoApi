@@ -84,6 +84,7 @@ namespace _4toExpoApi.Core.Services
                 var reserva = new Reservas
                 {
                     Producto = request.producto,
+                    IdPaquete = request.idPaquete,
                     Monto = request.monto,
                     NombreCompleto = request.NombreCompleto,
                     FechaAlt = DateTime.Now,
