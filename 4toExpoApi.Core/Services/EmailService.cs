@@ -52,19 +52,19 @@ namespace _4toExpoApi.Core.Services
                 if (request.EmailAlquiler != null)
                 {
                     nombrePlantilla = "plantilla_alquiler.html";
-                    correoEnviar = _configuration["Correos:"];
+                    correoEnviar = _configuration["Correos:nimia"];
                 }
 
                 if (request.EmailProductos != null)
                 {
                     nombrePlantilla = "plantilla_productos.html";
-                    correoEnviar = _configuration["Correos:"];
+                    correoEnviar = _configuration["Correos:nimia"];
                 }
 
                 if (request.EmailBolsaDeTrabajo != null)
                 {
                     nombrePlantilla = "plantilla_bolsadetrabajo.html";
-                    correoEnviar = _configuration["Correos:"];
+                    correoEnviar = _configuration["Correos:nimia"];
                 }
 
                 MailHelper.EnviarEmail(host, port, usuario, contraseña, request, nombrePlantilla, correoEnviar);
