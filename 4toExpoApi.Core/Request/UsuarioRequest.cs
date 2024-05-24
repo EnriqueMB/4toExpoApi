@@ -31,6 +31,7 @@ namespace _4toExpoApi.Core.Request
 
         public string Password { get; set; }
         public int? idTipoUsuario { get; set; }
+        public int? idPaquete { get; set; }
 
         public IFormFile? ImagenFile { get; set; }
 
