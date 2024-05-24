@@ -40,8 +40,11 @@ namespace _4toExpoApi.DataAccess
         public DbSet<Universidad> Universidad { get; set;}
 
         public DbSet<Preguntas> Preguntas { get; set;}
+        public DbSet<ProgramaActividades> ProgramaActividades { get; set; }
 
         public DbSet<CMultimedia> CMultimedia { get; set; }
 
+        public DbSet<Banner> Banner { get; set; }
+        public DbSet<RedSocial> RedSocial { get; set; }
     }
 }

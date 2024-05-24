@@ -43,9 +43,11 @@ builder.Services.AddScoped<PatrocinadorService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<UniversidadService>();
 builder.Services.AddScoped<PreguntasService>();
+builder.Services.AddScoped<ProgramaActividadesService>();
 //builder.Services.AddScoped<>
 
 builder.Services.AddScoped<HotelService>();
+builder.Services.AddScoped<BannerService>();
 #endregion
 #region <-- Repositories -->
 //builder.Services.AddScoped<IBaseRepository<Permisos>, BaseRepository<Permisos>>();
@@ -77,7 +79,10 @@ builder.Services.AddScoped<IBaseRepository<BolsaTrabajo>, BaseRepository<BolsaTr
 builder.Services.AddScoped<IBaseRepository<Patrocinadores>, BaseRepository<Patrocinadores>>();
 builder.Services.AddScoped<IAzureBlobStorageService, AzureBlobStorageService>();
 builder.Services.AddScoped<IBaseRepository<Preguntas>, BaseRepository<Preguntas>>();
+builder.Services.AddScoped<IBaseRepository<Banner>, BaseRepository<Banner>>();
+builder.Services.AddScoped<IBaseRepository<RedSocial>, BaseRepository<RedSocial>>();
 builder.Services.AddScoped<IPatrocinadoresRepository, PatrocinadoresRepository>();
+builder.Services.AddScoped<IBaseRepository<ProgramaActividades>, BaseRepository<ProgramaActividades>>();
 #endregion
 #region <-- Context -->
 
