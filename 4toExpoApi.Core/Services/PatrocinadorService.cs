@@ -48,8 +48,18 @@ namespace _4toExpoApi.Core.Services
 
                 var response = new GenericResponse<PatrocinadorRequest>();
 
+                var userDb = await _patrocinadorRepository.ExistsByNombreUsuario(request.Email, _logger);
+
+                if (userDb != null)
+                {
+                    response.Message = "El correo ya exixte";
+                    response.Success = false;
+                   
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                    return response;
+                }
+
                 var addPatrocinador = AppMapper.Map<PatrocinadorRequest, Patrocinadores>(request);
-                
 
                 if (request.UrlImg != null)
                 {
@@ -71,7 +81,7 @@ namespace _4toExpoApi.Core.Services
                 addUsuario.UrlImg = request.UrlLogo;
                 addUsuario.PasswordHash = passwordHash;
                 addUsuario.PasswordSalt = passwordSalt;
-                addUsuario.idTipoUsuario = 2;
+                addUsuario.IdTipoUsuario = 2;
                 addUsuario.FechaAlt = DateTime.Now;
                 addUsuario.UserAlt = userAlt;
                 addUsuario.Activo = true;
@@ -167,7 +177,7 @@ namespace _4toExpoApi.Core.Services
                 addUsuario.UrlImg = request.UrlLogo;
                 addUsuario.PasswordHash = passwordHash;
                 addUsuario.PasswordSalt = passwordSalt;
-                addUsuario.idTipoUsuario = 2;
+                addUsuario.IdTipoUsuario = 2;
                 addUsuario.FechaUpd = DateTime.Now;
                 addUsuario.UserUpd = UserUpd;
                 addUsuario.Activo = true;

@@ -11,6 +11,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using System.IO;
 
 namespace _4toExpoApi.DataAccess.Repositories
 {
@@ -21,6 +23,32 @@ namespace _4toExpoApi.DataAccess.Repositories
         public PatrocinadoresRepository(_4toExpoDbContext dbContext) : base(dbContext)
         {
             _dbContext = dbContext;
+        }
+
+        public async Task<Usuarios> ExistsByNombreUsuario(string email, ILogger logger)
+        {
+         
+            try
+            {
+                logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+                var response = new GenericResponse<Usuarios>();
+
+                var user = await _context.Usuarios.Where(x => x.Correo == email && x.Activo == true).FirstOrDefaultAsync();
+                if (user != null)
+                {
+                    logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                    return user;
+                }
+                
+
+                logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                return null;
+            }
+            catch (SqlException ex)
+            {
+                logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
         }
 
         public async Task<GenericResponse<Patrocinadores>> AgregarPatrocinador(Patrocinadores patrocinadores, Usuarios usuarios, ILogger _logger)

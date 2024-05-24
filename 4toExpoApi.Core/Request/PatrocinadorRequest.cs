@@ -24,6 +24,7 @@ namespace _4toExpoApi.Core.Request
 
         //Datos para en la tabla  usuario 
         public string? Telefono { get; set; }
-        public string Password { get; set; }
+        public string? Password { get; set; }
+       
     }
 }
