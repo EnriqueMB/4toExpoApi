@@ -52,7 +52,7 @@ namespace _4toExpoApi.Core.Services
 
                 if (userDb != null)
                 {
-                    response.Message = "El correo ya exixte";
+                    response.Message = "El correo ya existe";
                     response.Success = false;
                    
                     _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
