@@ -268,7 +268,6 @@ namespace _4toExpoApi.Core.Services
                 var usuario = await _usuariosRepository.GetById(IdUser, _logger);
 
                 var reserva = reservaId.Where(x => x.IdUsuario == IdUser).FirstOrDefault();
-
                 var paqueteUsuario = paquete.Where(x => x.Nombre == reserva.Producto).FirstOrDefault();
                 var incluyeUsuario = incluye
                                      .Where(x => x.PaqueteId == paqueteUsuario.Id)
@@ -278,11 +277,10 @@ namespace _4toExpoApi.Core.Services
                 var responseReserva = new ReservaVM()
                 {
                     NombrePaquete = paqueteUsuario.Nombre,
-                    IdTipoPaquete = reserva.IdPaquete,
+                    IdTipoPaquete = reserva.IdTipoPaquete,
                     Monto = paqueteUsuario.Precio,
                     Descripcion = paqueteUsuario.Descripcion,
                     Beneficios = incluyeUsuario,
-                    IdTipoUsuario = usuario.IdTipoUsuario,
                     IdUsuario = usuario.Id,
                     NombreCompleto = usuario.NombreCompleto,
                     Telefono = usuario.Telefono,
@@ -302,6 +300,28 @@ namespace _4toExpoApi.Core.Services
                 _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
                 throw;
             }
+        }
+
+        public async Task<object>ObtenerReservaCompradores()
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+
         }
 
         #endregion

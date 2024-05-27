@@ -1,5 +1,7 @@
 ﻿
 
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace _4toExpoApi.DataAccess.Entities
 {
     public class PaquetePatrocinadores
@@ -14,6 +16,11 @@ namespace _4toExpoApi.DataAccess.Entities
         public int? UserUpd {  get; set; }  
         public DateTime? FechaUpd { get; set; }
         public bool? Activo { get; set; }
+
+        public virtual ICollection<IncluyePaquete> Incluyes { get; set; }
+
+        [ForeignKey(nameof(IdTipoPaquete))]
+        public virtual TipoPaquete TipoPaquete { get; set;}
 
     }
 }
