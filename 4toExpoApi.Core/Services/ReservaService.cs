@@ -182,7 +182,7 @@ namespace _4toExpoApi.Core.Services
                     var port = _configuration["EmailSettings:Port"];
                     var usuario = _configuration["EmailSettings:UserName"];
                     var contraseña = _configuration["EmailSettings:Password"];
-                    string nombrePlantilla = "plantilla_correo.html";
+                    string nombrePlantilla = "plantilla_correoPago.html";
 
                     // Enviar correo
                     MailHelper.EnviarEmailPago(host, port, usuario, contraseña, pagos, nombrePlantilla);
