@@ -12,9 +12,10 @@ namespace _4toExpoApi.Core.ViewModels
         public int? IdTipoPaquete { get; set; }
         public decimal? Monto { get; set; }
         public string? Descripcion { get; set; }
-        public List<IncluyePaqueteRequest>? Beneficios { get; set; }   
+        public List<IncluyePaqueteRequest>? Beneficios { get; set; }
 
         //Usuario
+        public int IdTipoUsuario { get; set; }
         public int? IdUsuario { get; set; }
         public string? NombreCompleto { get; set; }
         public int? Edad { get; set; }
