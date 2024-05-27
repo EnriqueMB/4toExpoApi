@@ -282,7 +282,7 @@ namespace _4toExpoApi.Core.Services
                     Descripcion = paqueteUsuario.Descripcion,
                     Beneficios = incluyeUsuario,
                     IdUsuario = usuario.Id,
-                    NombreCompleto = usuario.NombreCompleto,
+                    NombreCompleto = usuario.NombreCompleto,    
                     Telefono = usuario.Telefono,
                     Correo = usuario.Correo,
                     Edad = usuario.Edad
@@ -302,17 +302,34 @@ namespace _4toExpoApi.Core.Services
             }
         }
 
-        public async Task<object>ObtenerReservaCompradores()
+        public async Task<List<ReservaVM>> ObtenerReservaCompradores()
         {
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
+                var reservasDB = await _reservarEntityRepository
+                    .GetAll(_logger, ["PaquetePatrocinadores", "PaquetePatrocinadores.Incluyes", "PaquetePatrocinadores.TipoPaquete", "Usuarios"], x => x.Activo == true);
 
+                var reservasVM = reservasDB.Select(x => new ReservaVM
+                {
+                    IdPaquete = x.PaquetePatrocinadores != null ? x.PaquetePatrocinadores.Id : 0,
+                    IdTipoPaquete = x.PaquetePatrocinadores != null ? x.PaquetePatrocinadores.IdTipoPaquete : 0,
+                    NombrePaquete = x.PaquetePatrocinadores != null ? x.PaquetePatrocinadores.NombrePaquete: "",
+                    NombreCompleto = x.Usuarios != null ? x.Usuarios.NombreCompleto : "",
+                    NombreTipoPaquete  = x.PaquetePatrocinadores != null ?  x.PaquetePatrocinadores.TipoPaquete.Nombre : "",
+                    Correo = x.Usuarios != null ? x.Usuarios.Correo : "",
+                    Descripcion = x.PaquetePatrocinadores != null ?  x.PaquetePatrocinadores.Descripcion : "",
+                    Edad = x.Usuarios != null ? x.Usuarios.Edad : 0,
+                    Monto = x.PaquetePatrocinadores != null ?  x.PaquetePatrocinadores.Precio : 0,
+                    Empresa = x.Usuarios != null ? x.Usuarios.Asociacion : "",
+                    Beneficios = x.PaquetePatrocinadores != null ? x.PaquetePatrocinadores.Incluyes.Select(x => new IncluyePaqueteRequest { Nombre = x.Nombre }).ToList() : []
+
+                }).ToList();
 
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
 
-
+                return reservasVM;
 
             }
             catch (Exception ex)

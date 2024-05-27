@@ -14,12 +14,12 @@ namespace _4toExpoApi.DataAccess.Entities
         public int Id { get; set; }
         [MaxLength(250)]
         public string? Producto { get; set; }
-        public int IdTipoPaquete { get; set; }
+        public int? IdTipoPaquete { get; set; }
         public int? IdPaquete { get; set; }
         public int? IdUsuario {  get; set; }
         public string? NombreCompleto { get; set; }
         public int? Monto { get; set; }
-        public bool ConfirmarCompra { get; set; }
+        public bool? ConfirmarCompra { get; set; }
         public int? UserAlt { get; set; }
         public DateTime? FechaAlt { get; set; }
         public int? UserUpd { get; set; }
