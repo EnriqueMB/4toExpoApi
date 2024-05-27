@@ -135,6 +135,46 @@ namespace _4toExpoApi.Core.Services
                 throw;
             }
         }
+        public async Task<PaqueteBeneficiosPaVM> ObtenerPaquetePorId(int id)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var listaPaquetes = await _basePaqueteRepository.GetById(id, _logger);
+
+                var listaBeneficios = await _baseBeneficioRepository.GetAll(_logger);
+
+                var tipoPaquete = await _baseTipoPaqueteRepository.GetAll(_logger);
+
+                listaBeneficios = listaBeneficios.Where(x => x.IdPaquetePatrocinador == id).ToList();
+                var tipoPaqueteV = tipoPaquete.Where(x => x.Id == listaPaquetes.IdTipoPaquete).FirstOrDefault();
+
+
+                var listaVM =  new PaqueteBeneficiosPaVM
+                {
+                    Id = listaPaquetes.Id,
+                    TipoPaquete = tipoPaqueteV.Nombre,
+                    IdTipoPaquete = tipoPaqueteV.Id,
+                    NombrePaquete = listaPaquetes.NombrePaquete,
+                    Descripcion = listaPaquetes.Descripcion,
+                    Precio = listaPaquetes.Precio,
+                    Beneficios = listaBeneficios.Select(x => AppMapper.Map<BeneficioPaquete, BeneficioPaqueteRequest>(x)).ToList()
+                };
+
+
+
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return listaVM;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
 
         public async Task<GenericResponse> EditarPaquete(PaquetePatrocinadoresVM paqueteVM, int userUpd)
         {
