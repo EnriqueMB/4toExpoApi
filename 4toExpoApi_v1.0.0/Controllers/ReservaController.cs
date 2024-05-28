@@ -377,7 +377,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
         [HttpPost("PayWithCard")]
         public async Task<IActionResult> CreateCharge([FromBody] PaymentRequest request)
         {
-            var apiKey = "key_iRVbKuhPBqkrw8N4CSGAIXZ";
+            var apiKey = "key_0qIU431DUv9wnB1pWV36Wdo";
             var apiUrl = "https://api.conekta.io/orders";
 
             var requestData = new
