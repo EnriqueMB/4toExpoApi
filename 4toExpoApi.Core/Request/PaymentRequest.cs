@@ -15,5 +15,7 @@ namespace _4toExpoApi.Core.Request
         public string Correo { get; set; }
         public string Telefono { get; set; }
         public string CardToken { get; set; } // Token de la tarjeta
+
+        public int RazonSocialPagar { get; set; }
     }
 }
