@@ -89,7 +89,7 @@ namespace _4toExpoApi.DataAccess.Repositories
                
                 var response = new GenericResponse<List<HotelResponse>>();
 
-                var dataListHotel = await dbContext.Hotel.Select(hotel => new HotelResponse
+                var dataListHotel = await dbContext.Hotel.Where(x => x.Activo == true).Select(hotel => new HotelResponse
                 {
                     Id = hotel.Id,
                     Nombre = hotel.Nombre,

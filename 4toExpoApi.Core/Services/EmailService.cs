@@ -28,7 +28,7 @@ namespace _4toExpoApi.Core.Services
         #endregion
 
         #region Metodos
-        public async Task<GenericResponse> EnviarEmail(DatosEmailRequest request)
+        public async Task<GenericResponse> EnviarEmail(DatosEmailRequest.Emails request)
         {
             try
             {
@@ -40,9 +40,34 @@ namespace _4toExpoApi.Core.Services
                 var port = _configuration["EmailSettings:Port"];
                 var usuario = _configuration["EmailSettings:UserName"];
                 var contraseña = _configuration["EmailSettings:Password"];
-                string nombrePlantilla = "plantilla_correo.html";
+                string nombrePlantilla = string.Empty;
+                string correoEnviar = string.Empty;
 
-                MailHelper.EnviarEmail(host, port, usuario, contraseña, request, nombrePlantilla);
+                if (request.EmailContacto != null)
+                {
+                    nombrePlantilla = "plantilla_contacto.html";
+                    correoEnviar = _configuration["Correos:nimia"];
+                }
+
+                if (request.EmailAlquiler != null)
+                {
+                    nombrePlantilla = "plantilla_alquiler.html";
+                    correoEnviar = _configuration["Correos:nimia"];
+                }
+
+                if (request.EmailProductos != null)
+                {
+                    nombrePlantilla = "plantilla_productos.html";
+                    correoEnviar = _configuration["Correos:nimia"];
+                }
+
+                if (request.EmailBolsaDeTrabajo != null)
+                {
+                    nombrePlantilla = "plantilla_bolsadetrabajo.html";
+                    correoEnviar = _configuration["Correos:nimia"];
+                }
+
+                MailHelper.EnviarEmail(host, port, usuario, contraseña, request, nombrePlantilla, correoEnviar);
 
                 response.Success = true;
                 response.Message = "Correo enviado correctamente.";

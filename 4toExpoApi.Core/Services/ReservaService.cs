@@ -3,6 +3,7 @@ using _4toExpoApi.Core.Helpers;
 using _4toExpoApi.Core.Mappers;
 using _4toExpoApi.Core.Request;
 using _4toExpoApi.Core.Response;
+using _4toExpoApi.Core.ViewModels;
 using _4toExpoApi.DataAccess.Entities;
 using _4toExpoApi.DataAccess.IRepositories;
 using Azure;
@@ -22,6 +23,10 @@ namespace _4toExpoApi.Core.Services
     {
         #region<--Variables-->
         private readonly IReservaRepository _reservaRepository;
+        private readonly IBaseRepository<IncluyePaquete> _incluyePaqueteRepository;
+        private readonly IBaseRepository<PaqueteGeneral> _paqueteGeneralRepository;
+        private readonly IBaseRepository<Usuarios> _usuariosRepository;
+        private readonly IBaseRepository<Reservas> _reservarEntityRepository;
         private readonly IAzureBlobStorageService _azureBlobStorageService;
         private ILogger<ReservaService> _logger;
         private IConfiguration _configuration;
@@ -31,12 +36,20 @@ namespace _4toExpoApi.Core.Services
         public ReservaService(IReservaRepository reservaRepository,
             ILogger<ReservaService> logger,
             IConfiguration configuration,
-            IAzureBlobStorageService azureBlobStorageService)
+            IAzureBlobStorageService azureBlobStorageService,
+            IBaseRepository<IncluyePaquete> incluyePaqueteRepository,
+            IBaseRepository<PaqueteGeneral> paqueteGeneralRepository,
+            IBaseRepository<Usuarios> usuariosRepository,
+            IBaseRepository<Reservas> reservarEntityRepository)
         {
             _reservaRepository = reservaRepository;
             _logger = logger;
             _azureBlobStorageService = azureBlobStorageService;
             _configuration = configuration;
+            _incluyePaqueteRepository = incluyePaqueteRepository;
+            _paqueteGeneralRepository = paqueteGeneralRepository;
+            _usuariosRepository = usuariosRepository;
+            _reservarEntityRepository = reservarEntityRepository;
         }
         #endregion
 
@@ -169,7 +182,7 @@ namespace _4toExpoApi.Core.Services
                     var port = _configuration["EmailSettings:Port"];
                     var usuario = _configuration["EmailSettings:UserName"];
                     var contraseña = _configuration["EmailSettings:Password"];
-                    string nombrePlantilla = "plantilla_correo.html";
+                    string nombrePlantilla = "plantilla_correoPago.html";
 
                     // Enviar correo
                     MailHelper.EnviarEmailPago(host, port, usuario, contraseña, pagos, nombrePlantilla);
@@ -239,6 +252,95 @@ namespace _4toExpoApi.Core.Services
                 throw;
             }
         }
+
+        public async Task<ReservaVM> ObtenerReservaPorId(int IdUser)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var reservaId = await _reservarEntityRepository.GetAll(_logger);
+           
+                var paquete = await _paqueteGeneralRepository.GetAll(_logger);
+               
+                var incluye = await _incluyePaqueteRepository.GetAll(_logger);
+
+                var usuario = await _usuariosRepository.GetById(IdUser, _logger);
+
+                var reserva = reservaId.Where(x => x.IdUsuario == IdUser).FirstOrDefault();
+                var paqueteUsuario = paquete.Where(x => x.Nombre == reserva.Producto).FirstOrDefault();
+                var incluyeUsuario = incluye
+                                     .Where(x => x.PaqueteId == paqueteUsuario.Id)
+                                     .Select(x => AppMapper.Map<IncluyePaquete, IncluyePaqueteRequest>(x))
+                                     .ToList();
+
+                var responseReserva = new ReservaVM()
+                {
+                    NombrePaquete = paqueteUsuario.Nombre,
+                    IdTipoPaquete = reserva.IdTipoPaquete,
+                    Monto = paqueteUsuario.Precio,
+                    Descripcion = paqueteUsuario.Descripcion,
+                    Beneficios = incluyeUsuario,
+                    IdUsuario = usuario.Id,
+                    NombreCompleto = usuario.NombreCompleto,    
+                    Telefono = usuario.Telefono,
+                    Correo = usuario.Correo,
+                    Edad = usuario.Edad
+                };
+
+
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return responseReserva;
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<List<ReservaVM>> ObtenerReservaCompradores()
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var reservasDB = await _reservarEntityRepository
+                    .GetAll(_logger, ["PaquetePatrocinadores", "PaquetePatrocinadores.Incluyes", "PaquetePatrocinadores.TipoPaquete", "Usuarios"], x => x.Activo == true);
+
+                var reservasVM = reservasDB.Select(x => new ReservaVM
+                {
+                    IdPaquete = x.PaquetePatrocinadores != null ? x.PaquetePatrocinadores.Id : 0,
+                    IdTipoPaquete = x.PaquetePatrocinadores != null ? x.PaquetePatrocinadores.IdTipoPaquete : 0,
+                    NombrePaquete = x.PaquetePatrocinadores != null ? x.PaquetePatrocinadores.NombrePaquete: "",
+                    NombreCompleto = x.Usuarios != null ? x.Usuarios.NombreCompleto : "",
+                    NombreTipoPaquete  = x.PaquetePatrocinadores != null ?  x.PaquetePatrocinadores.TipoPaquete.Nombre : "",
+                    Correo = x.Usuarios != null ? x.Usuarios.Correo : "",
+                    Descripcion = x.PaquetePatrocinadores != null ?  x.PaquetePatrocinadores.Descripcion : "",
+                    Edad = x.Usuarios != null ? x.Usuarios.Edad : 0,
+                    Monto = x.PaquetePatrocinadores != null ?  x.PaquetePatrocinadores.Precio : 0,
+                    Empresa = x.Usuarios != null ? x.Usuarios.Asociacion : "",
+                    Beneficios = x.PaquetePatrocinadores != null ? x.PaquetePatrocinadores.Incluyes.Select(x => new IncluyePaqueteRequest { Nombre = x.Nombre }).ToList() : []
+
+                }).ToList();
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return reservasVM;
+
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+
+        }
+
         #endregion
     }
 }

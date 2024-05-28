@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace _4toExpoApi.DataAccess.Entities
 {
+
     public class Patrocinadores
     {
         public int Id { get; set; }
@@ -20,5 +22,11 @@ namespace _4toExpoApi.DataAccess.Entities
         public DateTime? FechaUpd { get; set; }
 
         public Boolean? Activo { get; set; }
+
+        public int? IdUsuario { get; set; }
+
+        [ForeignKey ("IdUsuario")]
+        public virtual Usuarios? Usuarios { get; set; }
+
     }
 }

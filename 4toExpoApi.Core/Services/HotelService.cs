@@ -3,6 +3,7 @@
 using _4toExpoApi.Core.Helpers;
 using _4toExpoApi.Core.Mappers;
 using _4toExpoApi.Core.Request;
+using _4toExpoApi.Core.Response;
 using _4toExpoApi.Core.ViewModels;
 using _4toExpoApi.DataAccess.Entities;
 using _4toExpoApi.DataAccess.IRepositories;
@@ -219,6 +220,54 @@ namespace _4toExpoApi.Core.Services
                 _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
                 throw;
             }
+        }
+        public async Task<GenericResponse> EliminarHotel(int id,int userUpd)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+                var response = new GenericResponse();
+                var entity = await _hotelRepository.GetById(id, _logger);
+                if (entity == null)
+                {
+                    response.Success = false;
+                    response.Message = ("el hotel no existe");
+                    return response;
+
+                }
+                entity.UserUpd = userUpd;
+                entity.FechaUpd = HoraHelper.GetHora("mx");
+                entity.Activo = false;
+                var result = await _hotelRepository.Update(entity, _logger);
+                if (result != null)
+                {
+                    response.Success = true;
+                    response.Message = "Bolsa de Trabajo eliminada correctamente";
+
+
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Error al eliminar la Bolsa de Trabajo";
+
+                }
+
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Error: " + ex.Message);
+                throw;
+            }
+
+
+
+          
+
+
         }
 
 

@@ -68,35 +68,36 @@
         </tr>
         <tr>
             <td style="padding: 35px;">
-                
                 <p>
-                    Estimado(a) <strong>{{ $NombreCliente }}</strong>,
+                    Distinguido(a) Sr(a). <strong>{{ $tutor }}</strong>
+
                 </p>
+                <P>
+                    Por medio de la presente, nos complace informarle que el estudiante <strong>{{ $alumno }}</strong>, a quien usted representa como
+                    padre/madre/tutor legal, asistió de manera regular a las actividades académicas el día  <strong> {{ $fecha }} </strong>.
+                </P>
                 <p>
-                    Nos complace informarle que hemos recibido su pago correspondiente a la transacción con ID <strong>{{ $ReferenciaPago }}</strong>. A continuación, se detallan los datos de su transacción:
+                    Como parte de nuestro compromiso con mantener una comunicación efectiva y transparente con los padres de familia, hemos
+                    implementado un sistema de notificaciones diarias sobre la asistencia de los alumnos. De este modo, usted podrá
+                    mantenerse informado sobre el cumplimiento regular de su hijo(a) en el colegio.
                 </p>
-                <ul>
-                    <li><strong>Nombre del Cliente:</strong> {{ $NombreCliente }}</li>
-                    <li><strong>ID de la Transacción:</strong> {{ $ReferenciaPago }}</li>
-                    <li><strong>Monto Pagado:</strong> {{ $Monto }}</li>
-                </ul>
-               
 
             </td>
         </tr>
-       
+        <tr>
+            <td>
+                <div style="text-align: center;">
+                    <img width="150px" src="Logo.jpg" alt="" srcset="">
+                </div>
+            </td>
+        </tr>
         <tr>
             <td style="padding: 35px;">
                 <p>
-                    Le recordamos que debe llevar este recibo y una identificación válida el día del evento para poder ingresar. Agradecemos su compra y esperamos que disfrute del evento.
+                    Agradecemos su atención y confianza en nuestra institución educativa. No dude en comunicarse con nosotros si tiene
+                    alguna inquietud o requiere información adicional.
                 </p>
-                <p>
-                    Si tiene alguna pregunta o necesita asistencia adicional, no dude en ponerse en contacto.
-                </p>
-                <p>
-                    Atentamente,<br>
-                    <b>ECIES</b>
-                </p>
+                <p>Atentamente, Maestro: <strong>{{ $maestro }}</strong> </p>
 
             </td>
         </tr>

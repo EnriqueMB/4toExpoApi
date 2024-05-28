@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <title>Correo</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            color: #333;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            margin: -20px -20px 20px -20px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .info {
+            margin-bottom: 20px;
+            padding-left:20px;
+            padding-bottom:20px;
+        }
+
+            .info p {
+                margin: 5px 0;
+            }
+
+        .schedule {
+            background-color: #f2f2f2;
+            padding: 20px;
+            border-radius: 5px;
+
+        }
+
+            .schedule p {
+                margin: 5px 0;
+            }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>Información del Servicio</h1>
+        </div>
+        <div class="logo">
+            <img width="150px" src="logo.jpg" alt="Logo">
+        </div>
+        <div class="info">
+            <p style="margin-top: 10px; margin-bottom: 10px;"><strong><h3>Datos de la emprese</h3></strong></p>
+            <p><strong>Empresa:</strong> {{ $empresa }}</p>
+            <p><strong>Nombre del Servicio:</strong> {{ $nombreServicio }}</p>
+            <p><strong>Descripción:</strong> {{ $descripcion }}</p>
+        </div>
+        <div class="schedule">
+           
+            <h3>Horarios de Atención</h3>
+            <p><strong>Días:</strong> {{ $diasAtencion }}</p>
+            <p><strong>Horarios:</strong> {{ $horarios }}</p>
+        </div>
+        <div class="info">
+            <h3 style="margin-top: 10px; margin-bottom: 10px;"><strong>Datos de la persona</strong></h3>
+            <p><strong>Nombre:</strong> {{ $nombre }}</p>
+            <p><strong>Email:</strong> {{ $email }}</p>
+            <p><strong>Mensaje:</strong> {{ $mensaje }}</p>
+        </div>
+    </div>
+
+    <!--<table>
+        <tr>
+            <td style="height: 50px;" align="center">
+                <div style="background-color: #4caf50; color: #fff; height: 60px !important; text-align: center !important; display: flex; justify-content: center; align-items:center;">
+
+                    <h1 style="font-weight: bold; margin-left: auto; margin-right: auto;">{{ $motivo }}
+                    </h1>
+
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 35px;">
+
+                <P>
+                    {{ $nombre }}
+                </P>
+                <p>
+                    {{ $email }}
+                </p>
+                <p>
+                    {{ $mensaje }}
+                </p>
+
+                <p>
+                    {{ $empresa }}
+                </p>
+
+                <p>
+                    {{ $nombreServicio }}
+                </p>
+
+                <p>
+                    {{ $descripcion }}
+                </p>
+
+                <p>
+                    {{ $diasAtencion }}
+                </p>
+
+                <p>
+                    {{ $horarios }}
+                </p>
+
+             {{ $servicio }}
+
+            </td>
+        </tr>
+
+        <tr>
+            <td style="padding: 35px;">
+
+
+            </td>
+        </tr>
+        <tr>
+            <td style="height: 50px;" align="center">
+                <div style="background-color: #4caf50; color: #fff; height: 60px !important; text-align: center !important; display: flex; justify-content: center; align-items:center;">
+
+                       </div>
+            </td>
+        </tr>
+    </table>-->
+</body>
+
+</html>

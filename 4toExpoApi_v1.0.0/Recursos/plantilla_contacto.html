@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <title>Correo</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            color: #333;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .footer {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>{{ $motivo }}</h1>
+        </div>
+        <div class="content">
+            <p><strong>Nombre:</strong>  {{ $nombre }}</p>
+            <p><strong>Email:</strong>  {{ $email }} </p>
+            <p><strong>Mensaje:</strong></p>
+            <p>
+                {{ $mensaje }}
+            </p>
+            <div class="logo">
+                <img width="150px" src="Img/SILVANA2.png" alt="Logo">
+            </div>
+        </div>
+        <div class="footer">
+            <h3>Eventos</h3>
+        </div>
+    </div>
+    <!--<table>
+        <tr>
+            <td style="height: 50px;" align="center">
+                <div style="background-color: #fff; color: #4b5563; height: 60px !important; text-align: center !important; display: flex; justify-content: center; align-items: center;">
+
+                    <h1 style="font-weight: bold; margin-left: auto; margin-right: auto;">
+                        {{ $motivo }}
+                    </h1>
+
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 35px;">
+                <p>
+
+                </p>
+                <P>
+                    {{ $nombre }}
+                </P>
+                <p>
+                    {{ $email }}
+                </p>
+                <p>
+                    {{ $mensaje }}
+                </p>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div style="text-align: center;">
+                    <img width="150px" src="Img/LOGO NIMIA SILVANA_20240430_174039_0000.png" alt="" srcset="">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 35px;">
+            </td>
+        </tr>
+        <tr>
+            <td style="height: 50px;" align="center">
+                <div style="background-color: #4caf50; color: #fff; height: 60px !important; text-align: center !important; display: flex; justify-content: center; align-items:center;">
+
+                    <h3 style="font-weight: bold; margin-left: auto; margin-right: auto;">Eventos</h3>
+                </div>
+            </td>
+        </tr>
+    </table>-->
+</body>
+
+</html>

@@ -8,7 +8,10 @@ namespace _4toExpoApi.Core.Response
 {
     public class ListResponse<T> where T : class
     {
+        internal string Message;
+
         public List<T> Data { get; set; }
         public int Total { get; set; }
+        public bool Success { get; internal set; }
     }
 }

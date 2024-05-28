@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,17 +22,19 @@ namespace _4toExpoApi.Core.Services
     {
          #region <---Variables--->
       
-        private readonly IBaseRepository<Patrocinadores> _patrocinadorRepository;
+        private readonly IPatrocinadoresRepository _patrocinadorRepository;
         private ILogger<PatrocinadorService> _logger;
         private readonly IAzureBlobStorageService _azureBlobStorageService;
+        private readonly IBaseRepository<Usuarios> _usuarioRepository;
 
         #endregion
         #region <---Constructor--->
 
-        public PatrocinadorService(IBaseRepository<Patrocinadores> patrocinadorRepository, ILogger<PatrocinadorService> logger, IAzureBlobStorageService azureStorageBlobService) {
+        public PatrocinadorService(IPatrocinadoresRepository patrocinadorRepository, IBaseRepository<Usuarios> usuarioRepository, ILogger<PatrocinadorService> logger, IAzureBlobStorageService azureStorageBlobService) {
             _patrocinadorRepository = patrocinadorRepository;
             _logger = logger;
             _azureBlobStorageService = azureStorageBlobService;
+            _usuarioRepository = usuarioRepository;
         }
         #endregion
 
@@ -45,6 +48,17 @@ namespace _4toExpoApi.Core.Services
 
                 var response = new GenericResponse<PatrocinadorRequest>();
 
+                var userDb = await _patrocinadorRepository.ExistsByNombreUsuario(request.Email, _logger, 0);
+
+                if (!userDb.Success)
+                {
+                    response.Message = userDb.Message;
+                    response.Success = userDb.Success;
+                   
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                    return response;
+                }
+
                 var addPatrocinador = AppMapper.Map<PatrocinadorRequest, Patrocinadores>(request);
 
                 if (request.UrlImg != null)
@@ -57,19 +71,31 @@ namespace _4toExpoApi.Core.Services
                 addPatrocinador.UrlLogo = request.UrlLogo;
                 addPatrocinador.Activo = true;
 
-                var add = await _patrocinadorRepository.Add(addPatrocinador, _logger);
-                if (add != null && add.Id > 0)
-                {
-                    response.Data = request;
-                    response.Message = "Se agrego correctamente el patrocinador";
-                    response.Success = true;
-                    response.CreatedId = add.Id.ToString();
-                }
-                else
-                {
-                    response.Data = request;
-                    response.Message = "No se pudo agregar correctamente el patrocinador";
-                    response.Success = false;
+                var addUsuario = new Usuarios();
+
+                CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+                addUsuario.NombreCompleto = request.NombreCompleto;
+                addUsuario.Correo = request.Email;
+                addUsuario.Telefono = request.Telefono;
+                addUsuario.UrlImg = request.UrlLogo;
+                addUsuario.PasswordHash = passwordHash;
+                addUsuario.PasswordSalt = passwordSalt;
+                addUsuario.IdTipoUsuario = 2;
+                addUsuario.FechaAlt = DateTime.Now;
+                addUsuario.UserAlt = userAlt;
+                addUsuario.Activo = true;
+
+
+                var add = await _patrocinadorRepository.AgregarPatrocinador(addPatrocinador, addUsuario, _logger);
+                
+                if (add.Success) {
+                    response.Success = add.Success;
+                    response.Message = add.Message;
+                } 
+                else {
+                    response.Success = add.Success;
+                    response.Message = add.Message;
                 }
 
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
@@ -118,7 +144,19 @@ namespace _4toExpoApi.Core.Services
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
                 var response = new GenericResponse<PatrocinadorRequest>();
-                var patrocinador = await _patrocinadorRepository.GetById(request.Id, _logger);
+
+                var userDb = await _patrocinadorRepository.ExistsByNombreUsuario(request.Email, _logger, 0);
+
+                if (!userDb.Success)
+                {
+                    response.Message = userDb.Message;
+                    response.Success = userDb.Success;
+
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                    return response;
+                }
+
+                var patrocinador = await _patrocinadorRepository.GetById(request.Id.Value, _logger);
                 if (patrocinador == null)
                 {
                     response.Message = "El patrocinador no existe";
@@ -139,20 +177,37 @@ namespace _4toExpoApi.Core.Services
                 patrocinador.UrlLogo = request.UrlLogo;
                 patrocinador.FechaUpd = DateTime.Now;
                 patrocinador.UserUpd = UserUpd;
-                
-                var update = await _patrocinadorRepository.Update(patrocinador, _logger);
-                if (update != null)
+
+
+                var addUsuario = await _usuarioRepository.GetById(patrocinador.IdUsuario.Value, _logger);
+
+                CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+                addUsuario.NombreCompleto = request.NombreCompleto;
+                addUsuario.Correo = request.Email;
+                addUsuario.Telefono = request.Telefono;
+                addUsuario.UrlImg = request.UrlLogo;
+                addUsuario.PasswordHash = passwordHash;
+                addUsuario.PasswordSalt = passwordSalt;
+                addUsuario.IdTipoUsuario = 2;
+                addUsuario.FechaUpd = DateTime.Now;
+                addUsuario.UserUpd = UserUpd;
+                addUsuario.Activo = true;
+
+
+                var add = await _patrocinadorRepository.EditarPatrocinador(patrocinador, addUsuario, _logger);
+
+                if (add.Success)
                 {
-                    response.Message = "Se edito correctamente el patrocinador";
-                    response.Success = true;
-                    response.UpdatedId = update.Id.ToString();
+                    response.Success = add.Success;
+                    response.Message = add.Message;
                 }
                 else
                 {
-                    response.Message = "No se edito correctamente el patrocinador";
-                    response.Success = false;
-
+                    response.Success = add.Success;
+                    response.Message = add.Message;
                 }
+
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
 
                 return response;
@@ -205,6 +260,24 @@ namespace _4toExpoApi.Core.Services
                 throw;
             }
         }
+
+        public void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (var hmac = new HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            }
+        }
+
+        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        {
+            using (var hmac = new HMACSHA512(passwordSalt))
+            {
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                return computedHash.SequenceEqual(passwordHash);
+            }
+        }   
         #endregion
     }
 }
