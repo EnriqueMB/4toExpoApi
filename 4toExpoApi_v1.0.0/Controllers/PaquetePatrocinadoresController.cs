@@ -78,6 +78,34 @@ namespace _4toExpoApi_v1._0._0.Controllers
 
             }
         }
+        [HttpGet("ObtenerPaqueteId")]
+        public async Task<PaqueteBeneficiosPaVM> ObtenerPaqueteId(int id)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+
+                var response = await _paquetePatrocinadorService.ObtenerPaquetePorId(id);
+
+                if (response != null)
+                {
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                    return response;
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+
+            }
+        }
         [HttpPut("EditarPaquete")]
         public async Task<IActionResult> EditarPaquete(PaquetePatrocinadoresVM paqueteVM)
         {

@@ -9,12 +9,16 @@ namespace _4toExpoApi.Core.ViewModels
     {
         //Paquete
         public string? NombrePaquete { get; set; }
+        public int IdPaquete { get; set; }
         public int? IdTipoPaquete { get; set; }
+        public string NombreTipoPaquete { get; set; }
         public decimal? Monto { get; set; }
         public string? Descripcion { get; set; }
-        public List<IncluyePaqueteRequest>? Beneficios { get; set; }   
+        public string Empresa { get; set; }
+        public List<IncluyePaqueteRequest>? Beneficios { get; set; }
 
         //Usuario
+        public int IdTipoUsuario { get; set; }
         public int? IdUsuario { get; set; }
         public string? NombreCompleto { get; set; }
         public int? Edad { get; set; }
