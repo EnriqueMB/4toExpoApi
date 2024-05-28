@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,5 +19,8 @@ namespace _4toExpoApi.DataAccess.Entities
         public int? UserUpd { get; set; }
         public DateTime? FechaUpd { get; set; }
         public bool? Activo { get; set; }
+
+        [ForeignKey("PaqueteId")]
+        public virtual PaquetePatrocinadores PaquetePatrocinadores { get; set; }
     }
 }

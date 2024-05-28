@@ -268,7 +268,6 @@ namespace _4toExpoApi.Core.Services
                 var usuario = await _usuariosRepository.GetById(IdUser, _logger);
 
                 var reserva = reservaId.Where(x => x.IdUsuario == IdUser).FirstOrDefault();
-
                 var paqueteUsuario = paquete.Where(x => x.Nombre == reserva.Producto).FirstOrDefault();
                 var incluyeUsuario = incluye
                                      .Where(x => x.PaqueteId == paqueteUsuario.Id)
@@ -278,13 +277,12 @@ namespace _4toExpoApi.Core.Services
                 var responseReserva = new ReservaVM()
                 {
                     NombrePaquete = paqueteUsuario.Nombre,
-                    IdTipoPaquete = reserva.IdPaquete,
+                    IdTipoPaquete = reserva.IdTipoPaquete,
                     Monto = paqueteUsuario.Precio,
                     Descripcion = paqueteUsuario.Descripcion,
                     Beneficios = incluyeUsuario,
-                    IdTipoUsuario = usuario.IdTipoUsuario,
                     IdUsuario = usuario.Id,
-                    NombreCompleto = usuario.NombreCompleto,
+                    NombreCompleto = usuario.NombreCompleto,    
                     Telefono = usuario.Telefono,
                     Correo = usuario.Correo,
                     Edad = usuario.Edad
@@ -302,6 +300,45 @@ namespace _4toExpoApi.Core.Services
                 _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
                 throw;
             }
+        }
+
+        public async Task<List<ReservaVM>> ObtenerReservaCompradores()
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var reservasDB = await _reservarEntityRepository
+                    .GetAll(_logger, ["PaquetePatrocinadores", "PaquetePatrocinadores.Incluyes", "PaquetePatrocinadores.TipoPaquete", "Usuarios"], x => x.Activo == true);
+
+                var reservasVM = reservasDB.Select(x => new ReservaVM
+                {
+                    IdPaquete = x.PaquetePatrocinadores != null ? x.PaquetePatrocinadores.Id : 0,
+                    IdTipoPaquete = x.PaquetePatrocinadores != null ? x.PaquetePatrocinadores.IdTipoPaquete : 0,
+                    NombrePaquete = x.PaquetePatrocinadores != null ? x.PaquetePatrocinadores.NombrePaquete: "",
+                    NombreCompleto = x.Usuarios != null ? x.Usuarios.NombreCompleto : "",
+                    NombreTipoPaquete  = x.PaquetePatrocinadores != null ?  x.PaquetePatrocinadores.TipoPaquete.Nombre : "",
+                    Correo = x.Usuarios != null ? x.Usuarios.Correo : "",
+                    Descripcion = x.PaquetePatrocinadores != null ?  x.PaquetePatrocinadores.Descripcion : "",
+                    Edad = x.Usuarios != null ? x.Usuarios.Edad : 0,
+                    Monto = x.PaquetePatrocinadores != null ?  x.PaquetePatrocinadores.Precio : 0,
+                    Empresa = x.Usuarios != null ? x.Usuarios.Asociacion : "",
+                    Beneficios = x.PaquetePatrocinadores != null ? x.PaquetePatrocinadores.Incluyes.Select(x => new IncluyePaqueteRequest { Nombre = x.Nombre }).ToList() : []
+
+                }).ToList();
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return reservasVM;
+
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+
         }
 
         #endregion

@@ -136,6 +136,29 @@ namespace _4toExpoApi_v1._0._0.Controllers
                 throw;
             }
         }
+        [HttpDelete]
+        [Route("EliminarHotel")]
+        
+        public async Task<IActionResult> EliminarHotel(int id)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
+                var idUsuario = "1"; /*User.Claims.FirstOrDefault(x => x.Type == "Id").Value;*/
+
+                var response = await hotelService.EliminarHotel(id, int.Parse(idUsuario));
+
+                if (response.Success)
+                    return Ok(response);
+                else
+                    return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Error: " + ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
     }
 }

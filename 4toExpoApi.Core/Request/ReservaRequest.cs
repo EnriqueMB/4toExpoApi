@@ -13,9 +13,11 @@ namespace _4toExpoApi.Core.Request
         public int? idReserva { get; set; }
         public string? Producto { get; set; }
         public string? Apellidos { get; set;}
+        public int? IdPaquete { get; set; }
         public int? IdTipoPaquete { get; set; }
         public string? Nombre { get; set; }
         public int? Monto { get; set; }
+        public bool ConfirmarCompra { get; set; }
         public string? TipoPago { get; set; }
         public string? LogRequest { get; set; }
         public string? LogResponse { get; set; }
