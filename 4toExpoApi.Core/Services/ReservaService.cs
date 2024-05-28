@@ -311,11 +311,15 @@ namespace _4toExpoApi.Core.Services
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
                 var reservas = await _reservarEntityRepository.GetAll(_logger);
+                reservas = reservas.Where(x => x.Activo == true).ToList();
                 var usuarios = await _usuariosRepository.GetAll(_logger);
                 usuarios = usuarios.Where(x => x.IdTipoUsuario == 3).ToList();
                 var incluyeGeneral = await _incluyePaqueteRepository.GetAll(_logger);
+                incluyeGeneral = incluyeGeneral.Where(x => x.Activo == true).ToList();
                 var paquetesGeneral = await _paqueteGeneralRepository.GetAll(_logger);
+                paquetesGeneral = paquetesGeneral.Where(x => x.Activo == true).ToList();
                 var pagos = await _pagosRepository.GetAll(_logger);
+                pagos = pagos.Where(x => x.Activo == true).ToList();
 
                 var response = (from reserva in reservas
                                 join usuario in usuarios on reserva.IdUsuario equals usuario.Id
