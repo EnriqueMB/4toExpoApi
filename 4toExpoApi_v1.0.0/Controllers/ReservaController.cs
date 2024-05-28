@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using Newtonsoft.Json.Linq;
 using _4toExpoApi.DataAccess.Repositories;
+using System.Collections;
 
 
 namespace _4toExpoApi_v1._0._0.Controllers
@@ -446,6 +447,32 @@ namespace _4toExpoApi_v1._0._0.Controllers
                     _logger.LogError($"Payment failed with status code {response.StatusCode}.");
                     return StatusCode((int)response.StatusCode, await response.Content.ReadAsStringAsync());
                 }
+            }
+        }
+
+        [HttpGet("ObtenerPaqueteGeneral")]
+        public async Task<IActionResult> ObtenerPaqueteGeneral()
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var response = await _payService.ObtenerPaqueteGeneral();
+
+                if (response != null)
+                {
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                    return Ok(response);
+                }
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
             }
         }
 

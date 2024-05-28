@@ -15,8 +15,9 @@ namespace _4toExpoApi.DataAccess.Entities
         public string? NombreCompleto { get; set; }
         public int? Edad { get; set; }
         public int? IdUniversidad { get; set; }
-        public string? Semestre { get; set; }
-        public string? ColoniaMunicipio { get; set; }
+        public int? Semestre { get; set; }
+        public string? Ciudad { get; set; }
+        public string? Estado { get; set; }
         public string? Telefono { get; set; }
         public string? UrlImg { get; set; }
         public string? Asociacion { get; set; }
