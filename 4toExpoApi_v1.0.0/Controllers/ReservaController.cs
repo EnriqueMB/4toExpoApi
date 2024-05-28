@@ -11,6 +11,7 @@ using System.Text.Unicode;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using Newtonsoft.Json.Linq;
+using System;
 
 
 namespace _4toExpoApi_v1._0._0.Controllers
@@ -323,6 +324,72 @@ namespace _4toExpoApi_v1._0._0.Controllers
             }
         }
 
+        [HttpPost("PayWithCard")]
+        public async Task<IActionResult> CreateCharge([FromBody] PaymentRequest request)
+        {
+            var apiKey = "key_iRVbKuhPBqkrw8N4CSGAIXZ";
+            var apiUrl = "https://api.conekta.io/orders";
+
+            var requestData = new
+            {
+                line_items = new[]
+                {
+                    new
+                    {
+                        name = request.Producto,
+                        unit_price = request.Monto* 100, // Convertir a centavos
+                        quantity = request.Cantidad
+                    }
+                },
+                currency = "MXN",
+                customer_info = new
+                {
+                    name = request.Nombre,
+                    email = request.Correo,
+                    phone = request.Telefono
+                },
+                
+                charges = new[]
+                {
+                    new
+                    {
+                        payment_method = new
+                        {
+                            type = "card",
+                            token_id = request.CardToken // Utilizar el token de la tarjeta
+                        }
+                    }
+                }
+            };
+
+            using (var client = _clientFactory.CreateClient())
+            {
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add("Accept", "application/vnd.conekta-v2.0.0+json");
+
+                var byteArray = Encoding.ASCII.GetBytes($"{apiKey}:");
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+
+                var requestContent = new StringContent(JsonConvert.SerializeObject(requestData), Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync(apiUrl, requestContent);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    var conektaResponse = JsonConvert.DeserializeObject<PagoRequest>(responseContent);
+                    //var conektaResponse = JsonConvert.DeserializeObject<object>(responseContent); // Puedes definir un modelo específico para la respuesta si es necesario
+
+                    _logger.LogInformation("Payment successful.");
+                    return Ok(conektaResponse);
+                }
+                else
+                {
+                    _logger.LogError($"Payment failed with status code {response.StatusCode}.");
+                    return StatusCode((int)response.StatusCode, await response.Content.ReadAsStringAsync());
+                }
+            }
+        }
 
 
         #endregion
