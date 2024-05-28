@@ -28,6 +28,7 @@ namespace _4toExpoApi.Core.Services
         private readonly IBaseRepository<Usuarios> _usuariosRepository;
         private readonly IBaseRepository<Reservas> _reservarEntityRepository;
         private readonly IAzureBlobStorageService _azureBlobStorageService;
+        private readonly IBaseRepository<Pagos> _pagosRepository;
         private ILogger<ReservaService> _logger;
         private IConfiguration _configuration;
         #endregion
@@ -40,7 +41,8 @@ namespace _4toExpoApi.Core.Services
             IBaseRepository<IncluyePaquete> incluyePaqueteRepository,
             IBaseRepository<PaqueteGeneral> paqueteGeneralRepository,
             IBaseRepository<Usuarios> usuariosRepository,
-            IBaseRepository<Reservas> reservarEntityRepository)
+            IBaseRepository<Reservas> reservarEntityRepository,
+            IBaseRepository<Pagos> pagosRepository)
         {
             _reservaRepository = reservaRepository;
             _logger = logger;
@@ -50,6 +52,7 @@ namespace _4toExpoApi.Core.Services
             _paqueteGeneralRepository = paqueteGeneralRepository;
             _usuariosRepository = usuariosRepository;
             _reservarEntityRepository = reservarEntityRepository;
+            _pagosRepository = pagosRepository;
         }
         #endregion
 
@@ -301,6 +304,52 @@ namespace _4toExpoApi.Core.Services
                 throw;
             }
         }
+        public async Task<object> ObtenerPaqueteGeneral()
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var reservas = await _reservarEntityRepository.GetAll(_logger);
+                var usuarios = await _usuariosRepository.GetAll(_logger);
+                usuarios = usuarios.Where(x => x.IdTipoUsuario == 3).ToList();
+                var incluyeGeneral = await _incluyePaqueteRepository.GetAll(_logger);
+                var paquetesGeneral = await _paqueteGeneralRepository.GetAll(_logger);
+                var pagos = await _pagosRepository.GetAll(_logger);
+
+                var response = (from reserva in reservas
+                                join usuario in usuarios on reserva.IdUsuario equals usuario.Id
+                                join paquete in paquetesGeneral on reserva.IdPaquete equals paquete.Id
+                                join incluye in incluyeGeneral on paquete.Id equals incluye.PaqueteId into incluyeGrupo
+                                join pago in pagos on reserva.Id equals pago.IdReserva
+                                select new
+                                {
+                                    IdUsuario = usuario.Id,
+                                    NombreCompleto = usuario.NombreCompleto,
+                                    Correo = usuario.Correo,
+                                    Edad = usuario.Edad,
+                                    Telefono = usuario.Telefono,
+                                    Direccion = usuario.Ciudad,
+                                    NombrePaquete = paquete.Nombre,
+                                    Monto = paquete.Precio,
+                                    Beneficios = incluyeGrupo,
+                                    UrlBaucher = pago.BaucherPago,
+                                    TipoDePago = pago.Pasarela,
+                                    UrlComprobante = usuario.UrlImg,
+                                }).ToList();
+                 
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+
 
         public async Task<List<ReservaVM>> ObtenerReservaCompradores()
         {
@@ -309,7 +358,7 @@ namespace _4toExpoApi.Core.Services
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
                 var reservasDB = await _reservarEntityRepository
-                    .GetAll(_logger, ["PaquetePatrocinadores", "PaquetePatrocinadores.Incluyes", "PaquetePatrocinadores.TipoPaquete", "Usuarios"], x => x.Activo == true);
+                    .GetAll(_logger, ["PaquetePatrocinadores", "PaquetePatrocinadores.Incluyes", "PaquetePatrocinadores.TipoPaquete", "Usuarios"], x => x.Activo == true && x.Usuarios.IdTipoUsuario == 3);
 
                 var reservasVM = reservasDB.Select(x => new ReservaVM
                 {
