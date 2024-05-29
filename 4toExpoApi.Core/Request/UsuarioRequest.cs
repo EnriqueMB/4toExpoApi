@@ -17,8 +17,9 @@ namespace _4toExpoApi.Core.Request
         public string? producto { get; set; }
         public int? monto { get; set; } 
         public int? idUniversidad { get;set; }
-        public string? semestre {  get; set; }
-        public string? coloniaMunicipio { get; set; }
+        public int? semestre {  get; set; }
+        public string? ciudad { get; set; }
+        public string? estado { get; set; }
         public string? telefono { get; set; }
 
         public string correo { get; set; }
@@ -31,6 +32,7 @@ namespace _4toExpoApi.Core.Request
 
         public string Password { get; set; }
         public int? idTipoUsuario { get; set; }
+        public int? idPaquete { get; set; }
 
         public IFormFile? ImagenFile { get; set; }
 

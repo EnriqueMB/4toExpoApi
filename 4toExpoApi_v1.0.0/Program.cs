@@ -83,6 +83,7 @@ builder.Services.AddScoped<IBaseRepository<Banner>, BaseRepository<Banner>>();
 builder.Services.AddScoped<IBaseRepository<RedSocial>, BaseRepository<RedSocial>>();
 builder.Services.AddScoped<IPatrocinadoresRepository, PatrocinadoresRepository>();
 builder.Services.AddScoped<IBaseRepository<ProgramaActividades>, BaseRepository<ProgramaActividades>>();
+builder.Services.AddScoped<IBaseRepository<Pagos>, BaseRepository<Pagos>>();
 #endregion
 #region <-- Context -->
 

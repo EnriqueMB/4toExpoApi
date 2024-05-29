@@ -28,6 +28,7 @@ namespace _4toExpoApi.Core.Services
         private readonly IBaseRepository<Usuarios> _usuariosRepository;
         private readonly IBaseRepository<Reservas> _reservarEntityRepository;
         private readonly IAzureBlobStorageService _azureBlobStorageService;
+        private readonly IBaseRepository<Pagos> _pagosRepository;
         private ILogger<ReservaService> _logger;
         private IConfiguration _configuration;
         #endregion
@@ -40,7 +41,8 @@ namespace _4toExpoApi.Core.Services
             IBaseRepository<IncluyePaquete> incluyePaqueteRepository,
             IBaseRepository<PaqueteGeneral> paqueteGeneralRepository,
             IBaseRepository<Usuarios> usuariosRepository,
-            IBaseRepository<Reservas> reservarEntityRepository)
+            IBaseRepository<Reservas> reservarEntityRepository,
+            IBaseRepository<Pagos> pagosRepository)
         {
             _reservaRepository = reservaRepository;
             _logger = logger;
@@ -50,6 +52,7 @@ namespace _4toExpoApi.Core.Services
             _paqueteGeneralRepository = paqueteGeneralRepository;
             _usuariosRepository = usuariosRepository;
             _reservarEntityRepository = reservarEntityRepository;
+            _pagosRepository = pagosRepository;
         }
         #endregion
 
@@ -182,7 +185,7 @@ namespace _4toExpoApi.Core.Services
                     var port = _configuration["EmailSettings:Port"];
                     var usuario = _configuration["EmailSettings:UserName"];
                     var contraseña = _configuration["EmailSettings:Password"];
-                    string nombrePlantilla = "plantilla_correo.html";
+                    string nombrePlantilla = "plantilla_correoPago.html";
 
                     // Enviar correo
                     MailHelper.EnviarEmailPago(host, port, usuario, contraseña, pagos, nombrePlantilla);
@@ -282,7 +285,7 @@ namespace _4toExpoApi.Core.Services
                     Descripcion = paqueteUsuario.Descripcion,
                     Beneficios = incluyeUsuario,
                     IdUsuario = usuario.Id,
-                    NombreCompleto = usuario.NombreCompleto,
+                    NombreCompleto = usuario.NombreCompleto,    
                     Telefono = usuario.Telefono,
                     Correo = usuario.Correo,
                     Edad = usuario.Edad
@@ -300,6 +303,95 @@ namespace _4toExpoApi.Core.Services
                 _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
                 throw;
             }
+        }
+        public async Task<object> ObtenerPaqueteGeneral()
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var reservas = await _reservarEntityRepository.GetAll(_logger);
+                reservas = reservas.Where(x => x.Activo == true).ToList();
+                var usuarios = await _usuariosRepository.GetAll(_logger);
+                usuarios = usuarios.Where(x => x.IdTipoUsuario == 3).ToList();
+                var incluyeGeneral = await _incluyePaqueteRepository.GetAll(_logger);
+                incluyeGeneral = incluyeGeneral.Where(x => x.Activo == true).ToList();
+                var paquetesGeneral = await _paqueteGeneralRepository.GetAll(_logger);
+                paquetesGeneral = paquetesGeneral.Where(x => x.Activo == true).ToList();
+                var pagos = await _pagosRepository.GetAll(_logger);
+                pagos = pagos.Where(x => x.Activo == true).ToList();
+
+                var response = (from reserva in reservas
+                                join usuario in usuarios on reserva.IdUsuario equals usuario.Id
+                                join paquete in paquetesGeneral on reserva.IdPaquete equals paquete.Id
+                                join incluye in incluyeGeneral on paquete.Id equals incluye.PaqueteId into incluyeGrupo
+                                join pago in pagos on reserva.Id equals pago.IdReserva
+                                select new
+                                {
+                                    IdUsuario = usuario.Id,
+                                    NombreCompleto = usuario.NombreCompleto,
+                                    Correo = usuario.Correo,
+                                    Edad = usuario.Edad,
+                                    Telefono = usuario.Telefono,
+                                    Direccion = usuario.Ciudad,
+                                    NombrePaquete = paquete.Nombre,
+                                    Monto = paquete.Precio,
+                                    Beneficios = incluyeGrupo,
+                                    UrlBaucher = pago.BaucherPago,
+                                    TipoDePago = pago.Pasarela,
+                                    UrlComprobante = usuario.UrlImg,
+                                }).ToList();
+                 
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+
+
+        public async Task<List<ReservaVM>> ObtenerReservaCompradores()
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var reservasDB = await _reservarEntityRepository
+                    .GetAll(_logger, ["PaquetePatrocinadores", "PaquetePatrocinadores.Incluyes", "PaquetePatrocinadores.TipoPaquete", "Usuarios"], x => x.Activo == true && x.Usuarios.IdTipoUsuario == 3);
+
+                var reservasVM = reservasDB.Select(x => new ReservaVM
+                {
+                    IdPaquete = x.PaquetePatrocinadores != null ? x.PaquetePatrocinadores.Id : 0,
+                    IdTipoPaquete = x.PaquetePatrocinadores != null ? x.PaquetePatrocinadores.IdTipoPaquete : 0,
+                    NombrePaquete = x.PaquetePatrocinadores != null ? x.PaquetePatrocinadores.NombrePaquete: "",
+                    NombreCompleto = x.Usuarios != null ? x.Usuarios.NombreCompleto : "",
+                    NombreTipoPaquete  = x.PaquetePatrocinadores != null ?  x.PaquetePatrocinadores.TipoPaquete.Nombre : "",
+                    Correo = x.Usuarios != null ? x.Usuarios.Correo : "",
+                    Descripcion = x.PaquetePatrocinadores != null ?  x.PaquetePatrocinadores.Descripcion : "",
+                    Edad = x.Usuarios != null ? x.Usuarios.Edad : 0,
+                    Monto = x.PaquetePatrocinadores != null ?  x.PaquetePatrocinadores.Precio : 0,
+                    Empresa = x.Usuarios != null ? x.Usuarios.Asociacion : "",
+                    Beneficios = x.PaquetePatrocinadores != null ? x.PaquetePatrocinadores.Incluyes.Select(x => new IncluyePaqueteRequest { Nombre = x.Nombre }).ToList() : []
+
+                }).ToList();
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return reservasVM;
+
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+
         }
 
         #endregion
