@@ -1,4 +1,6 @@
-﻿using System;
+﻿using _4toExpoApi.Core.ViewModels;
+using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -54,7 +56,15 @@ namespace _4toExpoApi.Core.Request
 
         public class EmailBolsaDeTrabajo
         {
-
+            public string Nombre { get; set; }
+            public int Edad { get; set; }
+            [DataType(DataType.PhoneNumber)]
+            public string Telefono { get; set; }
+            [DataType(DataType.EmailAddress)]
+            public string Email { get; set; }
+            public IFormFile Cv { get; set; }
+            public string Mensaje { get; set; }
+            public BolsaTrabajoVM Datos { get; set; }
         }
 
         public class ServicioAlquiler
@@ -64,6 +74,16 @@ namespace _4toExpoApi.Core.Request
             public string? Descripcion { get; set; }
             public string? DiasAtencion { get; set; }
             public string? Horarios { get; set; }
+        }
+
+        public class File
+        {
+            public string Name { get; set; }
+            public long? LastModified { get; set; }
+            public DateTime? LastModifiedDate { get; set; }
+            public string? WebkitRelativePath { get; set; }
+            public long? Size { get; set; }
+            public string Type { get; set; }
         }
     }
 }

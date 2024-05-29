@@ -98,9 +98,34 @@ namespace _4toExpoApi.Core.Helpers
 
             if (datos.EmailBolsaDeTrabajo != null)
             {
+                if (datos.EmailBolsaDeTrabajo.Cv != null)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        datos.EmailBolsaDeTrabajo.Cv.CopyTo(ms);
+                        var cvAttachment = ms.ToArray();
+                        builder.Attachments.Add(datos.EmailBolsaDeTrabajo.Cv.FileName, cvAttachment, ContentType.Parse(datos.EmailBolsaDeTrabajo.Cv.ContentType));
+                    }
+                }
+
                 htmlContent = htmlContent.Replace("{{ $motivo }}", "Bolsa de trabajo eventos");
 
+                htmlContent = htmlContent.Replace("{{ $nombre }}", datos.EmailBolsaDeTrabajo.Nombre);
+                htmlContent = htmlContent.Replace("{{ $edad }}", datos.EmailBolsaDeTrabajo.Edad.ToString());
+                htmlContent = htmlContent.Replace("{{ $telefono }}", datos.EmailBolsaDeTrabajo.Telefono);
+                htmlContent = htmlContent.Replace("{{ $email }}", datos.EmailBolsaDeTrabajo.Email);
+                htmlContent = htmlContent.Replace("{{ $mensaje }}", datos.EmailBolsaDeTrabajo.Mensaje);
+                htmlContent = htmlContent.Replace("{{ $tipo }}", datos.EmailBolsaDeTrabajo.Datos.Tipo);
+                htmlContent = htmlContent.Replace("{{ $puesto }}", datos.EmailBolsaDeTrabajo.Datos.Puesto);
+                htmlContent = htmlContent.Replace("{{ $descripcion }}", datos.EmailBolsaDeTrabajo.Datos.Descripcion);
+                htmlContent = htmlContent.Replace("{{ $ciudad }}", datos.EmailBolsaDeTrabajo.Datos.Ciudad);
+                htmlContent = htmlContent.Replace("{{ $direccion }}", datos.EmailBolsaDeTrabajo.Datos.Direccion);
+                htmlContent = htmlContent.Replace("{{ $diaslaborales }}", datos.EmailBolsaDeTrabajo.Datos.DiasLaborales);
+                htmlContent = htmlContent.Replace("{{ $horario }}", datos.EmailBolsaDeTrabajo.Datos.HoraInicio + " - " + datos.EmailBolsaDeTrabajo.Datos.HoraFinal);
+                htmlContent = htmlContent.Replace("{{ $requisitos }}", datos.EmailBolsaDeTrabajo.Datos.Requisitos);
+
                 email.Subject = "Notificación bolsa de trabajo";
+
             }
             builder.HtmlBody = htmlContent;
 
