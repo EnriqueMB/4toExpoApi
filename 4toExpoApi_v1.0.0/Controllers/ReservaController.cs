@@ -26,16 +26,18 @@ namespace _4toExpoApi_v1._0._0.Controllers
         private ILogger<ReservaController> _logger;
         private readonly ReservaService _payService;
         private readonly IHttpClientFactory _clientFactory;
+        private readonly IConfiguration _configuration;
         #endregion
 
         #region <--- Constructor --->
         public ReservaController(ILogger<ReservaController> logger, IHttpClientFactory clientFactory,
-            ReservaService oxxoPayService
+            ReservaService oxxoPayService, IConfiguration configuration
             )
         {
             _logger = logger;
             _clientFactory = clientFactory;
             _payService = oxxoPayService;
+            _configuration = configuration;
         }
         #endregion
 
@@ -378,9 +380,14 @@ namespace _4toExpoApi_v1._0._0.Controllers
         [HttpPost("PayWithCard")]
         public async Task<IActionResult> CreateCharge([FromBody] PaymentRequest request)
         {
-            var apiKey = "key_0qIU431DUv9wnB1pWV36Wdo";
-            var apiUrl = "https://api.conekta.io/orders";
 
+            var apiKey = _configuration["ApiKey:ACOECH"];
+       
+            var apiUrl = "https://api.conekta.io/orders";
+            if (request.RazonSocialPagar == 2)
+            {
+                apiKey = _configuration["ApiKey:CIME"];
+            }
             var requestData = new
             {
                 line_items = new[]
@@ -413,6 +420,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
                 }
             };
 
+            
             using (var client = _clientFactory.CreateClient())
             {
                 client.DefaultRequestHeaders.Clear();
