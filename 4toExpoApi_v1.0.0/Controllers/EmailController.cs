@@ -48,6 +48,35 @@ namespace _4toExpoApi_v1._0._0.Controllers
                 throw;
             }
         }
+
+        [HttpPost("EnviarEmail2")]
+        public async Task<IActionResult> EnviarEmail2([FromForm] DatosEmailRequest.EmailBolsaDeTrabajo request)
+        {
+            try
+            {
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var data = new DatosEmailRequest.Emails();
+                data.EmailBolsaDeTrabajo = request;
+
+                var email = await _emailService.EnviarEmail(data);
+
+                if (email.Success)
+                {
+                    return Ok(email);
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
         #endregion
     }
 }
