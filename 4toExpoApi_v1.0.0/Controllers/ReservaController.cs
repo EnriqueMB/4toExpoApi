@@ -481,6 +481,32 @@ namespace _4toExpoApi_v1._0._0.Controllers
             }
         }
 
+        [HttpPut("ConfirmarPago")]
+        public async Task<IActionResult> ConfirmarPago(int id)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var response = await _payService.ConfirmarPago(id);
+
+                if (response != null)
+                {
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                    return Ok(response);
+                }
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+        
         [HttpPost("generateqr")]
         public async Task<IActionResult> generateqr(RequestQr requestQr)
         {
