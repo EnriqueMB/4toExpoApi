@@ -355,6 +355,7 @@ namespace _4toExpoApi.Core.Services
                                     UrlBaucher = pago.BaucherPago,
                                     TipoDePago = pago.Pasarela,
                                     UrlComprobante = usuario.UrlImg,
+                                    ConfirmarCompra = reserva.ConfirmarCompra
                                 }).ToList();
                  
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
