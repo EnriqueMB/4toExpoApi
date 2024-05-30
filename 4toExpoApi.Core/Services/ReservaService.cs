@@ -128,7 +128,7 @@ namespace _4toExpoApi.Core.Services
                     Monto = request.Monto,
                     LogResponse = request.apiResponse,
                     StatusPago = request.StatusReserva,
-                    Pasarela = "Paypal",
+                    Pasarela = "ConectaTarjeta",
                     FechaAlt = DateTime.Now,
                     UserAlt = usrAlta,
                     Activo = true
