@@ -262,20 +262,33 @@ namespace _4toExpoApi.Core.Services
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
-                var reservaId = await _reservarEntityRepository.GetAll(_logger);
-           
-                var paquete = await _paqueteGeneralRepository.GetAll(_logger);
-               
-                var incluye = await _incluyePaqueteRepository.GetAll(_logger);
-
                 var usuario = await _usuariosRepository.GetById(IdUser, _logger);
+                if (usuario == null)
+                {
+                    _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " User not found.");
+                    return null;
+                }
 
-                var reserva = reservaId.Where(x => x.IdUsuario == IdUser).FirstOrDefault();
-                var paqueteUsuario = paquete.Where(x => x.Nombre == reserva.Producto).FirstOrDefault();
-                var incluyeUsuario = incluye
-                                     .Where(x => x.PaqueteId == paqueteUsuario.Id)
-                                     .Select(x => AppMapper.Map<IncluyePaquete, IncluyePaqueteRequest>(x))
-                                     .ToList();
+                var reserva = (await _reservarEntityRepository.GetAll(_logger))
+                    .FirstOrDefault(x => x.IdUsuario == IdUser);
+                if (reserva == null)
+                {
+                    _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " Reservation not found.");
+                    return null;
+                }
+
+                var paqueteUsuario = (await _paqueteGeneralRepository.GetAll(_logger))
+                    .FirstOrDefault(x => x.Nombre == reserva.Producto);
+                if (paqueteUsuario == null)
+                {
+                    _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " Package not found.");
+                    return null;
+                }
+
+                var incluyeUsuario = (await _incluyePaqueteRepository.GetAll(_logger))
+                    .Where(x => x.PaqueteId == paqueteUsuario.Id)
+                    .Select(x => AppMapper.Map<IncluyePaquete, IncluyePaqueteRequest>(x))
+                    .ToList();
 
                 var responseReserva = new ReservaVM()
                 {
@@ -286,18 +299,16 @@ namespace _4toExpoApi.Core.Services
                     IdTipoUsuario = usuario.IdTipoUsuario,
                     Beneficios = incluyeUsuario,
                     IdUsuario = usuario.Id,
-                    NombreCompleto = usuario.NombreCompleto,    
+                    NombreCompleto = usuario.NombreCompleto,
                     Telefono = usuario.Telefono,
                     Correo = usuario.Correo,
-                    Edad = usuario.Edad
+                    Edad = usuario.Edad,
+                    CompraConfirmada = reserva.ConfirmarCompra,
                 };
-
-
 
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
 
                 return responseReserva;
-
             }
             catch (Exception ex)
             {
@@ -305,6 +316,7 @@ namespace _4toExpoApi.Core.Services
                 throw;
             }
         }
+
         public async Task<object> ObtenerPaqueteGeneral()
         {
             try
