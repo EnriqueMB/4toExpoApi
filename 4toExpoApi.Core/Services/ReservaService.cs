@@ -6,6 +6,7 @@ using _4toExpoApi.Core.Response;
 using _4toExpoApi.Core.ViewModels;
 using _4toExpoApi.DataAccess.Entities;
 using _4toExpoApi.DataAccess.IRepositories;
+using _4toExpoApi.DataAccess.Response;
 using Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -127,7 +128,7 @@ namespace _4toExpoApi.Core.Services
                     Monto = request.Monto,
                     LogResponse = request.apiResponse,
                     StatusPago = request.StatusReserva,
-                    Pasarela = "ConectaTarjeta",
+                    Pasarela = "Paypal",
                     FechaAlt = DateTime.Now,
                     UserAlt = usrAlta,
                     Activo = true
@@ -262,20 +263,33 @@ namespace _4toExpoApi.Core.Services
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
-                var reservaId = await _reservarEntityRepository.GetAll(_logger);
-           
-                var paquete = await _paqueteGeneralRepository.GetAll(_logger);
-               
-                var incluye = await _incluyePaqueteRepository.GetAll(_logger);
-
                 var usuario = await _usuariosRepository.GetById(IdUser, _logger);
+                if (usuario == null)
+                {
+                    _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " User not found.");
+                    return null;
+                }
 
-                var reserva = reservaId.Where(x => x.IdUsuario == IdUser).FirstOrDefault();
-                var paqueteUsuario = paquete.Where(x => x.Nombre == reserva.Producto).FirstOrDefault();
-                var incluyeUsuario = incluye
-                                     .Where(x => x.PaqueteId == paqueteUsuario.Id)
-                                     .Select(x => AppMapper.Map<IncluyePaquete, IncluyePaqueteRequest>(x))
-                                     .ToList();
+                var reserva = (await _reservarEntityRepository.GetAll(_logger))
+                    .FirstOrDefault(x => x.IdUsuario == IdUser);
+                if (reserva == null)
+                {
+                    _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " Reservation not found.");
+                    return null;
+                }
+
+                var paqueteUsuario = (await _paqueteGeneralRepository.GetAll(_logger))
+                    .FirstOrDefault(x => x.Nombre == reserva.Producto);
+                if (paqueteUsuario == null)
+                {
+                    _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " Package not found.");
+                    return null;
+                }
+
+                var incluyeUsuario = (await _incluyePaqueteRepository.GetAll(_logger))
+                    .Where(x => x.PaqueteId == paqueteUsuario.Id)
+                    .Select(x => AppMapper.Map<IncluyePaquete, IncluyePaqueteRequest>(x))
+                    .ToList();
 
                 var responseReserva = new ReservaVM()
                 {
@@ -283,20 +297,19 @@ namespace _4toExpoApi.Core.Services
                     IdTipoPaquete = reserva.IdTipoPaquete,
                     Monto = paqueteUsuario.Precio,
                     Descripcion = paqueteUsuario.Descripcion,
+                    IdTipoUsuario = usuario.IdTipoUsuario,
                     Beneficios = incluyeUsuario,
                     IdUsuario = usuario.Id,
-                    NombreCompleto = usuario.NombreCompleto,    
+                    NombreCompleto = usuario.NombreCompleto,
                     Telefono = usuario.Telefono,
                     Correo = usuario.Correo,
-                    Edad = usuario.Edad
+                    Edad = usuario.Edad,
+                    CompraConfirmada = reserva.ConfirmarCompra,
                 };
-
-
 
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
 
                 return responseReserva;
-
             }
             catch (Exception ex)
             {
@@ -304,6 +317,7 @@ namespace _4toExpoApi.Core.Services
                 throw;
             }
         }
+
         public async Task<object> ObtenerPaqueteGeneral()
         {
             try
@@ -328,6 +342,7 @@ namespace _4toExpoApi.Core.Services
                                 join pago in pagos on reserva.Id equals pago.IdReserva
                                 select new
                                 {
+                                    IdRegistroReserva = reserva.Id,
                                     IdUsuario = usuario.Id,
                                     NombreCompleto = usuario.NombreCompleto,
                                     Correo = usuario.Correo,
@@ -392,6 +407,41 @@ namespace _4toExpoApi.Core.Services
                 throw;
             }
 
+        }
+
+        public async Task<GenericResponse<Reservas>> ConfirmarPago(int idRegistroRerserva)
+        {
+            try
+            {
+                var response = new GenericResponse<Reservas>();
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+                
+                var confirmarPago = await _reservaRepository.ConfirmarPago(idRegistroRerserva, _logger);
+
+                if (confirmarPago.Success)
+                {
+                    response.Data = confirmarPago.Data;
+                    response.Message = "Se agrego Hotel";
+                    response.Success = true;
+                    response.CreatedId = confirmarPago.CreatedId;
+                }
+                else
+                {
+                    response.Data = confirmarPago.Data;
+                    response.Message = "No se pudo confirmar";
+                    response.Success = false;
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
         }
 
         #endregion
