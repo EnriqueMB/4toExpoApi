@@ -110,6 +110,7 @@ namespace _4toExpoApi.Core.Services
                 servicio.DiasLaborales = request.DiasLaborales;
                 servicio.HoraInicio = request.HoraInicio;
                 servicio.HoraFinal = request.HoraFinal;
+                servicio.IdPatrocinador = request.IdPatrocinador;
                 servicio.UserUpd = UserUpd;
                 servicio.FechaUpd = DateTime.Now;
                 var update = await _serviciosRepository.Update(servicio, _logger);

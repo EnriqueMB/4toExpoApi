@@ -10,6 +10,7 @@ namespace _4toExpoApi.DataAccess.Entities
         public string DiasLaborales {  get; set; }
         public TimeSpan? HoraInicio { get; set; }
         public TimeSpan? HoraFinal {  get; set; }
+        public int IdPatrocinador { get; set; }
         public int? UserAlt { get; set; }
         public DateTime? FechaAlt { get; set; }
         public int? UserUpd { get; set; }

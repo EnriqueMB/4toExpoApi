@@ -15,6 +15,7 @@ namespace _4toExpoApi.DataAccess.Entities
         public int Precio { get; set; }
         public string Descripcion {  get; set; }
         public int TotalArticulo { get; set; }
+        public int IdPatrocinador {  get; set; }
         public int? UserAlt {  get; set; }
         public DateTime? FechaAlt { get; set; }
         public int? UserUpd { get; set; }

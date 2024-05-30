@@ -88,6 +88,7 @@ namespace _4toExpoApi.Core.Services
                 productos.Precio = request.Precio;
                 productos.Descripcion = request.Descripcion;
                 productos.TotalArticulo = request.TotalArticulo;
+                productos.IdPatrocinador = request.IdPatrocinador;
                 productos.UserUpd = UserUpd;
                 productos.FechaUpd = DateTime.Now;
                 var update = await _productoRepository.Update(productos, _logger);

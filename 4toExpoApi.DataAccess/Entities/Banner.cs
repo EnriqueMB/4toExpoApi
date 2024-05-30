@@ -8,5 +8,6 @@ namespace _4toExpoApi.DataAccess.Entities
         public string? Descripcion { get; set; }
         public string? UrlVideo { get; set; }
         public int? IdRedSocial {  get; set; }
+        public int IdPatrocinador { get; set; }
     }
 }

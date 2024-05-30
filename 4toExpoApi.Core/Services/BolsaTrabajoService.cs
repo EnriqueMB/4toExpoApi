@@ -53,6 +53,7 @@ namespace _4toExpoApi.Core.Services
                     HoraFinal = TimeSpan.Parse(request.HoraFinal),
                     Ciudad = request.Ciudad,
                     Direccion = request.Direccion,
+                    IdPatrocinador = request.IdPatrocinador,
 
 
                     FechaAlt = HoraHelper.GetHora("mx"),
@@ -111,6 +112,7 @@ namespace _4toExpoApi.Core.Services
                 entity.HoraFinal = TimeSpan.Parse( request.HoraFinal);
                 entity.Ciudad = request.Ciudad;
                 entity.Direccion = request.Direccion;
+                entity.IdPatrocinador = request.IdPatrocinador;
                 entity.UserUpd = userMod;
                 entity.FechaUpd = HoraHelper.GetHora("mx");
 
@@ -213,6 +215,7 @@ namespace _4toExpoApi.Core.Services
                     HoraFinal = x.HoraFinal.ToString(),
                     Ciudad = x.Ciudad,
                     Direccion = x.Direccion,
+                    IdPatrocinador = x.IdPatrocinador,
                     
                 }).ToList();
                 
@@ -256,6 +259,7 @@ namespace _4toExpoApi.Core.Services
                     HoraFinal = bolsa.HoraFinal.ToString(),
                     Ciudad = bolsa.Ciudad,
                     Direccion = bolsa.Direccion,
+                    IdPatrocinador =  bolsa.IdPatrocinador,
 
                 };
 
