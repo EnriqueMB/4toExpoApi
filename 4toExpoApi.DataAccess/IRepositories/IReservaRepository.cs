@@ -12,5 +12,6 @@ namespace _4toExpoApi.DataAccess.IRepositories
     public interface IReservaRepository : IBaseRepository<Pagos>
     {
         Task<GenericResponse<Pagos>> AgregarReserva(Pagos pagos, ILogger logger);
+        Task<GenericResponse<Reservas>> ConfirmarPago(int id, ILogger logger);
     }
 }

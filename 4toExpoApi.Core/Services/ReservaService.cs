@@ -6,6 +6,7 @@ using _4toExpoApi.Core.Response;
 using _4toExpoApi.Core.ViewModels;
 using _4toExpoApi.DataAccess.Entities;
 using _4toExpoApi.DataAccess.IRepositories;
+using _4toExpoApi.DataAccess.Response;
 using Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -328,6 +329,7 @@ namespace _4toExpoApi.Core.Services
                                 join pago in pagos on reserva.Id equals pago.IdReserva
                                 select new
                                 {
+                                    IdRegistroReserva = reserva.Id,
                                     IdUsuario = usuario.Id,
                                     NombreCompleto = usuario.NombreCompleto,
                                     Correo = usuario.Correo,
@@ -392,6 +394,41 @@ namespace _4toExpoApi.Core.Services
                 throw;
             }
 
+        }
+
+        public async Task<GenericResponse<Reservas>> ConfirmarPago(int idRegistroRerserva)
+        {
+            try
+            {
+                var response = new GenericResponse<Reservas>();
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+                
+                var confirmarPago = await _reservaRepository.ConfirmarPago(idRegistroRerserva, _logger);
+
+                if (confirmarPago.Success)
+                {
+                    response.Data = confirmarPago.Data;
+                    response.Message = "Se agrego Hotel";
+                    response.Success = true;
+                    response.CreatedId = confirmarPago.CreatedId;
+                }
+                else
+                {
+                    response.Data = confirmarPago.Data;
+                    response.Message = "No se pudo confirmar";
+                    response.Success = false;
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
         }
 
         #endregion
