@@ -283,6 +283,7 @@ namespace _4toExpoApi.Core.Services
                     IdTipoPaquete = reserva.IdTipoPaquete,
                     Monto = paqueteUsuario.Precio,
                     Descripcion = paqueteUsuario.Descripcion,
+                    IdTipoUsuario = usuario.IdTipoUsuario,
                     Beneficios = incluyeUsuario,
                     IdUsuario = usuario.Id,
                     NombreCompleto = usuario.NombreCompleto,    
