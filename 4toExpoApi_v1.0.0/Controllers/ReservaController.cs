@@ -51,11 +51,14 @@ namespace _4toExpoApi_v1._0._0.Controllers
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
-
-
                 var apiUrl = "https://api.conekta.io/orders";
-                var privateKey = "key_iRVbKuhPBqkrw8N4CSGAIXZ";
+                var privateKey = _configuration["ApiKey:ACOECH"];
 
+                if (request.RazonSocialPagar == 2)
+                {
+                    privateKey = _configuration["ApiKey:CIME"];
+                }
+               
                 // Calcular la fecha y hora actual
                 DateTime now = DateTime.Now;
                 // Agregar 12 horas a la fecha y hora actual
