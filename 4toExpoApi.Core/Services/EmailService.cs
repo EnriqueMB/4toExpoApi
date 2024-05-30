@@ -63,6 +63,7 @@ namespace _4toExpoApi.Core.Services
 
                 if (request.EmailBolsaDeTrabajo != null)
                 {
+                    //request.EmailBolsaDeTrabajo.Cv.LastModifiedDate = DateTime.Now;
                     nombrePlantilla = "plantilla_bolsadetrabajo.html";
                     correoEnviar = _configuration["Correos:nimia"];
                 }

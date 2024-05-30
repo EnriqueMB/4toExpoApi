@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Font -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
-    <title>Correo</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <title>Formulario de Contacto</title>
     <style>
         body {
             font-family: 'Roboto', sans-serif;
             font-size: 16px;
-            color: #000;
-            background-color: #f3f4f6;
+            color: #333;
+            background-color: #f5f5f5;
+            line-height: 1.6;
         }
 
         table {
@@ -21,95 +20,104 @@
             margin: 0 auto;
             border-collapse: collapse;
             background-color: #fff;
-            border: #9ca3af;
-            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
         }
 
-            table td {
-                padding: 10px;
+            table th, table td {
+                padding: 15px;
                 border: none;
             }
 
-                table td h1 {
-                    font-size: 24px;
-                    text-align: center;
-                }
+            table th {
+                background-color: #031d2a;
+                color: #fff;
+                font-weight: 700;
+                text-align: center;
+            }
 
-                table td p {
-                    font-size: 16px;
-                    text-align: justify;
-                }
+            table td p {
+                margin: 0 0 15px;
+            }
 
-                table td a {
-                    display: block;
-                    width: 100%;
-                    max-width: 200px;
-                    margin: 0 auto;
-                    padding: 10px;
-                    background-color: #000;
-                    color: #fff;
-                    text-decoration: none;
-                    text-align: center;
-                }
+            table td img {
+                max-width: 100%;
+                height: auto;
+            }
+
+        .my {
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        .mp {
+            padding-left: 25px;
+        }
+
+        .conte {
+            padding: 15px;
+            border: 1px solid #9ca3af;
+            border-radius: 10px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: auto auto;
+        }
     </style>
 </head>
-
 <body>
     <table>
         <tr>
-            <td style="height: 50px;" align="center">
-                <div style="background-color: #4caf50; color: #fff; height: 60px !important; text-align: center !important; display: flex; justify-content: center; align-items:center;">
-
-                    <h1 style="font-weight: bold; margin-left: auto; margin-right: auto;">{{ $motivo }}
-                    </h1>
-                    
-                </div>
-            </td>
+            <th colspan="2">{{ $motivo }}</th>
         </tr>
         <tr>
-            <td style="padding: 35px;">
-                <p>
-                    Distinguido(a) Sr(a). <strong>{{ $tutor }}</strong>
 
-                </p>
-                <P>
-                    Por medio de la presente, nos complace informarle que el estudiante <strong>{{ $alumno }}</strong>, a quien usted representa como
-                    padre/madre/tutor legal, asistió de manera regular a las actividades académicas el día  <strong> {{ $fecha }} </strong>.
-                </P>
-                <p>
-                    Como parte de nuestro compromiso con mantener una comunicación efectiva y transparente con los padres de familia, hemos
-                    implementado un sistema de notificaciones diarias sobre la asistencia de los alumnos. De este modo, usted podrá
-                    mantenerse informado sobre el cumplimiento regular de su hijo(a) en el colegio.
-                </p>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
+            <td colspan="2">
                 <div style="text-align: center;">
-                    <img width="150px" src="Logo.jpg" alt="" srcset="">
+                    <h1>Bolsa de Trabajo</h1>
+
                 </div>
-            </td>
-        </tr>
-        <tr>
-            <td style="padding: 35px;">
-                <p>
-                    Agradecemos su atención y confianza en nuestra institución educativa. No dude en comunicarse con nosotros si tiene
-                    alguna inquietud o requiere información adicional.
-                </p>
-                <p>Atentamente, Maestro: <strong>{{ $maestro }}</strong> </p>
+                <div class="my">
+                    <h3>Información del Solicitante:</h3>
+                    <div class="mp">
+                        <p><strong>Nombre completo:</strong> {{ $nombre }}</p>
+                        <p><strong>Edad:</strong> {{ $edad }}</p>
+                        <p><strong>Telefono:</strong> {{ $telefono }}</p>
+                        <p><strong>Correo:</strong>{{ $email }}</p>
+                        <p><strong>Mensaje:</strong>{{ $mensaje }}</p>
+                    </div>
+                </div>
+                <h3 style="margin-top: 25px; margin-bottom: 10px;">Detalles de la Oportunidad Laboral:</h3>
+                <div class="conte">
+                    <p style="color: #6669f1;"><strong>{{ $tipo }}</strong></p>
+                    <p style="margin-bottom: 4px;"><strong>{{ $puesto }}</strong></p>
+                    <p style="color: #9ca3af;">{{ $descripcion }}</p>
+                    <p style="color: #9ca3af;">{{ $ciudad }}</p>
+                    <div class="grid">
+                        <div>
+                            <p style="margin-bottom: 4px;"><strong>Días Laborales:</strong></p>
+                            <p style="color: #9ca3af;">{{ $diaslaborales }}</p>
+
+                            <p style="margin-bottom: 4px;"><strong>Horario:</strong></p>
+                            <p style="color: #9ca3af;">{{ $horario }}</p>
+
+                        </div>
+                        <div>
+                            <p style="margin-bottom: 4px;"><strong>Requisitos:</strong></p>
+                            <p style="color: #9ca3af;">{{ $requisitos }}</p>
+                            <p style="margin-bottom: 4px;"><strong>Dirección:</strong></p>
+                            <p style="color: #9ca3af;">{{ $direccion }}</p>
+                        </div>
+                    </div>
+
+                </div>
 
             </td>
         </tr>
         <tr>
-            <td style="height: 50px;" align="center">
-                <div style="background-color: #4caf50; color: #fff; height: 60px !important; text-align: center !important; display: flex; justify-content: center; align-items:center;">
-
-                    <h3 style="font-weight: bold; margin-left: auto; margin-right: auto;">Kiddy-Check</h3>
-                </div>
-            </td>
+            <th colspan="4"></th>
         </tr>
     </table>
 </body>
-
 </html>
