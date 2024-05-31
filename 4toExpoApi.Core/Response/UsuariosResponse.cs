@@ -10,11 +10,11 @@ namespace _4toExpoApi.Core.Response
     {
         public int Id { get; set; }
         public string NombreCompleto { get; set; }
-        public string Correo { get; set; }
+        public string Correo { get; set; }   
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
         public string NombreUsuario { get; set; }
-        public int TipoUsuario { get; set; }
+        public int IdTipoUsuario { get; set; }
         public DateTime UltimoAcceso { get; set; }
     }
 }
