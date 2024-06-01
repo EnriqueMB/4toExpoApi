@@ -25,6 +25,7 @@ namespace _4toExpoApi.DataAccess.Entities
         public string? Cuenta { get; set; }
         public string? LogRequest { get; set; }
         public string? LogResponse { get; set; }
+        public int? IdTipoUsuario { get; set; }
         public int? UserAlt { get; set; }
         public DateTime? FechaAlt { get; set; }
         public int? UserUpd { get; set; }

@@ -190,14 +190,19 @@ namespace _4toExpoApi.Core.Services
         }
 
 
-        public async Task<ListResponse<BolsaTrabajoVM>> ObtenerBolsaTrabajo()
+        public async Task<ListResponse<BolsaTrabajoVM>> ObtenerBolsaTrabajo(int id)
         {
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
                 var response = new ListResponse<BolsaTrabajoVM>();
 
-                Expression<Func<BolsaTrabajo, bool>> expression = x => x.Activo == true;
+                if(id != 3)
+                {
+                    return null;
+                }
+
+                Expression<Func<BolsaTrabajo, bool>> expression = x => x.Activo == true && x.IdPatrocinador == id;
 
                 var result = await _bolsaTrabajoRepository.GetAll(_logger, [], expression);
 

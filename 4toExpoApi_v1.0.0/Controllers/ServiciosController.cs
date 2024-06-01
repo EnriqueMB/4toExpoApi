@@ -53,7 +53,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
             }
         }
         [HttpGet("ObtenerServicios")]
-        public async Task<IEnumerable> ObtenerServicios()
+        public async Task<IEnumerable> ObtenerServicios(int id)
         {
             try
             {

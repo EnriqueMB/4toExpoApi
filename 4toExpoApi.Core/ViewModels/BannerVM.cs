@@ -12,5 +12,6 @@ namespace _4toExpoApi.Core.ViewModels
         public string? NombreRedSocial { get; set; }
         public string? UrlRedSocial { get; set; }
         public int? IdPatrocinador { get; set; }
+        public bool Activo { get; set; }
     }
 }
