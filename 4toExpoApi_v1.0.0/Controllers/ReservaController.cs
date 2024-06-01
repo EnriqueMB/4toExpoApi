@@ -13,6 +13,8 @@ using System.Net.Http.Headers;
 using Newtonsoft.Json.Linq;
 using _4toExpoApi.DataAccess.Repositories;
 using System.Collections;
+using _4toExpoApi.Core.Helpers;
+using _4toExpoApi.DataAccess.Entities;
 
 
 namespace _4toExpoApi_v1._0._0.Controllers
@@ -51,11 +53,14 @@ namespace _4toExpoApi_v1._0._0.Controllers
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
-
-
                 var apiUrl = "https://api.conekta.io/orders";
-                var privateKey = "key_iRVbKuhPBqkrw8N4CSGAIXZ";
+                var privateKey = _configuration["ApiKey:ACOECH"];
 
+                if (request.RazonSocialPagar == 2)
+                {
+                    privateKey = _configuration["ApiKey:CIME"];
+                }
+               
                 // Calcular la fecha y hora actual
                 DateTime now = DateTime.Now;
                 // Agregar 12 horas a la fecha y hora actual
@@ -473,6 +478,48 @@ namespace _4toExpoApi_v1._0._0.Controllers
             {
                 _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
                 throw;
+            }
+        }
+
+        [HttpPut("ConfirmarPago")]
+        public async Task<IActionResult> ConfirmarPago(int id)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var response = await _payService.ConfirmarPago(id);
+
+                if (response != null)
+                {
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                    return Ok(response);
+                }
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+        
+        [HttpPost("generateqr")]
+        public async Task<IActionResult> generateqr(RequestQr requestQr)
+        {
+            try
+            {
+                string jsonString = JsonConvert.SerializeObject(requestQr);
+                string qRCodeHelper = QRCodeHelper.GenerateQRCode(jsonString);
+                return Ok(new { data = qRCodeHelper, error = false });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+
             }
         }
 
