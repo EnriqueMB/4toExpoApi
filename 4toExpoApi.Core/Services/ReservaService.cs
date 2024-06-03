@@ -342,6 +342,7 @@ namespace _4toExpoApi.Core.Services
                                 join pago in pagos on reserva.Id equals pago.IdReserva
                                 select new
                                 {
+                                    Id = pago.Id,
                                     IdRegistroReserva = reserva.Id,
                                     IdUsuario = usuario.Id,
                                     NombreCompleto = usuario.NombreCompleto,
