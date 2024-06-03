@@ -342,6 +342,7 @@ namespace _4toExpoApi.Core.Services
                                 join pago in pagos on reserva.Id equals pago.IdReserva
                                 select new
                                 {
+                                    Id = pago.Id,
                                     IdRegistroReserva = reserva.Id,
                                     IdUsuario = usuario.Id,
                                     NombreCompleto = usuario.NombreCompleto,
@@ -355,6 +356,7 @@ namespace _4toExpoApi.Core.Services
                                     UrlBaucher = pago.BaucherPago,
                                     TipoDePago = pago.Pasarela,
                                     UrlComprobante = usuario.UrlImg,
+                                    ConfirmarCompra = reserva.ConfirmarCompra
                                 }).ToList();
                  
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
