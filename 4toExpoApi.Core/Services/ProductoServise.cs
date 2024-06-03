@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -88,6 +89,7 @@ namespace _4toExpoApi.Core.Services
                 productos.Precio = request.Precio;
                 productos.Descripcion = request.Descripcion;
                 productos.TotalArticulo = request.TotalArticulo;
+                productos.IdPatrocinador = request.IdPatrocinador;
                 productos.UserUpd = UserUpd;
                 productos.FechaUpd = DateTime.Now;
                 var update = await _productoRepository.Update(productos, _logger);
@@ -113,7 +115,7 @@ namespace _4toExpoApi.Core.Services
                 throw;
             }
         }
-        public async Task<List<ProductosRequest>> ObtenerProducto()
+        public async Task<List<ProductosRequest>> ObtenerProducto(int id)
         {
             try
             {
@@ -125,7 +127,10 @@ namespace _4toExpoApi.Core.Services
                 {
                     return null;
                 }
-                var listaProductosFiltrada = listProducto.Where(x => x.Activo == true).ToList();
+                if(id != 2){
+                    return null ;
+                }
+                var listaProductosFiltrada = listProducto.Where(x => x.Activo == true && x.IdPatrocinador == id).ToList();
 
                 var requestListProducto = listaProductosFiltrada.Select(producto => AppMapper.Map<Productos, ProductosRequest>(producto)).ToList();
 
@@ -179,6 +184,11 @@ namespace _4toExpoApi.Core.Services
                 _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
                 throw;
             }
+        }
+
+        public async Task<IEnumerable> ObtenerProducto()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -79,13 +79,13 @@ namespace _4toExpoApi_v1._0._0.Controllers
             }
         }
         [HttpGet("ObtenerBolsaTrabajo")]
-        public async Task<IActionResult> ObtenerBolsaTrabajo()
+        public async Task<IActionResult> ObtenerBolsaTrabajo(int id)
         {
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
-                var response = await _bolsaTrabajoService.ObtenerBolsaTrabajo();
+                var response = await _bolsaTrabajoService.ObtenerBolsaTrabajo(id);
 
                 if (response != null)
                 {

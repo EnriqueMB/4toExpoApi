@@ -5,6 +5,7 @@ using _4toExpoApi.DataAccess.Entities;
 using _4toExpoApi.DataAccess.IRepositories;
 using _4toExpoApi.DataAccess.Response;
 using Microsoft.Extensions.Logging;
+using System.Collections;
 using System.Reflection;
 
 namespace _4toExpoApi.Core.Services
@@ -64,7 +65,7 @@ namespace _4toExpoApi.Core.Services
             }
         }
 
-        public async Task<List<ServicioRequest>> ObtenerServicios()
+        public async Task<List<ServicioRequest>> ObtenerServicios(int id)
         {
             try
             {
@@ -76,7 +77,10 @@ namespace _4toExpoApi.Core.Services
                 {
                     return null;
                 }
-                var listaServiciosFiltrada = listServicios.Where(x => x.Activo == true).ToList();
+                if(id != 2){
+                    return null ;
+                }
+                var listaServiciosFiltrada = listServicios.Where(x => x.Activo == true && x.IdPatrocinador == id).ToList();
 
                 var requestListServicios = listaServiciosFiltrada.Select(servicio => AppMapper.Map<Servicios, ServicioRequest>(servicio)).ToList();
                
@@ -110,6 +114,7 @@ namespace _4toExpoApi.Core.Services
                 servicio.DiasLaborales = request.DiasLaborales;
                 servicio.HoraInicio = request.HoraInicio;
                 servicio.HoraFinal = request.HoraFinal;
+                servicio.IdPatrocinador = request.IdPatrocinador;
                 servicio.UserUpd = UserUpd;
                 servicio.FechaUpd = DateTime.Now;
                 var update = await _serviciosRepository.Update(servicio, _logger);
@@ -176,7 +181,12 @@ namespace _4toExpoApi.Core.Services
                 throw;
             }
         }
-       
+
+        public async Task<IEnumerable> ObtenerServicios()
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
     }

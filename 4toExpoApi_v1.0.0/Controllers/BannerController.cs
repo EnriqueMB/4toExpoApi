@@ -51,14 +51,14 @@ namespace _4toExpoApi_v1._0._0.Controllers
             }
         }
         [HttpGet("BannerObtener")]
-        public async Task<IActionResult> BannerObtener()
+        public async Task<IActionResult> BannerObtener(int id)
         {
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
 
-                var response = await _bannerService.ObtenerBanner();
+                var response = await _bannerService.ObtenerBanner(id);
 
                 if (response != null)
                 {

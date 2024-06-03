@@ -81,7 +81,7 @@ namespace _4toExpoApi.Core.Services
                 throw;
             }
         }
-        public async Task<BannerVM> ObtenerBanner()
+        public async Task<BannerVM> ObtenerBanner(int id)
         {
             try
             {
@@ -99,22 +99,28 @@ namespace _4toExpoApi.Core.Services
                                   NombreEmpresa = bann.NombreEmpresa ?? null,
                                   Descripcion = bann.Descripcion ?? null,
                                   UrlVideo = bann.UrlVideo ?? null,
-                                  IdRedSocial = bann.IdRedSocial ,
+                                  IdRedSocial = bann.IdRedSocial,
                                   NombreRedSocial = red.Nombre ?? null,
                                   UrlRedSocial = red.UrlRedSocial ?? null,
 
-                              }).FirstOrDefault();
+
+                              }).Where(x => x.Activo == true && x.IdPatrocinador == id).FirstOrDefault();
 
 
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
 
-                return banner;
+                return (banner);
             }
             catch (Exception ex)
             {
                 _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
                 throw;
             }
+        }
+
+        private void FirstOrDefault()
+        {
+            throw new NotImplementedException();
         }
 
 

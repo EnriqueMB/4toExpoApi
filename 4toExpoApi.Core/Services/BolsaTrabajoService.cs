@@ -53,6 +53,7 @@ namespace _4toExpoApi.Core.Services
                     HoraFinal = TimeSpan.Parse(request.HoraFinal),
                     Ciudad = request.Ciudad,
                     Direccion = request.Direccion,
+                    IdPatrocinador = request.IdPatrocinador,
 
 
                     FechaAlt = HoraHelper.GetHora("mx"),
@@ -111,6 +112,7 @@ namespace _4toExpoApi.Core.Services
                 entity.HoraFinal = TimeSpan.Parse( request.HoraFinal);
                 entity.Ciudad = request.Ciudad;
                 entity.Direccion = request.Direccion;
+                entity.IdPatrocinador = request.IdPatrocinador;
                 entity.UserUpd = userMod;
                 entity.FechaUpd = HoraHelper.GetHora("mx");
 
@@ -188,14 +190,19 @@ namespace _4toExpoApi.Core.Services
         }
 
 
-        public async Task<ListResponse<BolsaTrabajoVM>> ObtenerBolsaTrabajo()
+        public async Task<ListResponse<BolsaTrabajoVM>> ObtenerBolsaTrabajo(int id)
         {
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
                 var response = new ListResponse<BolsaTrabajoVM>();
 
-                Expression<Func<BolsaTrabajo, bool>> expression = x => x.Activo == true;
+                if(id != 3)
+                {
+                    return null;
+                }
+
+                Expression<Func<BolsaTrabajo, bool>> expression = x => x.Activo == true && x.IdPatrocinador == id;
 
                 var result = await _bolsaTrabajoRepository.GetAll(_logger, [], expression);
 
@@ -213,6 +220,7 @@ namespace _4toExpoApi.Core.Services
                     HoraFinal = x.HoraFinal.ToString(),
                     Ciudad = x.Ciudad,
                     Direccion = x.Direccion,
+                    IdPatrocinador = x.IdPatrocinador,
                     
                 }).ToList();
                 
@@ -256,6 +264,7 @@ namespace _4toExpoApi.Core.Services
                     HoraFinal = bolsa.HoraFinal.ToString(),
                     Ciudad = bolsa.Ciudad,
                     Direccion = bolsa.Direccion,
+                    IdPatrocinador =  bolsa.IdPatrocinador,
 
                 };
 

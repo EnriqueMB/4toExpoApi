@@ -75,7 +75,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
             }
         }
         [HttpGet("ObtenerProducto")]
-        public async Task<IEnumerable> ObtenerProducto()
+        public async Task<IEnumerable> ObtenerProducto(int id)
         {
             try
             {

@@ -20,5 +20,6 @@ namespace _4toExpoApi.Core.Request
         public string HoraFinal { get; set; }
         public string Ciudad { get; set; }
         public string Direccion { get; set; }
+        public int IdPatrocinador { get; set; }
     }
 }
