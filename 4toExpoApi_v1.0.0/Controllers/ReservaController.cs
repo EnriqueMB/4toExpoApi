@@ -64,7 +64,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
                 // Calcular la fecha y hora actual
                 DateTime now = DateTime.Now;
                 // Agregar 12 horas a la fecha y hora actual
-                DateTime expiresAt = now.AddHours(12);
+                DateTime expiresAt = now.AddHours(24);
                 // Convertir la fecha y hora a segundos desde el 1 de enero de 1970 (época UNIX)
                 long expiresAtUnixTimestamp = (long)(expiresAt - new DateTime(1970, 1, 1)).TotalSeconds;
 
