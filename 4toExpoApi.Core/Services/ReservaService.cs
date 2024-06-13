@@ -294,7 +294,7 @@ namespace _4toExpoApi.Core.Services
                 var responseReserva = new ReservaVM()
                 {
                     NombrePaquete = paqueteUsuario.Nombre,
-                    IdTipoPaquete = reserva.IdTipoPaquete,
+                    IdTipoPaquete = reserva.IdPaquete,
                     Monto = paqueteUsuario.Precio,
                     Descripcion = paqueteUsuario.Descripcion,
                     IdTipoUsuario = usuario.IdTipoUsuario,
@@ -304,6 +304,8 @@ namespace _4toExpoApi.Core.Services
                     Telefono = usuario.Telefono,
                     Correo = usuario.Correo,
                     Edad = usuario.Edad,
+                    Asociacion = usuario.Asociacion,
+
                     CompraConfirmada = reserva.ConfirmarCompra,
                 };
 
