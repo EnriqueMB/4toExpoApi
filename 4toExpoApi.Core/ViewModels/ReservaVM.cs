@@ -24,6 +24,7 @@ namespace _4toExpoApi.Core.ViewModels
         public int? Edad { get; set; }
         public string? Telefono { get; set; }
         public string? Correo {  get; set; }
+        public string? Asociacion { get; set; }
         public bool? CompraConfirmada {  get; set; }
 
     }
