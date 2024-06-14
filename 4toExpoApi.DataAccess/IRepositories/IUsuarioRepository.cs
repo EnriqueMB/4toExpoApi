@@ -12,6 +12,7 @@ namespace _4toExpoApi.DataAccess.IRepositories
     public interface IUsuarioRepository : IBaseRepository<Usuarios>
     {
         Task<Usuarios> ExistsByNombreUsuario(string correo, ILogger logger);
+        Task<UsuariosPromocion> ExistsByNombreUsuarioPromo(string correo, ILogger logger);
         Task<GenericResponse<Usuarios>> AgregarUsuario(Usuarios usuario,Reservas reserva, ILogger logger);
         Task<GenericResponse<Usuarios>> ActualizarUsuario(Usuarios usuario, List<UsuarioPermisos> permisos, ILogger logger);
         Task<GenericResponse<List<int>>> ObtenerRolesUsuario(int id, ILogger logger);

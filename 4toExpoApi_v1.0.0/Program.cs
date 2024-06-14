@@ -52,6 +52,7 @@ builder.Services.AddScoped<BannerService>();
 #region <-- Repositories -->
 //builder.Services.AddScoped<IBaseRepository<Permisos>, BaseRepository<Permisos>>();
 builder.Services.AddScoped<IBaseRepository<Usuarios>, BaseRepository<Usuarios>>();
+builder.Services.AddScoped<IBaseRepository<UsuariosPromocion>, BaseRepository<UsuariosPromocion>>();
 //builder.Services.AddScoped<IBaseRepository<UsuarioPermisos>, BaseRepository<UsuarioPermisos>>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IBaseRepository<Reservas>, BaseRepository<Reservas>>();

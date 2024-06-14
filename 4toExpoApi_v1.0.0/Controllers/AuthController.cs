@@ -56,6 +56,34 @@ namespace _4toExpoApi_v1._0._0.Controllers
             }
         }
 
+        [HttpPost("AgregarUsuarioPromocion")]
+        public async Task<IActionResult> AgregarUsuarioPromo(UsuarioPromoRequest request)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+
+
+                var response = await _authService.AgregarUsuarioPromocion(request, 1);
+
+                if (response.Success)
+                {
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                    return Ok(response);
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
 
         //Obtener usuarios
         [HttpGet("ObtenerUsuarios")]
@@ -85,6 +113,32 @@ namespace _4toExpoApi_v1._0._0.Controllers
             }
         }
 
+        [HttpGet("ObtenerUsuariosPromocion")]
+        public async Task<IActionResult> ObtenerUsuariosPromo()
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var response = await _authService.ObtenerUsuariosPromo();
+
+                if (response != null)
+                {
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                    return Ok(response);
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
         //Obtener usuario por id
         [HttpGet("ObtenerUsuarioPorId")]
         public async Task<IActionResult> ObtenerUsuarioPorId(int id)
