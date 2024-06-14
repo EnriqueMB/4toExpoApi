@@ -44,6 +44,29 @@ namespace _4toExpoApi.DataAccess.Repositories
                 throw;
             }
         }
+        public async Task<UsuariosPromocion> ExistsByNombreUsuarioPromo(string correo, ILogger logger)
+        {
+            try
+            {
+                logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var userPromo = _context.UsuariosPromocion.Where(x => x.Correo == correo && x.Activo == true).FirstOrDefault();
+
+                if (userPromo != null)
+                {
+                    logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                    return userPromo;
+                }
+
+                logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                return null;
+            }
+            catch (SqlException ex)
+            {
+                logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
 
         public async Task<GenericResponse<Usuarios>> AgregarUsuario(Usuarios usuario, Reservas reservas, ILogger logger)
         {

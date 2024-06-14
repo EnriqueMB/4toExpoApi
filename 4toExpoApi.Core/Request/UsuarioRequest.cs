@@ -30,7 +30,7 @@ namespace _4toExpoApi.Core.Request
         public bool? asesoria { get; set; }
         public string? sugerencia { get; set; }
 
-        public string Password { get; set; }
+        public string? Password { get; set; }
         public int? idTipoUsuario { get; set; }
         public int? idPaquete { get; set; }
 

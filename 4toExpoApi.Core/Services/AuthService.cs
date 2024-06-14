@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
@@ -23,6 +24,7 @@ namespace _4toExpoApi.Core.Services
     {
         #region <-- Variables -->
         private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IBaseRepository<UsuariosPromocion> _promocionRepository;
         private ILogger<AuthService> _logger;
         private readonly IAzureBlobStorageService _azureBlobStorageService;
         private readonly JwtSettings _jwtSettings;
@@ -32,13 +34,14 @@ namespace _4toExpoApi.Core.Services
         #region <-- Constructor -->
         public AuthService(IUsuarioRepository usuarioRepository,
             ILogger<AuthService> logger, JwtSettings jwtSettings,
-            IConfiguration configuration, IAzureBlobStorageService azureBlobStorageService)
+            IConfiguration configuration, IAzureBlobStorageService azureBlobStorageService, IBaseRepository<UsuariosPromocion> promocionRepository)
         {
             _usuarioRepository = usuarioRepository;
             _logger = logger;
             _jwtSettings = jwtSettings;
             _configuration = configuration;
             _azureBlobStorageService = azureBlobStorageService;
+            _promocionRepository = promocionRepository;
         }
         #endregion
 
@@ -112,7 +115,57 @@ namespace _4toExpoApi.Core.Services
             }
         }
 
-     
+        public async Task<GenericResponse> AgregarUsuarioPromocion(UsuarioPromoRequest request, int usrAlta)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var response = new GenericResponse();
+
+                var userDb = await _usuarioRepository.ExistsByNombreUsuarioPromo(request.correo, _logger);
+
+                if (userDb != null)
+                {
+                    response.Message = "El nombre de usuario ya existe";
+                    response.Success = false;
+
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                    return response;
+                }
+
+
+                var usuario = AppMapper.Map<UsuarioPromoRequest, UsuariosPromocion>(request);
+
+
+                usuario.FechaAlt = DateTime.Now;
+                usuario.UserAlt = usrAlta;
+                usuario.Activo = true;
+
+
+                var agregar = await _promocionRepository.Add(usuario, _logger);
+
+                if (agregar != null)
+                {
+                    response.Message = "Usuario agregado correctamente";
+                    response.Success = true;
+                    response.CreatedId = agregar.Id.ToString();
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+
+
+
 
         public async Task<AuthResponse> Login(AuthRequest request)
         {
@@ -210,6 +263,51 @@ namespace _4toExpoApi.Core.Services
             }
         }
 
+        public async Task<ListResponse<UsuariosPromoVM>> ObtenerUsuariosPromo()
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var response = new ListResponse<UsuariosPromoVM>();
+
+                string[] include = new string[] { "Usuarios" };
+                Expression<Func<UsuariosPromocion, bool>> query = u => u.Activo == true;
+
+                var usuariosPromo = await _promocionRepository.GetAll(_logger, include, query);
+
+                if (usuariosPromo != null)
+                {
+
+                    var listaUusarios = usuariosPromo.Select(usuariosPromo => new UsuariosPromoVM
+                    {
+                        Id = usuariosPromo.Id,
+                        NombreCompleto = usuariosPromo.NombreCompleto,
+                        Correo = usuariosPromo.Correo,
+                        Telefono = usuariosPromo.Telefono,
+                        Asociacion = usuariosPromo.Asociacion,
+                        NombreRepresentante = usuariosPromo.Usuarios.NombreCompleto,
+                    }).ToList();
+
+
+                    response.Data = listaUusarios;
+                    response.Total = listaUusarios.Count();
+
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                    return response;
+
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
         //Obtener usuario por id
         public async Task<UsuariosResponse> ObtenerUsuarioPorId(int id)
         {
