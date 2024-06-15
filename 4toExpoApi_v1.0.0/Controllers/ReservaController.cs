@@ -523,6 +523,22 @@ namespace _4toExpoApi_v1._0._0.Controllers
             }
         }
 
+        [HttpPost("generateqrPromo")]
+        public async Task<IActionResult> QrPromo(RequestQrPromo requestQr)
+        {
+            try
+            {
+                string jsonString = JsonConvert.SerializeObject(requestQr);
+                string qRCodeHelper = QRCodeHelper.GenerateQRCode(jsonString);
+                return Ok(new { data = qRCodeHelper, error = false });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+
+            }
+        }
+
         #endregion
     }
 }
