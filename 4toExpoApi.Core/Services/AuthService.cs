@@ -7,6 +7,8 @@ using _4toExpoApi.Core.ViewModels;
 using _4toExpoApi.DataAccess.Entities;
 using _4toExpoApi.DataAccess.IRepositories;
 using _4toExpoApi.DataAccess.Response;
+using AutoMapper.Configuration.Annotations;
+using KiddyCheckApi.Core.Helpers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -17,6 +19,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace _4toExpoApi.Core.Services
 {
@@ -148,7 +151,16 @@ namespace _4toExpoApi.Core.Services
 
                 if (agregar != null)
                 {
-                    response.Message = "Usuario agregado correctamente";
+                    var enviarCorroQr = await enviarCorreo(request);
+
+                    if (enviarCorroQr.Success)
+                    {
+                        response.Message = "Participante agregado correctamente y QR enviado al correo";
+                    }
+                    else
+                    {
+                        response.Message = "Participante agregado correctamente pero no se envió el correo";
+                    }
                     response.Success = true;
                     response.CreatedId = agregar.Id.ToString();
                 }
@@ -165,7 +177,43 @@ namespace _4toExpoApi.Core.Services
         }
 
 
+        public async Task<GenericResponse> enviarCorreo(UsuarioPromoRequest usuarioDatos)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
+                var response = new GenericResponse();
+
+              
+
+                if (usuarioDatos != null)
+                {
+                    // Obtener credenciales de correo
+                    var host = _configuration["EmailSettings:Host"];
+                    var port = _configuration["EmailSettings:Port"];
+                    var usuario = _configuration["EmailSettings:UserName"];
+                    var contraseña = _configuration["EmailSettings:Password"];
+                    string nombrePlantilla = "plantilla_correoQr.html";
+
+                    // Enviar correo
+                    MailHelperQr.EnviarEmail(host, port, usuario, contraseña, usuarioDatos, nombrePlantilla);
+
+                    response.Message = "Correo enviado correctamente";
+                    response.Success = true;
+
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
 
         public async Task<AuthResponse> Login(AuthRequest request)
         {
@@ -286,7 +334,9 @@ namespace _4toExpoApi.Core.Services
                         Correo = usuariosPromo.Correo,
                         Telefono = usuariosPromo.Telefono,
                         Asociacion = usuariosPromo.Asociacion,
+                        Estado = usuariosPromo.Estado,
                         NombreRepresentante = usuariosPromo.Usuarios.NombreCompleto,
+                        Ciudad = usuariosPromo.Ciudad,
                     }).ToList();
 
 

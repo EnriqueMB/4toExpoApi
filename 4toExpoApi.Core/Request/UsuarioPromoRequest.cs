@@ -18,5 +18,6 @@ namespace _4toExpoApi.Core.Request
         public string? ciudad { get; set; }
         public string? estado { get; set; }
         public string? asociacion { get; set; }
+        public string? nombreRepresentante { get; set; }
     }
 }

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <title>Correo</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            color: #854442; /* Color vino claro */
+            background-color: #f3f4f6;
+        }
+
+        table {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            border: 2px solid #854442; /* Color vino claro */
+            border-radius: 10px;
+        }
+
+            table td {
+                padding: 10px;
+                border: none;
+            }
+
+                table td h1 {
+                    font-size: 24px;
+                    text-align: center;
+                    color: #ffd700; /* Color dorado */
+                }
+
+                table td p {
+                    font-size: 16px;
+                    text-align: justify;
+                }
+
+                table td a {
+                    display: block;
+                    width: 100%;
+                    max-width: 200px;
+                    margin: 0 auto;
+                    padding: 10px;
+                    background-color: #ffd700; /* Color dorado */
+                    color: #854442; /* Color vino claro */
+                    text-decoration: none;
+                    text-align: center;
+                }
+    </style>
+</head>
+
+<body>
+    <table>
+        <tr>
+            <td style="height: 50px;" align="center">
+                <div style="background-color: #854442; color: #ffd700; height: 60px !important; text-align: center !important; display: flex; justify-content: center; align-items:center;">
+
+                    <h1 style="font-weight: bold; margin-left: auto; margin-right: auto;">
+                        {{ $motivo }}
+                    </h1>
+
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 35px;">
+                <p>
+                    Distinguido(a) Sr(a). <strong>{{ $Participante }}</strong>
+                </p>
+                <P>
+                    Por medio de la presente, nos complace informarle que usted se ha registrado hoy <strong> {{ $fecha }} </strong>, para el evento.
+                </P>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div style="text-align: center;">
+                    <img width="150px" src="Logo.jpg" alt="" srcset="">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 35px;">
+                <p>
+                    Agradecemos su atención y confianza en nosotros. No dude en comunicarse con nosotros si tiene alguna inquietud o requiere información adicional.
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Por favor descargue el QR, será importante para su asistencia.
+            </td>
+        </tr>
+        <tr>
+            <td style="height: 50px;" align="center">
+                <div style="background-color: #854442; color: #ffd700; height: 60px !important; text-align: center !important; display: flex; justify-content: center; align-items:center;">
+
+                    <h3 style="font-weight: bold; margin-left: auto; margin-right: auto;"> ECIES.</h3>
+                </div>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>
