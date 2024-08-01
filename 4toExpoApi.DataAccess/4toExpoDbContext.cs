@@ -47,5 +47,6 @@ namespace _4toExpoApi.DataAccess
         public DbSet<Banner> Banner { get; set; }
         public DbSet<RedSocial> RedSocial { get; set; }
         public DbSet<UsuariosPromocion> UsuariosPromocion { get; set; }
+        public DbSet<Promocion> Promocion {  get; set; }
     }
 }
