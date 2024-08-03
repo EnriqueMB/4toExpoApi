@@ -33,12 +33,15 @@ namespace _4toExpoApi.Core.Services
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
+                string codigoDescuento = DiscountCodeGenerator.GenerateDiscountCode();
+
                 var response = new GenericResponse<PromocionRequest>();
 
                 var promo = AppMapper.Map<PromocionRequest, Promocion>(request);
                 promo.UserAlt = userAlt;
                 promo.FechaAlt = HoraHelper.GetHora("mx");
                 promo.Activo = true;
+                promo.Codigo = codigoDescuento;
 
                 var save = await _promocionRepository.Add(promo, _logger);
 
@@ -67,6 +70,33 @@ namespace _4toExpoApi.Core.Services
             }
         }
 
+        public async Task<List<PromocionRequest>> ObtenerPromocion()
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var listPomocion = await _promocionRepository.GetAll(_logger);
+
+                if (listPomocion == null || listPomocion.Count() == 0)
+                {
+                    return null;
+                }
+                var listaPromoFiltrada = listPomocion.Where(x => x.Activo == true).ToList();
+
+                var requestListPromo = listaPromoFiltrada.Select(promo => AppMapper.Map<Promocion, PromocionRequest>(promo)).ToList();
+
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return requestListPromo;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
 
         public async Task<ListResponse<PromocionRequest>> ObtenerPromocionesV1Pag(PaginadoRequest pag)
         {
@@ -109,6 +139,7 @@ namespace _4toExpoApi.Core.Services
                     PasesUsados = x.PasesUsados,
                     Porcentage = x.Porcentage,
                     NumeroPases = x.NumeroPases,
+                    Codigo = x.Codigo,
                     
                 }).ToList();
 
@@ -219,6 +250,25 @@ namespace _4toExpoApi.Core.Services
                 throw;
             }
         }
+
+       
+
         #endregion
+    }
+
+    public class DiscountCodeGenerator
+    {
+        private static readonly string Characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        public static string GenerateDiscountCode(int length = 10)
+        {
+            Random random = new Random();
+            char[] buffer = new char[length];
+            for (int i = 0; i < length; i++)
+            {
+                buffer[i] = Characters[random.Next(Characters.Length)];
+            }
+            return new string(buffer);
+        }
     }
 }

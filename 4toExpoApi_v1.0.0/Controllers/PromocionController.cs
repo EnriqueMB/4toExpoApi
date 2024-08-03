@@ -133,6 +133,34 @@ namespace _4toExpoApi_v1._0._0.Controllers
                 throw;
             }
         }
+
+        [HttpGet("ObtenerPromociones")]
+        public async Task<IEnumerable> ObtenerPromociones()
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+
+                var response = await _promoService.ObtenerPromocion();
+
+                if (response != null)
+                {
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                    return response;
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
         #endregion
     }
 }
