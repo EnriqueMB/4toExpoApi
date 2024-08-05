@@ -3,10 +3,12 @@ using _4toExpoApi.Core.Helpers;
 using _4toExpoApi.Core.Mappers;
 using _4toExpoApi.Core.Request;
 using _4toExpoApi.Core.Response;
+using _4toExpoApi.Core.ViewModels;
 using _4toExpoApi.DataAccess.Entities;
 using _4toExpoApi.DataAccess.IRepositories;
 using _4toExpoApi.DataAccess.Response;
 using AbogadosApiV1.Core.Request;
+using Azure;
 using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -214,6 +216,48 @@ namespace _4toExpoApi.Core.Services
                 return response;
             }
             catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+
+
+        public async Task<ResponsePromoVM> ValidarPromocion(string codigo, int costoOriginal)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var response = new ResponsePromoVM();
+                var promo = (await _promocionRepository.GetAll(_logger, [], x => x.Codigo == codigo)).FirstOrDefault();
+
+                if(promo == null ) 
+                {
+                    response.Success = false;
+                    response.Message = "No hay descuento para esta promocion";
+                    return response;
+                }
+
+                if(promo.PasesUsados >= promo.NumeroPases)
+                {
+                    response.Success = false;
+                    response.Message = "Los pases Usados superan al numero de pases";
+                    return response;
+
+                }
+
+                response.Success = true;
+                response.Message = "Se aplico la promocion Correctamente";
+
+                decimal? promoDesc = (promo.Porcentage * costoOriginal) / 100;
+                response.Precio = costoOriginal - promoDesc;
+
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                return response;
+
+            }catch(Exception ex)
             {
                 _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
                 throw;
