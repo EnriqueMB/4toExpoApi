@@ -9,5 +9,6 @@ namespace _4toExpoApi.Core.Request
         public int? Porcentage { get; set; }
         public int? NumeroPases { get; set; }
         public int? PasesUsados { get; set; }
+        public string? Codigo { get; set; }
     }
 }

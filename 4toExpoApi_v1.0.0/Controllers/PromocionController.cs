@@ -8,7 +8,7 @@ using System.Reflection;
 
 namespace _4toExpoApi_v1._0._0.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class PromocionController : ControllerBase
     {
@@ -76,7 +76,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
-                throw;
+                return StatusCode(500, new { message = "Error interno del servidor" });
             }
         }
         [HttpPut("EditarPromocion")]
@@ -133,6 +133,34 @@ namespace _4toExpoApi_v1._0._0.Controllers
                 throw;
             }
         }
+        [HttpGet("ObtenerPromociones")]
+        public async Task<IEnumerable> ObtenerPromociones()
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+
+                var response = await _promoService.ObtenerPromocion();
+
+                if (response != null)
+                {
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                    return response;
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+
         [HttpPost("CodigoPromocion")]
         public async Task<IActionResult> CodigoPromocion(string codigo, int precioOriginal)
         {
