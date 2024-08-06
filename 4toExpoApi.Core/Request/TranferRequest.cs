@@ -10,6 +10,7 @@ namespace _4toExpoApi.Core.Request
     public class TranferRequest
     {
         public int? idReserva { get; set; }
+        public int? IdPromocion {  get; set; }
         public string? Producto { get; set; }
         public string? Apellidos { get; set; }
         public int? IdTipoPaquete { get; set; }

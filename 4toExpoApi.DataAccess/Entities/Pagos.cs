@@ -13,6 +13,7 @@ namespace _4toExpoApi.DataAccess.Entities
         public int Id { get; set; }
 
         public int? IdReserva { get; set; }
+        public int? IdPromocion {  get; set; }
         public string? IdTransaccion { get; set; }
         public string? TitularTarjeta { get; set; }
         public string? EmailTarjeta { get; set; }

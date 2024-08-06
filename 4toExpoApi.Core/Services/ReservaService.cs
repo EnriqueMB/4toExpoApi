@@ -223,6 +223,7 @@ namespace _4toExpoApi.Core.Services
                 var pagos = new Pagos
                 {
                     IdReserva = request.idReserva,
+                    IdPromocion = request.IdPromocion,
                     Monto = request.Monto,
                     StatusPago = "COMPLETADO",
                     Pasarela = "Transfrencia",
