@@ -7,5 +7,6 @@ namespace _4toExpoApi.Core.ViewModels
         public bool Success {  get; set; }
         public string Message {  get; set; }
         public decimal? Precio {  get; set; }
+        public int IdPromocion {  get; set; }
     }
 }

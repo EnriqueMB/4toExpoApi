@@ -280,6 +280,7 @@ namespace _4toExpoApi.Core.Services
 
                 response.Success = true;
                 response.Message = "Se aplico la promocion Correctamente";
+                response.IdPromocion = promo.IdPromocion;
 
                 decimal? promoDesc = (promo.Porcentage * costoOriginal) / 100;
                 response.Precio = costoOriginal - promoDesc;
