@@ -251,6 +251,39 @@ namespace _4toExpoApi_v1._0._0.Controllers
             }
         }
 
+        [HttpPost("Logout")]
+        public async Task<IActionResult> Logout()
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                // Obtén el token del encabezado de autorización
+                var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    return BadRequest(new { Success = false, Message = "Token no proporcionado" });
+                }
+
+                var response = await _authService.Logout(token);
+
+                if (response.Success)
+                {
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                    return Ok(response);
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished with errors");
+                return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                return BadRequest(new { Success = false, Message = "Error al cerrar sesión" });
+            }
+        }
+
         #endregion
     }
 }

@@ -278,6 +278,37 @@ namespace _4toExpoApi.Core.Services
             }
         }
 
+        public async Task<AuthResponse> Logout(string token)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+                var response = new AuthResponse();
+
+                // En este punto, simplemente registramos que se ha solicitado un cierre de sesión
+                // No estamos invalidando activamente el token, ya que eso requeriría infraestructura adicional
+
+                _logger.LogInformation($"Logout solicitado para el token: {token}");
+
+                // Aquí podrías agregar lógica adicional si es necesario
+                // Por ejemplo, actualizar el estado de la sesión en la base de datos si lo estás rastreando
+
+                response.Message = "Sesión cerrada correctamente";
+                response.Success = true;
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                return new AuthResponse
+                {
+                    Success = false,
+                    Message = "Error al cerrar sesión: " + ex.Message
+                };
+            }
+        }
+
         //Obtener todos los usuarios
         public async Task<ListResponse<UsuariosVM>> ObtenerUsuarios()
         {
