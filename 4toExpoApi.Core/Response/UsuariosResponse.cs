@@ -15,6 +15,7 @@ namespace _4toExpoApi.Core.Response
         public byte[] PasswordSalt { get; set; }
         public string NombreUsuario { get; set; }
         public int TipoUsuario { get; set; }
+        public int IdTipoUsuario { get; set; }
         public DateTime UltimoAcceso { get; set; }
     }
 }

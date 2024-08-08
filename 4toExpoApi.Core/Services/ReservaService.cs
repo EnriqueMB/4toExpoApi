@@ -276,7 +276,18 @@ namespace _4toExpoApi.Core.Services
                 if (reserva == null)
                 {
                     _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " Reservation not found.");
-                    return null;
+                    var user = new ReservaVM
+                    {
+                        IdTipoUsuario = usuario.IdTipoUsuario,
+                        IdUsuario = usuario.Id,
+                        NombreCompleto = usuario.NombreCompleto,
+                        Telefono = usuario.Telefono,
+                        Correo = usuario.Correo,
+                        Edad = usuario.Edad,
+                        Asociacion = usuario.Asociacion,
+
+                    };
+                    return user;
                 }
 
                 var paqueteUsuario = (await _paqueteGeneralRepository.GetAll(_logger))

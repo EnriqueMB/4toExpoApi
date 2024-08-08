@@ -34,7 +34,7 @@ namespace _4toExpoApi.DataAccess.Repositories
 
                 var updatePromo = await _context.Promocion.FindAsync(pagos.IdPromocion);
 
-                updatePromo.PasesUsados = updatePromo.PasesUsados != null ? updatePromo.PasesUsados : 0 + 1;
+                updatePromo.PasesUsados = updatePromo.PasesUsados != null ? updatePromo.PasesUsados + 1 : 0 + 1;
 
                 var updResult = _context.Update(updatePromo);
 
