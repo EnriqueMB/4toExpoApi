@@ -9,5 +9,6 @@ namespace _4toExpoApi.Core.Request
         public string DiasLaborales { get; set; }
         public TimeSpan? HoraInicio { get; set; }
         public TimeSpan? HoraFinal { get; set; }
+        public int IdPatrocinador { get; set; }
     }
 }

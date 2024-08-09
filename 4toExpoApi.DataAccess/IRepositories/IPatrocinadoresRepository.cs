@@ -14,5 +14,6 @@ namespace _4toExpoApi.DataAccess.IRepositories
         Task<GenericResponse<Patrocinadores>> AgregarPatrocinador(Patrocinadores patrocinadores, Usuarios usuarios, ILogger logger);
         Task<GenericResponse<Patrocinadores>> EditarPatrocinador(Patrocinadores patrocinadores, Usuarios usuarios, ILogger logger);
         Task<GenericResponse<Usuarios>> ExistsByNombreUsuario(string email, ILogger logger, int Id);
+        Task<Patrocinadores> GetByUserIdAsync(int userId);
     }
 }

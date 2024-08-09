@@ -2,11 +2,13 @@
 using _4toExpoApi.Core.Mappers;
 using _4toExpoApi.Core.Request;
 using _4toExpoApi.Core.ViewModels;
+using _4toExpoApi.DataAccess;
 using _4toExpoApi.DataAccess.Entities;
 using _4toExpoApi.DataAccess.IRepositories;
 using _4toExpoApi.DataAccess.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -26,15 +28,17 @@ namespace _4toExpoApi.Core.Services
         private ILogger<PatrocinadorService> _logger;
         private readonly IAzureBlobStorageService _azureBlobStorageService;
         private readonly IBaseRepository<Usuarios> _usuarioRepository;
+        private readonly _4toExpoDbContext _dbContext;
 
         #endregion
         #region <---Constructor--->
 
-        public PatrocinadorService(IPatrocinadoresRepository patrocinadorRepository, IBaseRepository<Usuarios> usuarioRepository, ILogger<PatrocinadorService> logger, IAzureBlobStorageService azureStorageBlobService) {
+        public PatrocinadorService(IPatrocinadoresRepository patrocinadorRepository, IBaseRepository<Usuarios> usuarioRepository, ILogger<PatrocinadorService> logger, IAzureBlobStorageService azureStorageBlobService, _4toExpoDbContext dbContext) {
             _patrocinadorRepository = patrocinadorRepository;
             _logger = logger;
             _azureBlobStorageService = azureStorageBlobService;
             _usuarioRepository = usuarioRepository;
+            _dbContext = dbContext;
         }
         #endregion
 
@@ -277,7 +281,23 @@ namespace _4toExpoApi.Core.Services
                 var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
                 return computedHash.SequenceEqual(passwordHash);
             }
-        }   
+        }
+
+        public async Task<Patrocinadores> GetByUserIdAsync(int userId)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+                var patrocinador = await _dbContext.Patrocinadores.FirstOrDefaultAsync(p => p.IdUsuario == userId);
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                return patrocinador;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
         #endregion
     }
 }

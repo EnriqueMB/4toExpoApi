@@ -30,7 +30,7 @@ namespace _4toExpoApi.Core.Services
             _productoRepository = productoRepository;
             _logger = logger;
         }
-        public async Task<GenericResponse<ProductosRequest>> AgregarProducto(ProductosRequest request, int userAlt)
+        public async Task<GenericResponse<ProductosRequest>> AgregarProducto(ProductosRequest request, int userAlt, int idPatrocinador)
         {
             try
             {
@@ -42,6 +42,7 @@ namespace _4toExpoApi.Core.Services
 
                 addProducto.FechaAlt = DateTime.Now;
                 addProducto.UserAlt = userAlt;
+                addProducto.IdPatrocinador = idPatrocinador;
                 addProducto.Activo = true;
 
                 var add = await _productoRepository.Add(addProducto, _logger);
@@ -113,7 +114,7 @@ namespace _4toExpoApi.Core.Services
                 throw;
             }
         }
-        public async Task<List<ProductosRequest>> ObtenerProducto()
+        public async Task<List<ProductosRequest>> ObtenerProducto(int idPatrocinador)
         {
             try
             {
@@ -125,7 +126,7 @@ namespace _4toExpoApi.Core.Services
                 {
                     return null;
                 }
-                var listaProductosFiltrada = listProducto.Where(x => x.Activo == true).ToList();
+                var listaProductosFiltrada = listProducto.Where(x => x.Activo == true && x.IdPatrocinador == idPatrocinador).ToList();
 
                 var requestListProducto = listaProductosFiltrada.Select(producto => AppMapper.Map<Productos, ProductosRequest>(producto)).ToList();
 

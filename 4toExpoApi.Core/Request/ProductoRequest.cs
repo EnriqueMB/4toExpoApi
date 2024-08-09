@@ -14,5 +14,6 @@ namespace _4toExpoApi.Core.Request
         public int Precio { get; set; }
         public string Caracteristica { get; set; }
         public string Detalles { get; set; }
+        public int? IdPatrocinador { get; set; }
     }
 }

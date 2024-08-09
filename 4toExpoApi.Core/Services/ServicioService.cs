@@ -24,7 +24,7 @@ namespace _4toExpoApi.Core.Services
         #endregion
         #region <---Metodos--->
 
-        public async Task<GenericResponse<ServicioRequest>> AgregarServicio(ServicioRequest request, int userAlt)
+        public async Task<GenericResponse<ServicioRequest>> AgregarServicio(ServicioRequest request, int userAlt, int idPatrocinador)
         {
             try
             {
@@ -36,6 +36,7 @@ namespace _4toExpoApi.Core.Services
 
                 addServicio.FechaAlt = DateTime.Now;
                 addServicio.UserAlt = userAlt;
+                addServicio.IdPatrocinador = idPatrocinador;
                 addServicio.Activo = true;
 
                 var add = await _serviciosRepository.Add(addServicio, _logger);
@@ -64,7 +65,7 @@ namespace _4toExpoApi.Core.Services
             }
         }
 
-        public async Task<List<ServicioRequest>> ObtenerServicios()
+        public async Task<List<ServicioRequest>> ObtenerServicios(int idPatrocinador)
         {
             try
             {
@@ -76,7 +77,7 @@ namespace _4toExpoApi.Core.Services
                 {
                     return null;
                 }
-                var listaServiciosFiltrada = listServicios.Where(x => x.Activo == true).ToList();
+                var listaServiciosFiltrada = listServicios.Where(x => x.Activo == true && x.IdPatrocinador == idPatrocinador).ToList();
 
                 var requestListServicios = listaServiciosFiltrada.Select(servicio => AppMapper.Map<Servicios, ServicioRequest>(servicio)).ToList();
                

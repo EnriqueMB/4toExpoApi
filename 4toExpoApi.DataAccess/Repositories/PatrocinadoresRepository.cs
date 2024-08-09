@@ -19,10 +19,12 @@ namespace _4toExpoApi.DataAccess.Repositories
     public class PatrocinadoresRepository : BaseRepository<Patrocinadores>, IPatrocinadoresRepository
     {
         public readonly _4toExpoDbContext _dbContext;
+        private readonly ILogger<PatrocinadoresRepository> _logger;
 
-        public PatrocinadoresRepository(_4toExpoDbContext dbContext) : base(dbContext)
+        public PatrocinadoresRepository(_4toExpoDbContext dbContext, ILogger<PatrocinadoresRepository> logger) : base(dbContext)
         {
             _dbContext = dbContext;
+            _logger = logger;
         }
 
         public async Task<GenericResponse<Usuarios>> ExistsByNombreUsuario(string email, ILogger logger, int Id)
@@ -153,6 +155,21 @@ namespace _4toExpoApi.DataAccess.Repositories
             {
                 await trasaction.RollbackAsync();
                 _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + error.Message);
+                throw;
+            }
+        }
+        public async Task<Patrocinadores> GetByUserIdAsync(int userId)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+                var patrocinador = await _dbContext.Patrocinadores.FirstOrDefaultAsync(p => p.IdUsuario == userId);
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                return patrocinador;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
                 throw;
             }
         }

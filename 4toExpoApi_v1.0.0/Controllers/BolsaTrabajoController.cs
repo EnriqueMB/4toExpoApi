@@ -1,5 +1,6 @@
 ﻿using _4toExpoApi.Core.Request;
 using _4toExpoApi.Core.Services;
+using _4toExpoApi.DataAccess.IRepositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,14 +16,16 @@ namespace _4toExpoApi_v1._0._0.Controllers
         #region<-----Variable----->
         private readonly BolsaTrabajoService _bolsaTrabajoService;
         private ILogger<BolsaTrabajoController> _logger;
+        private readonly IPatrocinadoresRepository _patrocinadorRepository;
         #endregion
 
 
         #region<-----Constructor----->
-        public BolsaTrabajoController(BolsaTrabajoService bolsaTrabajoService, ILogger<BolsaTrabajoController> logger)
+        public BolsaTrabajoController(BolsaTrabajoService bolsaTrabajoService, ILogger<BolsaTrabajoController> logger, IPatrocinadoresRepository patrocinadorRepository)
         {
             _bolsaTrabajoService = bolsaTrabajoService;
             _logger = logger;
+            _patrocinadorRepository = patrocinadorRepository;
         }
         #endregion
 
@@ -38,9 +41,28 @@ namespace _4toExpoApi_v1._0._0.Controllers
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
-                var IdUseralta = "1"; /*User.Claims.FirstOrDefault(x => x.Type == "Id").Value;*/
+               /* var IdUseralta = "1";*/ /*User.Claims.FirstOrDefault(x => x.Type == "Id").Value;*/
 
-                var response = await _bolsaTrabajoService.AgregarBolsaTrabajo(request, int.Parse(IdUseralta));
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
+
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    return Unauthorized("Usuario no autenticado");
+                }
+
+                if (!int.TryParse(userIdClaim, out int userAlt))
+                {
+                    return BadRequest("ID de usuario inválido");
+                }
+
+                var patrocinador = await _patrocinadorRepository.GetByUserIdAsync(userAlt);
+                if (patrocinador == null)
+                {
+                    return BadRequest("El usuario no tiene un patrocinador asociado");
+                }
+                int idPatrocinador = patrocinador.Id;
+
+                var response = await _bolsaTrabajoService.AgregarBolsaTrabajo( request, userAlt, idPatrocinador);
 
                 if (response.Success)
                     return Ok(response);
@@ -63,9 +85,20 @@ namespace _4toExpoApi_v1._0._0.Controllers
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
-                var idUsuario = "1"; /*User.Claims.FirstOrDefault(x => x.Type == "Id").Value;*/
+                /*var idUsuario = "1";*/ /*User.Claims.FirstOrDefault(x => x.Type == "Id").Value;*/
 
-                var response = await _bolsaTrabajoService.ActualizarBolsaTrabajo(request, int.Parse(idUsuario));
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    return Unauthorized("Usuario no autenticado");
+                }
+
+                if (!int.TryParse(userIdClaim, out int userUpd))
+                {
+                    return BadRequest("ID de usuario inválido");
+                }
+
+                var response = await _bolsaTrabajoService.ActualizarBolsaTrabajo(request, userUpd);
 
                 if (response.Success)
                     return Ok(response);
@@ -85,7 +118,24 @@ namespace _4toExpoApi_v1._0._0.Controllers
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
-                var response = await _bolsaTrabajoService.ObtenerBolsaTrabajo();
+                var userId = User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
+                if (string.IsNullOrEmpty(userId))
+                {
+                    // El usuario no está logueado, retornar un error
+                    return Unauthorized("Usuario no autenticado");
+                }
+                int userAlt = int.Parse(userId);
+
+                // Buscar el patrocinador asociado al usuario logueado
+                var patrocinador = await _patrocinadorRepository.GetByUserIdAsync(userAlt);
+                if (patrocinador == null)
+                {
+                    // El usuario no tiene un patrocinador asociado, retornar un error
+                    return BadRequest("El usuario no tiene un patrocinador asociado");
+                }
+                int idPatrocinador = patrocinador.Id;
+
+                var response = await _bolsaTrabajoService.ObtenerBolsaTrabajo(idPatrocinador);
 
                 if (response != null)
                 {

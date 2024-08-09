@@ -20,5 +20,6 @@ namespace _4toExpoApi.DataAccess.Entities
         public int? UserUpd { get; set; }
         public DateTime? FechaUpd { get; set; }
         public bool Activo {  get; set; }
+        public int? IdPatrocinador { get; set;}
     }
 }

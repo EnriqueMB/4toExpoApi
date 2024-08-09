@@ -1,10 +1,12 @@
 ﻿using _4toExpoApi.Core.Request;
 using _4toExpoApi.Core.Services;
+using _4toExpoApi.DataAccess.IRepositories;
 using _4toExpoApi.DataAccess.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections;
 using System.Reflection;
+using System.Security.Claims;
 
 namespace _4toExpoApi_v1._0._0.Controllers
 {
@@ -15,12 +17,14 @@ namespace _4toExpoApi_v1._0._0.Controllers
         #region <---Variables--->
         private readonly ServicioService _servicioService;
         private readonly ILogger<ServiciosController> _logger;
+        private readonly IPatrocinadoresRepository _patrocinadorRepository;
         #endregion
         #region <---Constructor--->
-        public ServiciosController(ServicioService servicioService, ILogger<ServiciosController> logger)
+        public ServiciosController(ServicioService servicioService, ILogger<ServiciosController> logger, IPatrocinadoresRepository patrocinadorRepository)
         {
             _servicioService = servicioService;
             _logger = logger;
+            _patrocinadorRepository = patrocinadorRepository;
         }
         #endregion
         #region <---Metodos--->
@@ -32,18 +36,34 @@ namespace _4toExpoApi_v1._0._0.Controllers
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
 
-                var response = await _servicioService.AgregarServicio(request, 1);
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    return Unauthorized("Usuario no autenticado");
+                }
+
+                if (!int.TryParse(userIdClaim, out int userAlt))
+                {
+                    return BadRequest("ID de usuario inválido");
+                }
+
+                var patrocinador = await _patrocinadorRepository.GetByUserIdAsync(userAlt);
+                if (patrocinador == null)
+                {
+                    return BadRequest("El usuario no tiene un patrocinador asociado");
+                }
+                int idPatrocinador = patrocinador.Id;
+
+                var response = await _servicioService.AgregarServicio(request, userAlt, idPatrocinador);
 
                 if (response.Success)
                 {
                     _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
                     return Ok(response);
                 }
 
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
-
                 return BadRequest(response);
             }
             catch (Exception ex)
@@ -52,6 +72,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
                 throw;
             }
         }
+
         [HttpGet("ObtenerServicios")]
         public async Task<IEnumerable> ObtenerServicios()
         {
@@ -59,8 +80,24 @@ namespace _4toExpoApi_v1._0._0.Controllers
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
+                var userId = User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
+                if (string.IsNullOrEmpty(userId))
+                {
+                    // El usuario no está logueado, retornar un error
+                    return (IEnumerable)Unauthorized("Usuario no autenticado");
+                }
+                int userAlt = int.Parse(userId);
 
-                var response = await _servicioService.ObtenerServicios();
+                // Buscar el patrocinador asociado al usuario logueado
+                var patrocinador = await _patrocinadorRepository.GetByUserIdAsync(userAlt);
+                if (patrocinador == null)
+                {
+                    // El usuario no tiene un patrocinador asociado, retornar un error
+                    return (IEnumerable)BadRequest("El usuario no tiene un patrocinador asociado");
+                }
+                int idPatrocinador = patrocinador.Id;
+
+                var response = await _servicioService.ObtenerServicios(idPatrocinador);
 
                 if (response != null)
                 {
@@ -86,8 +123,18 @@ namespace _4toExpoApi_v1._0._0.Controllers
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    return Unauthorized("Usuario no autenticado");
+                }
 
-                var response = await _servicioService.EditarServicios(request, 1);
+                if (!int.TryParse(userIdClaim, out int userUpd))
+                {
+                    return BadRequest("ID de usuario inválido");
+                }
+
+                var response = await _servicioService.EditarServicios(request, userUpd);
 
                 if (response.Success)
                 {

@@ -33,7 +33,7 @@ namespace _4toExpoApi.Core.Services
 
         #region <-----Metodos----->
 
-        public async Task<GenericResponse>AgregarBolsaTrabajo(BolsaTrabajoRequest request, int IdUsuario)
+        public async Task<GenericResponse>AgregarBolsaTrabajo(BolsaTrabajoRequest request, int userAlt, int IdPatrocinador)
 
         {
             try
@@ -54,9 +54,9 @@ namespace _4toExpoApi.Core.Services
                     Ciudad = request.Ciudad,
                     Direccion = request.Direccion,
 
-
+                    IdPatrocinador = request.IdPatrocinador,
                     FechaAlt = HoraHelper.GetHora("mx"),
-                    UserAlt = IdUsuario,
+                    UserAlt = userAlt,
                     Activo = true
 
                 };
@@ -86,7 +86,7 @@ namespace _4toExpoApi.Core.Services
                 throw;
             }
         }
-        public async Task<GenericResponse>ActualizarBolsaTrabajo(BolsaTrabajoRequest request, int userMod)
+        public async Task<GenericResponse>ActualizarBolsaTrabajo(BolsaTrabajoRequest request, int UserUpd)
         {
             try
             {
@@ -111,7 +111,7 @@ namespace _4toExpoApi.Core.Services
                 entity.HoraFinal = TimeSpan.Parse( request.HoraFinal);
                 entity.Ciudad = request.Ciudad;
                 entity.Direccion = request.Direccion;
-                entity.UserUpd = userMod;
+                entity.UserUpd = UserUpd;
                 entity.FechaUpd = HoraHelper.GetHora("mx");
 
 
@@ -188,14 +188,14 @@ namespace _4toExpoApi.Core.Services
         }
 
 
-        public async Task<ListResponse<BolsaTrabajoVM>> ObtenerBolsaTrabajo()
+        public async Task<ListResponse<BolsaTrabajoVM>> ObtenerBolsaTrabajo(int idPatrocinador)
         {
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
                 var response = new ListResponse<BolsaTrabajoVM>();
 
-                Expression<Func<BolsaTrabajo, bool>> expression = x => x.Activo == true;
+                Expression<Func<BolsaTrabajo, bool>> expression = x => x.Activo == true && x.IdPatrocinador == idPatrocinador;
 
                 var result = await _bolsaTrabajoRepository.GetAll(_logger, [], expression);
 

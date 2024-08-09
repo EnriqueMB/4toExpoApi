@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
 using Microsoft.AspNetCore.Http;
 using System.Collections;
+using _4toExpoApi.DataAccess.IRepositories;
 
 
 namespace _4toExpoApi_v1._0._0.Controllers
@@ -14,11 +15,13 @@ namespace _4toExpoApi_v1._0._0.Controllers
     {
         private readonly ProductoServise _ProductoService;
         private readonly ILogger<ProductoController> _logger;
+        private readonly IPatrocinadoresRepository _patrocinadorRepository;
 
-        public ProductoController(ProductoServise productoService, ILogger<ProductoController> logger)
+        public ProductoController(ProductoServise productoService, ILogger<ProductoController> logger, IPatrocinadoresRepository patrocinadorRepository)
         {
             _ProductoService = productoService;
             _logger = logger;
+             _patrocinadorRepository = patrocinadorRepository;
         }
         [HttpPost("AgregarProducto")]
         public async Task<IActionResult> AgregarProducto(ProductosRequest request)
@@ -27,8 +30,26 @@ namespace _4toExpoApi_v1._0._0.Controllers
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
 
-                var response = await _ProductoService.AgregarProducto(request, 1);
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    return Unauthorized("Usuario no autenticado");
+                }
+
+                if (!int.TryParse(userIdClaim, out int userAlt))
+                {
+                    return BadRequest("ID de usuario inválido");
+                }
+
+                var patrocinador = await _patrocinadorRepository.GetByUserIdAsync(userAlt);
+                if (patrocinador == null)
+                {
+                    return BadRequest("El usuario no tiene un patrocinador asociado");
+                }
+                int idPatrocinador = patrocinador.Id;
+
+                var response = await _ProductoService.AgregarProducto(request, userAlt, idPatrocinador);
 
                 if (response.Success)
                 {
@@ -54,8 +75,18 @@ namespace _4toExpoApi_v1._0._0.Controllers
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    return Unauthorized("Usuario no autenticado");
+                }
 
-                var response = await _ProductoService.EditarProducto(request, 1);
+                if (!int.TryParse(userIdClaim, out int userUpd))
+                {
+                    return BadRequest("ID de usuario inválido");
+                }
+
+                var response = await _ProductoService.EditarProducto(request, userUpd);
 
                 if (response.Success)
                 {
@@ -81,8 +112,24 @@ namespace _4toExpoApi_v1._0._0.Controllers
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
+                var userId = User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
+                if (string.IsNullOrEmpty(userId))
+                {
+                    // El usuario no está logueado, retornar un error
+                    return (IEnumerable)Unauthorized("Usuario no autenticado");
+                }
+                int userAlt = int.Parse(userId);
 
-                var response = await _ProductoService.ObtenerProducto();
+                // Buscar el patrocinador asociado al usuario logueado
+                var patrocinador = await _patrocinadorRepository.GetByUserIdAsync(userAlt);
+                if (patrocinador == null)
+                {
+                    // El usuario no tiene un patrocinador asociado, retornar un error
+                    return (IEnumerable)BadRequest("El usuario no tiene un patrocinador asociado");
+                }
+                int idPatrocinador = patrocinador.Id;
+
+                var response = await _ProductoService.ObtenerProducto(idPatrocinador);
 
                 if (response != null)
                 {
