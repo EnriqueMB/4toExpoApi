@@ -54,7 +54,7 @@ namespace _4toExpoApi.Core.Services
                     Ciudad = request.Ciudad,
                     Direccion = request.Direccion,
 
-                    IdPatrocinador = request.IdPatrocinador,
+                    IdPatrocinador = IdPatrocinador,
                     FechaAlt = HoraHelper.GetHora("mx"),
                     UserAlt = userAlt,
                     Activo = true
