@@ -175,5 +175,31 @@ namespace _4toExpoApi_v1._0._0.Controllers
                 throw;
             }
         }
+
+        [HttpGet("ObtenerProductoPorId")]
+        public async Task<IActionResult> ObtenerProductosId(int idPatrocinador)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+             
+                var response = await _ProductoService.ObtenerProductosIdPra(idPatrocinador);
+
+                if (response != null && response.Any())
+                {
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                    return Ok(response); 
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                return NotFound("No se encontraron servicios para el patrocinador proporcionado.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                return StatusCode(500, "Internal server error");
+            }
+        }
     }
 }

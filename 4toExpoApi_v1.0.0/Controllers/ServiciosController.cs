@@ -83,16 +83,13 @@ namespace _4toExpoApi_v1._0._0.Controllers
                 var userId = User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
                 if (string.IsNullOrEmpty(userId))
                 {
-                    // El usuario no está logueado, retornar un error
                     return (IEnumerable)Unauthorized("Usuario no autenticado");
                 }
                 int userAlt = int.Parse(userId);
 
-                // Buscar el patrocinador asociado al usuario logueado
                 var patrocinador = await _patrocinadorRepository.GetByUserIdAsync(userAlt);
                 if (patrocinador == null)
                 {
-                    // El usuario no tiene un patrocinador asociado, retornar un error
                     return (IEnumerable)BadRequest("El usuario no tiene un patrocinador asociado");
                 }
                 int idPatrocinador = patrocinador.Id;
@@ -180,6 +177,33 @@ namespace _4toExpoApi_v1._0._0.Controllers
                 throw;
             }
         }
+
+        [HttpGet("ObtenerServiciosPorId")]
+        public async Task<IActionResult> ObtenerServiciosId (int idPatrocinador)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                // Llamar al servicio para obtener los servicios filtrados por el ID del patrocinador
+                var response = await _servicioService.ObtenerServiciosIdPra(idPatrocinador);
+
+                if (response != null && response.Any())
+                {
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                    return Ok(response); // Devuelve la lista de servicios
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                return NotFound("No se encontraron servicios para el patrocinador proporcionado.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
         #endregion
     }
 }

@@ -11,6 +11,7 @@ using _4toExpoApi.DataAccess.IRepositories;
 using _4toExpoApi.DataAccess.Entities;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
+using _4toExpoApi.Core.Mappers;
 
 
 
@@ -264,6 +265,30 @@ namespace _4toExpoApi.Core.Services
             catch (Exception ex)
             {
                 _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Error: " + ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<List<BolsaTrabajoVM>> ObtenerBolsaTrabajoIdPat(int idPatrocinador)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                Expression<Func<BolsaTrabajo, bool>> query = x => x.IdPatrocinador == idPatrocinador && x.Activo == true;  
+
+                // Obtener todos los servicios desde el repositorio
+                var listBolsaTrabajo = await _bolsaTrabajoRepository.GetAll(_logger, [], query);
+
+                
+                var requestListBolsaTrabajo = AppMapper.Map<List<BolsaTrabajo>, List<BolsaTrabajoVM>>(listBolsaTrabajo.ToList());
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                return requestListBolsaTrabajo;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
                 throw;
             }
         }

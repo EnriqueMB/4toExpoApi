@@ -298,6 +298,29 @@ namespace _4toExpoApi.Core.Services
                 throw;
             }
         }
+        public async Task<PatrocinadorRequest> ObtenerPatrocinadorPorId(int idPatrocinador)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var patrocinador = await _patrocinadorRepository.GetById(idPatrocinador, _logger);
+
+                
+
+                var patrocinadorRequest = AppMapper.Map<Patrocinadores, PatrocinadorRequest>(patrocinador);
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return patrocinadorRequest;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+
         #endregion
     }
 }

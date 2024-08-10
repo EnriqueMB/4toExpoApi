@@ -133,6 +133,32 @@ namespace _4toExpoApi_v1._0._0.Controllers
                 throw;
             }
         }
-       
+
+        [HttpGet("ObtenerPatrocinador/{idPatrocinador}")]
+        public async Task<ActionResult<PatrocinadorRequest>> ObtenerPatrocinador(int idPatrocinador)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var response = await _patrocinadorService.ObtenerPatrocinadorPorId(idPatrocinador);
+
+                if (response != null)
+                {
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                    return Ok(response);
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                return NotFound(); // Devuelve 404 si no se encuentra el patrocinador
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                return StatusCode(500, "Internal server error"); // Maneja errores de servidor
+            }
+        }
+
+
     }
 }

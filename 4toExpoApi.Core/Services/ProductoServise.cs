@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
@@ -174,6 +175,31 @@ namespace _4toExpoApi.Core.Services
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
 
                 return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<List<ProductosVM>> ObtenerProductosIdPra(int idPatrocinador)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                Expression<Func<Productos, bool>> query = x => x.IdPatrocinador == idPatrocinador && x.Activo == true;
+                // Obtener todos los servicios desde el repositorio
+                var listProductos = await _productoRepository.GetAll(_logger, [], query);
+
+                var requestListProducto = AppMapper.Map<List<Productos>, List<ProductosVM>>(listProductos.ToList());
+
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return requestListProducto;
+            
             }
             catch (Exception ex)
             {

@@ -207,6 +207,31 @@ namespace _4toExpoApi_v1._0._0.Controllers
             }
         }
 
+        [HttpGet("ObtenerBolsaTrabajoPorIdPatrocinador")]
+        public async Task<IActionResult> ObtenerBolsaTrabajoId(int idPatrocinador)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                // Llamar al servicio para obtener los servicios filtrados por el ID del patrocinador
+                var response = await _bolsaTrabajoService.ObtenerBolsaTrabajoIdPat(idPatrocinador);
+
+                if (response != null && response.Any())
+                {
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                    return Ok(response); // Devuelve la lista de servicios
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                return NotFound("No se encontraron servicios para el patrocinador proporcionado.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                return StatusCode(500, "Internal server error");
+            }
+        }
 
         #endregion
 
