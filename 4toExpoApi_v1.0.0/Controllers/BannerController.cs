@@ -23,6 +23,34 @@ namespace _4toExpoApi_v1._0._0.Controllers
         #endregion
         #region Metodos
 
+        [HttpPost("BannerAgregar")]
+        public async Task<IActionResult> BannerAgregar([FromForm] BannerRequest request)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+
+                var response = await _bannerService.AgregarBanner(request);
+
+                if (response.Success)
+                {
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                    return Ok(response);
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+
         [HttpPut("BannerEditar")]
         public async Task<IActionResult> BannerEditar([FromForm]BannerRequest request)
         {
@@ -51,16 +79,16 @@ namespace _4toExpoApi_v1._0._0.Controllers
             }
         }
         [HttpGet("BannerObtener")]
-        public async Task<IActionResult> BannerObtener()
+        public async Task<IActionResult> BannerObtener(int idPat)
         {
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
 
-                var response = await _bannerService.ObtenerBanner();
+                var response = await _bannerService.ObtenerBanner(idPat);
 
-                if (response != null)
+                if (response.Id > 0)
                 {
                     _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
 

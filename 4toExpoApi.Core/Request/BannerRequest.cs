@@ -13,5 +13,6 @@ namespace _4toExpoApi.Core.Request
         public IFormFile? VideoFile { get; set; }
         public int IdRedSocial { get; set; }
         public string? UrlRedSocial {  get; set; }
+        public int IdPatrocinador {  get; set; }
     }
 }
