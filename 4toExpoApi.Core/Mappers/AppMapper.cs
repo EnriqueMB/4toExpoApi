@@ -50,7 +50,9 @@ namespace _4toExpoApi.Core.Mappers
                 cfg.CreateMap<BolsaTrabajo, BolsaTrabajoVM>().ReverseMap();
                 cfg.CreateMap<Servicios, ServiciosVM>().ReverseMap();
                 cfg.CreateMap<Productos, ProductosVM>().ReverseMap();
-                
+                cfg.CreateMap<Banner, BannerRequest>().ReverseMap();
+
+
             });
 
             _mapper = new Mapper(config);
