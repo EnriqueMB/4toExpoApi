@@ -1,10 +1,12 @@
 ﻿using _4toExpoApi.Core.Helpers;
 using _4toExpoApi.Core.Mappers;
 using _4toExpoApi.Core.Request;
+using _4toExpoApi.Core.ViewModels;
 using _4toExpoApi.DataAccess.Entities;
 using _4toExpoApi.DataAccess.IRepositories;
 using _4toExpoApi.DataAccess.Response;
 using Microsoft.Extensions.Logging;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace _4toExpoApi.Core.Services
@@ -177,7 +179,55 @@ namespace _4toExpoApi.Core.Services
                 throw;
             }
         }
-       
+
+
+        public async Task<List<ServiciosVM>> ObtenerServiciosIdPra(int idPatrocinador)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                Expression<Func<Servicios, bool>> query = x => x.IdPatrocinador == idPatrocinador && x.Activo == true;
+                // Obtener todos los servicios desde el repositorio
+                var listServicios = await _serviciosRepository.GetAll(_logger, [], query);
+
+               
+                var requestListServicios = AppMapper.Map<List<Servicios>, List<ServiciosVM>>(listServicios.ToList());
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                return requestListServicios;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<ServiciosVM> ObtenerServicioPorId(int id)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                Expression<Func<Servicios, bool>> query = x => x.Id == id && x.Activo == true;
+
+                var servicio = await _serviciosRepository.GetAll(_logger, [], query);
+
+                //var servs = servicio.FirstOrDefault();
+
+                var response = AppMapper.Map<Servicios, ServiciosVM>(servicio.FirstOrDefault());
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Error: " + ex.Message);
+                throw;
+            }
+        }
         #endregion
 
     }

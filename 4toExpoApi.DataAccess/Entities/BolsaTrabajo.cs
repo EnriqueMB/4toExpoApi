@@ -32,7 +32,7 @@ namespace _4toExpoApi.DataAccess.Entities
         public int? UserUpd { get; set; }
         public bool? Activo { get; set; }
 
-        public int? IdPatrocinador { get; set; }
+        public int IdPatrocinador { get; set; }
 
     }
 }

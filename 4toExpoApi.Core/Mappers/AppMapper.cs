@@ -47,6 +47,12 @@ namespace _4toExpoApi.Core.Mappers
                 cfg.CreateMap<Preguntas, PreguntasRequest>().ReverseMap();
                 cfg.CreateMap<UsuarioPromoRequest, UsuariosPromocion>().ReverseMap();
                 cfg.CreateMap<PromocionRequest, Promocion>().ReverseMap();
+                cfg.CreateMap<BolsaTrabajo, BolsaTrabajoVM>().ReverseMap();
+                cfg.CreateMap<Servicios, ServiciosVM>().ReverseMap();
+                cfg.CreateMap<Productos, ProductosVM>().ReverseMap();
+                cfg.CreateMap<Banner, BannerRequest>().ReverseMap();
+
+
             });
 
             _mapper = new Mapper(config);
