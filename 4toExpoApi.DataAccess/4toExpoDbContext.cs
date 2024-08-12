@@ -10,6 +10,7 @@ namespace _4toExpoApi.DataAccess
 
         }
         public DbSet<Usuarios> Usuarios { get; set; }
+        public DbSet<Estados> Estados { get; set; }
         public DbSet<Permisos> Permisos { get; set; }
         public DbSet<UsuarioPermisos> UsuarioPermisos { get; set; }
         public DbSet<UsuariosRoles> UsuariosRoles { get; set; }

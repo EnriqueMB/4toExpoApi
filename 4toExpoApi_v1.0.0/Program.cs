@@ -22,11 +22,12 @@ builder.Services.AddJWTTokenServices(builder.Configuration);
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
 #region <-- Services -->
-//builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<AuthService>();
 //builder.Services.AddScoped<PermisosService>();
 builder.Services.AddScoped<ReservaService>();
 builder.Services.AddScoped<ServicioService>();
 builder.Services.AddScoped<TalleresService>();
+builder.Services.AddScoped<EstadosService>();
 
 builder.Services.AddScoped<ProductoServise>();
 builder.Services.AddScoped<PaquetePatrocinadorService>();
@@ -45,6 +46,7 @@ builder.Services.AddScoped<UniversidadService>();
 builder.Services.AddScoped<PreguntasService>();
 builder.Services.AddScoped<ProgramaActividadesService>();
 builder.Services.AddScoped<PromocionService>();
+;
 //builder.Services.AddScoped<>
 
 builder.Services.AddScoped<HotelService>();
@@ -53,12 +55,14 @@ builder.Services.AddScoped<BannerService>();
 #region <-- Repositories -->
 //builder.Services.AddScoped<IBaseRepository<Permisos>, BaseRepository<Permisos>>();
 builder.Services.AddScoped<IBaseRepository<Usuarios>, BaseRepository<Usuarios>>();
-builder.Services.AddScoped<IBaseRepository<UsuariosPromocion>, BaseRepository<UsuariosPromocion>>();
+builder.Services.AddScoped<IBaseRepository<Usuarios>, BaseRepository<Usuarios>>();
+builder.Services.AddScoped<IBaseRepository<Estados>, BaseRepository<Estados>>();
 //builder.Services.AddScoped<IBaseRepository<UsuarioPermisos>, BaseRepository<UsuarioPermisos>>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IBaseRepository<Reservas>, BaseRepository<Reservas>>();
 builder.Services.AddScoped<IBaseRepository<Servicios>, BaseRepository<Servicios>>();
 builder.Services.AddScoped<IBaseRepository<Talleres>, BaseRepository<Talleres>>();
+builder.Services.AddScoped<IBaseRepository<UsuariosPromocion>, BaseRepository<UsuariosPromocion>>();
 
 builder.Services.AddScoped<IBaseRepository<Productos>, BaseRepository<Productos>>();
 builder.Services.AddScoped<IBaseRepository<Contador>, BaseRepository<Contador>>();
