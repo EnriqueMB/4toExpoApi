@@ -217,10 +217,7 @@ namespace _4toExpoApi.Core.Services
                     
                 }).ToList();
                 
-               
-
-
-
+              
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
                 return response;
@@ -242,23 +239,16 @@ namespace _4toExpoApi.Core.Services
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
-                var bolsa = await _bolsaTrabajoRepository.GetById(id, _logger);
+                Expression<Func<BolsaTrabajo, bool>> query = x => x.IdBolsaTrabajo == id && x.Activo == true;
 
-                var response = new BolsaTrabajoVM
-                {
+                var bolsa = await _bolsaTrabajoRepository.GetAll(_logger, [], query);
 
-                    IdBolsaTrabajo = bolsa.IdBolsaTrabajo,
-                    Tipo = bolsa.Tipo,
-                    Descripcion = bolsa.Descripcion,
-                    Puesto = bolsa.Puesto,
-                    Requisitos = bolsa.Requisitos,
-                    DiasLaborales = bolsa.DiasLaborales,
-                    HoraInicio = bolsa.HoraInicio.ToString(),
-                    HoraFinal = bolsa.HoraFinal.ToString(),
-                    Ciudad = bolsa.Ciudad,
-                    Direccion = bolsa.Direccion,
+                var bolsaTrabajo = bolsa.FirstOrDefault();
 
-                };
+                var response = AppMapper.Map<BolsaTrabajo, BolsaTrabajoVM>(bolsaTrabajo);
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
 
                 return response;
             }

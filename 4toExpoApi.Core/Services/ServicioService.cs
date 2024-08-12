@@ -204,6 +204,30 @@ namespace _4toExpoApi.Core.Services
             }
         }
 
+        public async Task<ServiciosVM> ObtenerServicioPorId(int id)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                Expression<Func<Servicios, bool>> query = x => x.Id == id && x.Activo == true;
+
+                var servicio = await _serviciosRepository.GetAll(_logger, [], query);
+
+                //var servs = servicio.FirstOrDefault();
+
+                var response = AppMapper.Map<Servicios, ServiciosVM>(servicio.FirstOrDefault());
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Error: " + ex.Message);
+                throw;
+            }
+        }
         #endregion
 
     }

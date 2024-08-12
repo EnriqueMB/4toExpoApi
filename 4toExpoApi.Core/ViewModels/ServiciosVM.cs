@@ -15,5 +15,6 @@ namespace _4toExpoApi.Core.ViewModels
         public TimeSpan? HoraInicio { get; set; }
         public TimeSpan? HoraFinal { get; set; }
         public int IdPatrocinador { get; set; }
+
     }
 }

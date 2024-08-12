@@ -207,5 +207,30 @@ namespace _4toExpoApi.Core.Services
                 throw;
             }
         }
+
+        public async Task<ProductosVM> ObtenerProductoPorId(int id)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                Expression<Func<Productos, bool>> query = x => x.Id == id && x.Activo == true;
+
+                var producto = await _productoRepository.GetAll(_logger, [], query);
+
+                //var servs = servicio.FirstOrDefault();
+
+                var response = AppMapper.Map<Productos, ProductosVM>(producto.FirstOrDefault());
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Error: " + ex.Message);
+                throw;
+            }
+        }
     }
 }
