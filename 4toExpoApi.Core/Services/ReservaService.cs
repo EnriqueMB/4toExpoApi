@@ -363,6 +363,7 @@ namespace _4toExpoApi.Core.Services
                                     Correo = usuario.Correo,
                                     Edad = usuario.Edad,
                                     Asociacion = usuario.Asociacion,
+                                    Cargo = usuario.Cargo,
                                     Telefono = usuario.Telefono,
                                     Direccion = usuario.Ciudad,
                                     NombrePaquete = paquete.Nombre,
