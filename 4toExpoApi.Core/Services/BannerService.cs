@@ -55,16 +55,22 @@ namespace _4toExpoApi.Core.Services
                    
                 }
 
-                var redes = AppMapper.Map<RedesRequest, RedPatrocinador>(request.Redes);
-
-                var addRed = await _redPatrocinadorRepository.Add(redes, _logger);
 
                 addBanner.IdPatrocinador = patron.Id;
-                addBanner.IdRedPatrocinador = redes.Id;
+
 
                 var add = await _bannerRepository.Add(addBanner, _logger);
+                var redes = request.Redes.Select(x => new RedPatrocinador
+                {
+                    IdPatrocinador = patron.Id,
+                    IdRedSocial = x.IdRedSocial,
+                    UrlRedSocial = x.UrlRedSocial,
+                    IdBanner = add.Id
+                });
 
-                if (add.Id > 0 && addRed.Id > 0)
+                var addRed = await _redPatrocinadorRepository.AddAll(redes, _logger);
+
+                if (add.Id > 0)
                 {
                     response.Success = true;
                     response.Message = "Se agrego el banner del patrocinador correctamente";
@@ -163,7 +169,8 @@ namespace _4toExpoApi.Core.Services
                 //              }).FirstOrDefault();
 
 
-                var bannerLis = (await _bannerRepository.GetAll(_logger, ["RedSocial"], x => x.IdPatrocinador == idPat)).FirstOrDefault();
+                var bannerLis = (await _bannerRepository.GetAll(_logger, ["RedPatrocinador", "RedPatrocinador.RedSocial"], x => x.IdPatrocinador == idPat)).FirstOrDefault();
+                //var patr = await _redPatrocinadorRepository.GetAll(_logger, ["Banner"], x => x.IdPatrocinador == idPat);
                 if(bannerLis == null)
                 {
                     return new BannerVM();

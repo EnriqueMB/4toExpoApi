@@ -29,6 +29,8 @@ namespace _4toExpoApi.Core.Request
         public string? banco { get; set; }
         public string? cuenta { get; set; }
         public string? baucherPago { get; set; }
+        public string? UrlPDF {  get; set; }
         public IFormFile? ImgFile { get; set; }
+        public IFormFile? PdfFile { get; set; }
     }
 }

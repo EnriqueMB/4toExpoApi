@@ -9,10 +9,9 @@ namespace _4toExpoApi.DataAccess.Entities
         public string? NombreEmpresa { get; set; }
         public string? Descripcion { get; set; }
         public string? UrlVideo { get; set; }
-        public int? IdRedPatrocinador {  get; set; }
         public int IdPatrocinador {  get; set; }
+      
+        public virtual ICollection<RedPatrocinador> RedPatrocinador { get; set; }
 
-        [ForeignKey(nameof(IdRedPatrocinador))]
-        public RedPatrocinador? RedSocial { get; set; }
     }
 }

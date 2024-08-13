@@ -12,7 +12,7 @@ namespace _4toExpoApi.Core.Request
         public string? UrlVideo { get; set; }
         public IFormFile? VideoFile { get; set; }
 
-        public RedesRequest? Redes {  get; set; }
+        public List<RedesRequest>? Redes {  get; set; }
         //public int[] IdRedSocial { get; set; }
         //public string[]? UrlRedSocial {  get; set; }
         public int IdPatrocinador {  get; set; }

@@ -218,6 +218,10 @@ namespace _4toExpoApi.Core.Services
                 {
                     request.baucherPago = await this._azureBlobStorageService.UploadAsync(request.ImgFile, ContainerEnum.multimedia);
                 }
+                if(request.PdfFile != null)
+                {
+                    request.UrlPDF = await this._azureBlobStorageService.UploadAsync(request.ImgFile, ContainerEnum.multimedia);
+                }
 
                 /***************  DATOS PARA LA TABLA PAGOS ********************/
 
@@ -234,7 +238,8 @@ namespace _4toExpoApi.Core.Services
                     BaucherPago = request.baucherPago,
                     FechaAlt = DateTime.Now,
                     UserAlt = 1,
-                    Activo = true
+                    Activo = true,
+                    UrlPDF = request.UrlPDF,
                 };
 
 
@@ -382,6 +387,7 @@ namespace _4toExpoApi.Core.Services
                                     Monto = paquete.Precio,
                                     Beneficios = incluyeGrupo,
                                     UrlBaucher = pago.BaucherPago,
+                                    UrlPdf = pago.UrlPDF,
                                     TipoDePago = pago.Pasarela,
                                     UrlComprobante = usuario.UrlImg,
                                     ConfirmarCompra = reserva.ConfirmarCompra

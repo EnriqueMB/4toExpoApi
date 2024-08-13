@@ -33,10 +33,14 @@ namespace _4toExpoApi.DataAccess.Repositories
                 var response = new GenericResponse<Pagos>();
 
                 var updatePromo = await _context.Promocion.FindAsync(pagos.IdPromocion);
+                if(updatePromo != null)
+                {
+                    updatePromo.PasesUsados = updatePromo.PasesUsados != null ? updatePromo.PasesUsados + 1 : 0 + 1;
+                    var updResult = _context.Update(updatePromo);
 
-                updatePromo.PasesUsados = updatePromo.PasesUsados != null ? updatePromo.PasesUsados + 1 : 0 + 1;
+                }
 
-                var updResult = _context.Update(updatePromo);
+              
 
                 var addPagos = _context.Add(pagos);
 
