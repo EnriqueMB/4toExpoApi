@@ -87,6 +87,7 @@ builder.Services.AddScoped<IPatrocinadoresRepository, PatrocinadoresRepository>(
 builder.Services.AddScoped<IBaseRepository<ProgramaActividades>, BaseRepository<ProgramaActividades>>();
 builder.Services.AddScoped<IBaseRepository<Pagos>, BaseRepository<Pagos>>();
 builder.Services.AddScoped<IBaseRepository<Promocion>, BaseRepository<Promocion>>();
+builder.Services.AddScoped<IBaseRepository<RedPatrocinador>, BaseRepository<RedPatrocinador>>();
 #endregion
 #region <-- Context -->
 

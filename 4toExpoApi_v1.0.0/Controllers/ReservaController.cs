@@ -487,8 +487,18 @@ namespace _4toExpoApi_v1._0._0.Controllers
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
 
-                var response = await _payService.ConfirmarPago(id);
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    return Unauthorized("Usuario no autenticado");
+                }
+
+                if (!int.TryParse(userIdClaim, out int userAlt))
+                {
+                    return BadRequest("ID de usuario inválido");
+                }
+                var response = await _payService.ConfirmarPago(id, Convert.ToInt16(userIdClaim));
 
                 if (response != null)
                 {

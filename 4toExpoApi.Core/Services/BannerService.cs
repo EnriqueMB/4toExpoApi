@@ -19,16 +19,20 @@ namespace _4toExpoApi.Core.Services
         private readonly IBaseRepository<Banner> _bannerRepository;
         private readonly IAzureBlobStorageService _azureBlobStorageService;
         private readonly IBaseRepository<RedSocial> _redSocialRepository;
+        private readonly IBaseRepository<Patrocinadores> _patrocinadoresRepository;
+        private readonly IBaseRepository<RedPatrocinador> _redPatrocinadorRepository;
         private ILogger<BannerService> _logger;
         #endregion
         #region <---CONSTRUCTOR--->
         public BannerService(IBaseRepository<Banner> bannerRepository, ILogger<BannerService> logger, IAzureBlobStorageService azureBlobStorageService,
-            IBaseRepository<RedSocial> redSocialRepository)
+            IBaseRepository<RedSocial> redSocialRepository, IBaseRepository<Patrocinadores> patrocinadoresRepository, IBaseRepository<RedPatrocinador> redPatrocinadorRepository)
         {
             _bannerRepository = bannerRepository;
             _logger = logger;
             _azureBlobStorageService = azureBlobStorageService;
             _redSocialRepository = redSocialRepository;
+            _patrocinadoresRepository = patrocinadoresRepository;
+            _redPatrocinadorRepository = redPatrocinadorRepository;
 
         }
         #endregion
@@ -41,7 +45,7 @@ namespace _4toExpoApi.Core.Services
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
                 var response = new GenericResponse<BannerRequest>();
-
+                var patron = (await _patrocinadoresRepository.GetAll(_logger, [], x => x.IdUsuario == request.IdPatrocinador && x.Activo == true)).FirstOrDefault();
                 var addBanner = AppMapper.Map<BannerRequest , Banner>(request);
 
                 if (request.VideoFile != null)
@@ -51,9 +55,16 @@ namespace _4toExpoApi.Core.Services
                    
                 }
 
+                var redes = AppMapper.Map<RedesRequest, RedPatrocinador>(request.Redes);
+
+                var addRed = await _redPatrocinadorRepository.Add(redes, _logger);
+
+                addBanner.IdPatrocinador = patron.Id;
+                addBanner.IdRedPatrocinador = redes.Id;
+
                 var add = await _bannerRepository.Add(addBanner, _logger);
 
-                if (add.Id > 0)
+                if (add.Id > 0 && addRed.Id > 0)
                 {
                     response.Success = true;
                     response.Message = "Se agrego el banner del patrocinador correctamente";
@@ -80,53 +91,53 @@ namespace _4toExpoApi.Core.Services
             }
         }
 
-        public async Task<GenericResponse<BannerRequest>> EditarDatos(BannerRequest request)
-        {
-            try
-            {
-                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+        //public async Task<GenericResponse<BannerRequest>> EditarDatos(BannerRequest request)
+        //{
+        //    try
+        //    {
+        //        _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
                
-                var response = new GenericResponse<BannerRequest>();
-                var bannerEdit = (await _bannerRepository.GetAll(_logger, [], x => x.IdPatrocinador == request.IdPatrocinador)).FirstOrDefault();
-                var redSocial = await _redSocialRepository.GetById(request.IdRedSocial, _logger);
-                bannerEdit.NombreEmpresa = request.NombreEmpresa;
-                bannerEdit.Descripcion = request.Descripcion;
-                redSocial.UrlRedSocial = request.UrlRedSocial;
-                bannerEdit.IdRedSocial = request.IdRedSocial;
-                if (request.VideoFile != null)
-                {
-                    if (request.UrlVideo == "null" || request.UrlVideo == null || request.UrlVideo == "undefined")
-                        bannerEdit.UrlVideo = await this._azureBlobStorageService.UploadAsync(request.VideoFile, ContainerEnum.banner);
-                    else
-                        bannerEdit.UrlVideo = await this._azureBlobStorageService.UploadAsync(request.VideoFile, ContainerEnum.banner, bannerEdit.UrlVideo);
-                }
+        //        var response = new GenericResponse<BannerRequest>();
+        //        var bannerEdit = (await _bannerRepository.GetAll(_logger, [], x => x.IdPatrocinador == request.IdPatrocinador)).FirstOrDefault();
+        //        var redSocial = await _redSocialRepository.GetById(request.IdRedSocial, _logger);
+        //        bannerEdit.NombreEmpresa = request.NombreEmpresa;
+        //        bannerEdit.Descripcion = request.Descripcion;
+        //        redSocial.UrlRedSocial = request.UrlRedSocial;
+        //        bannerEdit.IdRedSocial = request.IdRedSocial;
+        //        if (request.VideoFile != null)
+        //        {
+        //            if (request.UrlVideo == "null" || request.UrlVideo == null || request.UrlVideo == "undefined")
+        //                bannerEdit.UrlVideo = await this._azureBlobStorageService.UploadAsync(request.VideoFile, ContainerEnum.banner);
+        //            else
+        //                bannerEdit.UrlVideo = await this._azureBlobStorageService.UploadAsync(request.VideoFile, ContainerEnum.banner, bannerEdit.UrlVideo);
+        //        }
                 
-                await _redSocialRepository.Update(redSocial, _logger);
-                var result = await _bannerRepository.Update(bannerEdit, _logger);
-                if(result != null)
-                {
-                    response.Message = "Se edito correctamente el banner";
-                    response.UpdatedId = bannerEdit.Id.ToString();
-                    response.Success = true;
-                    response.Data = request;
-                }
-                else
-                {
-                    response.Message = "No se pudo editar correctamente el banner";
-                    response.UpdatedId = bannerEdit.Id.ToString();
-                    response.Success = false;
-                    response.Data = request;
-                }
-                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+        //        await _redSocialRepository.Update(redSocial, _logger);
+        //        var result = await _bannerRepository.Update(bannerEdit, _logger);
+        //        if(result != null)
+        //        {
+        //            response.Message = "Se edito correctamente el banner";
+        //            response.UpdatedId = bannerEdit.Id.ToString();
+        //            response.Success = true;
+        //            response.Data = request;
+        //        }
+        //        else
+        //        {
+        //            response.Message = "No se pudo editar correctamente el banner";
+        //            response.UpdatedId = bannerEdit.Id.ToString();
+        //            response.Success = false;
+        //            response.Data = request;
+        //        }
+        //        _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
 
-                return response;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
-                throw;
-            }
-        }
+        //        return response;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+        //        throw;
+        //    }
+        //}
         public async Task<BannerVM> ObtenerBanner(int idPat)
         {
             try
@@ -164,9 +175,9 @@ namespace _4toExpoApi.Core.Services
                     NombreEmpresa = bannerLis.NombreEmpresa,
                     Descripcion = bannerLis.Descripcion,
                     UrlVideo = bannerLis.UrlVideo,
-                    IdRedSocial = bannerLis?.IdRedSocial,
-                    NombreRedSocial = bannerLis?.RedSocial?.Nombre,
-                    UrlRedSocial = bannerLis?.RedSocial?.UrlRedSocial
+                    //IdRedSocial = bannerLis?.IdRedSocial,
+                    //NombreRedSocial = bannerLis?.RedSocial?.Nombre,
+                    //UrlRedSocial = bannerLis?.RedSocial?.UrlRedSocial
                 };
 
 

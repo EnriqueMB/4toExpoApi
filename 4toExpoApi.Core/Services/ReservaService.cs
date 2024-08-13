@@ -427,14 +427,14 @@ namespace _4toExpoApi.Core.Services
 
         }
 
-        public async Task<GenericResponse<Reservas>> ConfirmarPago(int idRegistroRerserva)
+        public async Task<GenericResponse<Reservas>> ConfirmarPago(int idRegistroRerserva, int idUpd)
         {
             try
             {
                 var response = new GenericResponse<Reservas>();
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
                 
-                var confirmarPago = await _reservaRepository.ConfirmarPago(idRegistroRerserva, _logger);
+                var confirmarPago = await _reservaRepository.ConfirmarPago(idRegistroRerserva, idUpd, _logger);
 
                 if (confirmarPago.Success)
                 {
