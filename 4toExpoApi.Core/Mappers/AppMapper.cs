@@ -51,6 +51,7 @@ namespace _4toExpoApi.Core.Mappers
                 cfg.CreateMap<Servicios, ServiciosVM>().ReverseMap();
                 cfg.CreateMap<Productos, ProductosVM>().ReverseMap();
                 cfg.CreateMap<Banner, BannerRequest>().ReverseMap();
+                cfg.CreateMap<RedPatrocinador, RedesRequest>().ReverseMap();
 
 
             });

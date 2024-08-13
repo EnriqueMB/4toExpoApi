@@ -70,7 +70,7 @@ namespace _4toExpoApi.DataAccess.Repositories
             }
         }
 
-        public async Task<GenericResponse<Reservas>> ConfirmarPago(int id, ILogger logger)
+        public async Task<GenericResponse<Reservas>> ConfirmarPago(int id, int userUpd, ILogger logger)
         {
             try
             {
@@ -80,6 +80,8 @@ namespace _4toExpoApi.DataAccess.Repositories
                 var findReservartion = _dbContext.Reservas.Where(x=>x.Id == id).FirstOrDefault();
                 if(findReservartion != null) {
                 findReservartion.ConfirmarCompra = true;
+                findReservartion.UserUpd = userUpd;
+                findReservartion.FechaUpd = DateTime.Now;
                     _dbContext.Reservas.Update(findReservartion);
                 }
                 var addResult = await _dbContext.SaveChangesAsync();

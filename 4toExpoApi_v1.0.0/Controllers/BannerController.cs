@@ -51,33 +51,33 @@ namespace _4toExpoApi_v1._0._0.Controllers
             }
         }
 
-        [HttpPut("BannerEditar")]
-        public async Task<IActionResult> BannerEditar([FromForm]BannerRequest request)
-        {
-            try
-            {
-                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+        //[HttpPut("BannerEditar")]
+        //public async Task<IActionResult> BannerEditar([FromForm]BannerRequest request)
+        //{
+        //    try
+        //    {
+        //        _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
 
-                var response = await _bannerService.EditarDatos(request);
+        //        var response = await _bannerService.EditarDatos(request);
 
-                if (response.Success)
-                {
-                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+        //        if (response.Success)
+        //        {
+        //            _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
 
-                    return Ok(response);
-                }
+        //            return Ok(response);
+        //        }
 
-                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+        //        _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
 
-                return BadRequest(response);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
-                throw;
-            }
-        }
+        //        return BadRequest(response);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+        //        throw;
+        //    }
+        //}
         [HttpGet("BannerObtener")]
         public async Task<IActionResult> BannerObtener(int idPat)
         {
