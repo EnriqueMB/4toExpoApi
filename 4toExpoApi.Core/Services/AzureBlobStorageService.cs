@@ -47,7 +47,8 @@ namespace _4toExpoApi.Core.Services
             // Get a reference to the blob just uploaded from the API in a container from configuration settings
             if (string.IsNullOrEmpty(blobName))
             {
-                blobName = Guid.NewGuid().ToString();
+                string extension = Path.GetExtension(file.FileName);
+                blobName = $"{Guid.NewGuid().ToString()}{extension}";
             }
 
             var blobClient = blobContainerClient.GetBlobClient(blobName);
