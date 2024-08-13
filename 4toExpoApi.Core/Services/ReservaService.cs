@@ -299,7 +299,7 @@ namespace _4toExpoApi.Core.Services
                 }
 
                 var incluyeUsuario = (await _incluyePaqueteRepository.GetAll(_logger))
-                    .Where(x => x.PaqueteId == paqueteUsuario.Id)
+                    .Where(x => x.PaqueteId == paqueteUsuario.Id && x.Activo == true)
                     .Select(x => AppMapper.Map<IncluyePaquete, IncluyePaqueteRequest>(x))
                     .ToList();
 
@@ -362,6 +362,7 @@ namespace _4toExpoApi.Core.Services
                                     NombreCompleto = usuario.NombreCompleto,
                                     Correo = usuario.Correo,
                                     Edad = usuario.Edad,
+                                    Asociacion = usuario.Asociacion,
                                     Telefono = usuario.Telefono,
                                     Direccion = usuario.Ciudad,
                                     NombrePaquete = paquete.Nombre,

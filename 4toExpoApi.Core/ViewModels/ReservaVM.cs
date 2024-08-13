@@ -27,5 +27,6 @@ namespace _4toExpoApi.Core.ViewModels
         public string? Asociacion { get; set; }
         public bool? CompraConfirmada {  get; set; }
 
+
     }
 }

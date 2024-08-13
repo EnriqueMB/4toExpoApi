@@ -25,6 +25,7 @@ namespace _4toExpoApi.Core.Request
         public string correo { get; set; }
         public string? urlImg { get; set; }
         public string? asociacion { get; set; }
+        public string? Cargo { get; set; }
         public string? contactoEmergencia { get; set; }
         public string? alergia { get; set; }
         public bool? asesoria { get; set; }
