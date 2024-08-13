@@ -32,6 +32,7 @@ namespace _4toExpoApi.Core.Services
         private readonly IBaseRepository<Pagos> _pagosRepository;
         private ILogger<ReservaService> _logger;
         private IConfiguration _configuration;
+        private readonly IBaseRepository<Universidad> _universidadRepository;
         #endregion
 
         #region <-- Constructor -->
@@ -349,11 +350,14 @@ namespace _4toExpoApi.Core.Services
                 var pagos = await _pagosRepository.GetAll(_logger);
                 pagos = pagos.Where(x => x.Activo == true).ToList();
 
+                //var universidades = await _universidadRepository.GetAll(_logger);
+
                 var response = (from reserva in reservas
                                 join usuario in usuarios on reserva.IdUsuario equals usuario.Id
                                 join paquete in paquetesGeneral on reserva.IdPaquete equals paquete.Id
                                 join incluye in incluyeGeneral on paquete.Id equals incluye.PaqueteId into incluyeGrupo
                                 join pago in pagos on reserva.Id equals pago.IdReserva
+                                //join universidad in universidades on usuario.IdUniversidad equals universidad.Id
                                 select new
                                 {
                                     Id = pago.Id,
@@ -366,6 +370,7 @@ namespace _4toExpoApi.Core.Services
                                     Cargo = usuario.Cargo,
                                     Telefono = usuario.Telefono,
                                     IdUniversidad = usuario.IdUniversidad,
+                                    //NombreUniversidad = universidad.Nombre,
                                     Ciudad = usuario.Ciudad,
                                     Estado =   usuario.Estado,
                                     ContactoEmergencia = usuario.ContactoEmergencia,
