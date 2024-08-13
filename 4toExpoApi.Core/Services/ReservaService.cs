@@ -223,7 +223,7 @@ namespace _4toExpoApi.Core.Services
                 }
                 if(request.PdfFile != null)
                 {
-                    request.UrlPDF = await this._azureBlobStorageService.UploadAsync(request.ImgFile, ContainerEnum.multimedia);
+                    request.UrlPDF = await this._azureBlobStorageService.UploadAsync(request.PdfFile, ContainerEnum.multimedia);
                 }
 
                 /***************  DATOS PARA LA TABLA PAGOS ********************/
