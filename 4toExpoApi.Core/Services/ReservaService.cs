@@ -44,7 +44,8 @@ namespace _4toExpoApi.Core.Services
             IBaseRepository<PaqueteGeneral> paqueteGeneralRepository,
             IBaseRepository<Usuarios> usuariosRepository,
             IBaseRepository<Reservas> reservarEntityRepository,
-            IBaseRepository<Pagos> pagosRepository)
+            IBaseRepository<Pagos> pagosRepository,
+            IBaseRepository<Universidad> universidadRepository)
         {
             _reservaRepository = reservaRepository;
             _logger = logger;
@@ -55,6 +56,7 @@ namespace _4toExpoApi.Core.Services
             _usuariosRepository = usuariosRepository;
             _reservarEntityRepository = reservarEntityRepository;
             _pagosRepository = pagosRepository;
+            _universidadRepository = universidadRepository;
         }
         #endregion
 
@@ -132,7 +134,8 @@ namespace _4toExpoApi.Core.Services
                     Pasarela = "ConectaTarjeta",
                     FechaAlt = DateTime.Now,
                     UserAlt = usrAlta,
-                    Activo = true
+                    Activo = true,
+                   
                 };
 
 
@@ -355,14 +358,15 @@ namespace _4toExpoApi.Core.Services
                 var pagos = await _pagosRepository.GetAll(_logger);
                 pagos = pagos.Where(x => x.Activo == true).ToList();
 
-                //var universidades = await _universidadRepository.GetAll(_logger);
+                var universidades = await _universidadRepository.GetAll(_logger);
 
                 var response = (from reserva in reservas
                                 join usuario in usuarios on reserva.IdUsuario equals usuario.Id
                                 join paquete in paquetesGeneral on reserva.IdPaquete equals paquete.Id
                                 join incluye in incluyeGeneral on paquete.Id equals incluye.PaqueteId into incluyeGrupo
                                 join pago in pagos on reserva.Id equals pago.IdReserva
-                                //join universidad in universidades on usuario.IdUniversidad equals universidad.Id
+                                join universidad in universidades on usuario.IdUniversidad equals universidad.Id into uniGrupo
+                                from uni in uniGrupo.DefaultIfEmpty() // Permite que la unión sea opcional
                                 select new
                                 {
                                     Id = pago.Id,
@@ -375,9 +379,9 @@ namespace _4toExpoApi.Core.Services
                                     Cargo = usuario.Cargo,
                                     Telefono = usuario.Telefono,
                                     IdUniversidad = usuario.IdUniversidad,
-                                    //NombreUniversidad = universidad.Nombre,
+                                    NombreUniversidad = uni?.Nombre, // Usa null conditional operator para evitar NullReferenceException
                                     Ciudad = usuario.Ciudad,
-                                    Estado =   usuario.Estado,
+                                    Estado = usuario.Estado,
                                     ContactoEmergencia = usuario.ContactoEmergencia,
                                     Alergia = usuario.Alergia,
                                     Sugerencia = usuario.Sugerencia,
@@ -392,11 +396,10 @@ namespace _4toExpoApi.Core.Services
                                     UrlComprobante = usuario.UrlImg,
                                     ConfirmarCompra = reserva.ConfirmarCompra
                                 }).ToList();
-                 
+
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
 
                 return response;
-
             }
             catch (Exception ex)
             {
@@ -404,6 +407,7 @@ namespace _4toExpoApi.Core.Services
                 throw;
             }
         }
+
 
 
         public async Task<List<ReservaVM>> ObtenerReservaCompradores()
