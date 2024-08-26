@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace _4toExpoApi.DataAccess.Entities
 {
@@ -16,9 +17,12 @@ namespace _4toExpoApi.DataAccess.Entities
         public string UrlRedSocial { get; set; }
         public int IdBanner {  get; set; }
 
-        [ForeignKey(nameof(IdRedSocial))]
+
+        [ForeignKey("IdRedSocial")]
         public RedSocial? Red {  get; set; }
         [ForeignKey(nameof(IdBanner))]
         public Banner? Banner { get; set; }
+
+        
     }
 }

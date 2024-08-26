@@ -160,5 +160,30 @@ namespace _4toExpoApi_v1._0._0.Controllers
         }
 
 
+        [HttpGet("ObtenerPatrocinadorPorIdUsuario")]
+
+        public async Task<IActionResult> ObtenerPatrocinadorPorIdUsuario(int idUsuario)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+                var result = await _patrocinadorService.ObtenerPatrocinadorPorIdUsuario(idUsuario);
+
+                if(result != null)
+                {
+                    return Ok(result);
+                }
+
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                return StatusCode(500, "Internal server error"); // Maneja errores de servidor
+            }
+        }
     }
 }

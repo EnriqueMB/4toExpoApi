@@ -14,7 +14,7 @@ namespace _4toExpoApi.DataAccess.Repositories
     public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
         public readonly _4toExpoDbContext _context;
-
+        private Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction;
         public BaseRepository(_4toExpoDbContext context)
         {
             _context = context;
@@ -162,6 +162,39 @@ namespace _4toExpoApi.DataAccess.Repositories
                 log.LogError(ex, $"Error al actualizar la entidad: {ex.Message}");
                 throw ex;
             }
+        }
+
+        public async Task<IEnumerable<T>> UpdateAll(IEnumerable<T> entity, ILogger log)
+        {
+            try
+            {
+                EntitySet.UpdateRange(entity);
+                await Save();
+                return entity;
+            }
+            catch (SqlException ex)
+            {
+                log.LogError(ex, $"Error al actualizar la entidad: {ex.Message}");
+                throw ex;
+            }
+        }
+
+        //Iniciar transacción
+        public void BeginTransaction()
+        {
+            transaction = _context.Database.BeginTransaction();
+        }
+
+        //Commit
+        public void Commit()
+        {
+            transaction.Commit();
+        }
+
+        //Rollback
+        public void Rollback()
+        {
+            transaction.Rollback();
         }
 
         private bool disposed = false;
