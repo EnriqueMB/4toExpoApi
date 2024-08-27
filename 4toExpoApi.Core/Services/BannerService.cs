@@ -9,6 +9,7 @@ using _4toExpoApi.DataAccess.Response;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Logging;
+using Org.BouncyCastle.Ocsp;
 using System.IO;
 using System.Reflection;
 
@@ -118,8 +119,7 @@ namespace _4toExpoApi.Core.Services
                     return response;
                 }
                 var redSocial = await _redPatrocinadorRepository.GetAll(_logger, [], x => x.IdPatrocinador == request.IdPatrocinador);
-                if(request.Redes.Count() > 0)
-                {
+               
                     foreach (var item in redSocial)
                     {
                         // Busca la red social correspondiente en el request.
@@ -131,31 +131,30 @@ namespace _4toExpoApi.Core.Services
                             item.UrlRedSocial = matchingRed.UrlRedSocial;
 
                         }
-                        var redExist = request.Redes.Where(x => x.IdRedSocial != item.IdRedSocial).Any();
-                        if(redExist)
+                    }
+
+                // Verifica si existen redes sociales en la solicitud que no están en la lista 'redSocial'.
+                var redExist = request.Redes.Any(x => !redSocial.Any(rs => rs.IdRedSocial == x.IdRedSocial));
+                if (redExist)
+                {
+                    // Filtra las redes que no están en 'redSocial' y las prepara para ser añadidas.
+                    var redesAdd = request.Redes
+                        .Where(x => !redSocial.Any(rs => rs.IdRedSocial == x.IdRedSocial))
+                        .Select(x => new RedPatrocinador
                         {
-                            var redesAdd = request.Redes
-                             .Where(x => x.IdRedSocial != item.IdRedSocial)
-                             .Select(x => new RedPatrocinador
-                             {
-                                 IdPatrocinador = item.IdPatrocinador,
-                                 IdRedSocial = x.IdRedSocial,
-                                 UrlRedSocial = x.UrlRedSocial,
-                                 IdBanner = item.IdBanner,
-                             }).ToList();
-                            if (redesAdd.Any())
-                            {
-                                // Agrega las redes sociales que no estaban previamente.
-                                await _redPatrocinadorRepository.AddAll(redesAdd, _logger);
-                            }
-                        }
-                      
+                            IdPatrocinador = request.IdPatrocinador,
+                            IdRedSocial = x.IdRedSocial,
+                            UrlRedSocial = x.UrlRedSocial,
+                            IdBanner = bannerEdit.Id,
+                        }).ToList();
 
-                      
-
+                    // Si hay redes sociales para añadir, procede a agregarlas.
+                    if (redesAdd.Any())
+                    {
+                        await _redPatrocinadorRepository.AddAll(redesAdd, _logger);
                     }
                 }
-              
+
 
                 bannerEdit.NombreEmpresa = request.NombreEmpresa;
                 bannerEdit.Descripcion = request.Descripcion;
