@@ -1,6 +1,7 @@
 ﻿using _4toExpoApi.Core.Enums;
 using _4toExpoApi.Core.Mappers;
 using _4toExpoApi.Core.Request;
+using _4toExpoApi.Core.Response;
 using _4toExpoApi.Core.ViewModels;
 using _4toExpoApi.DataAccess;
 using _4toExpoApi.DataAccess.Entities;
@@ -313,6 +314,34 @@ namespace _4toExpoApi.Core.Services
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
 
                 return patrocinadorRequest;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<PatrocinadorRequest> ObtenerPatrocinadorPorIdUsuario(int idUsuario)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+
+
+                var patrocinador = (await _patrocinadorRepository.GetAll(_logger, [], x => x.IdUsuario == idUsuario)).FirstOrDefault();
+
+                if(patrocinador == null)
+                {
+                    return null;
+                }
+
+                var patrocinadorRequest = AppMapper.Map<Patrocinadores, PatrocinadorRequest>(patrocinador);
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return patrocinadorRequest;
+
             }
             catch (Exception ex)
             {

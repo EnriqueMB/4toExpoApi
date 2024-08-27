@@ -1,5 +1,7 @@
 ﻿
 
+using _4toExpoApi.DataAccess.Entities;
+
 namespace _4toExpoApi.Core.ViewModels
 {
     public class BannerVM
@@ -8,8 +10,8 @@ namespace _4toExpoApi.Core.ViewModels
         public string? NombreEmpresa { get; set; }
         public string? Descripcion { get; set; }
         public string? UrlVideo { get; set; }
-        public int? IdRedSocial { get; set; }
-        public string? NombreRedSocial { get; set; }
+        public List<RedPatrocinador>? RedesRequest { get; set; }
+
         public string? UrlRedSocial { get; set; }
     }
 }
