@@ -87,11 +87,21 @@ namespace _4toExpoApi.Core.Services
                 usuario.UserAlt = usrAlta;
                 usuario.Activo = true;
 
+                decimal montofinal;
+                if(request.Factura == true)
+                {
+                    montofinal = (decimal)request.monto * 1.16m;
+                }
+                else
+                {
+                    montofinal = (decimal)request.monto;
+                }
+
                 var reserva = new Reservas
                 {
                     Producto = request.producto,
                     IdPaquete = request.idPaquete,
-                    Monto = request.monto,
+                    Monto = (int)montofinal,
                     NombreCompleto = request.NombreCompleto,
                     FechaAlt = DateTime.Now,
                     UserAlt = usrAlta,
