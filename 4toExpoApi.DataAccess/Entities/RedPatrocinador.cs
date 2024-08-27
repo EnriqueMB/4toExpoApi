@@ -14,7 +14,7 @@ namespace _4toExpoApi.DataAccess.Entities
         public int IdRedPatrocinador { get; set; }
         public int IdPatrocinador { get; set; }
         public int IdRedSocial { get; set; }
-        public string UrlRedSocial { get; set; }
+        public string? UrlRedSocial { get; set; }
         public int IdBanner {  get; set; }
 
 
