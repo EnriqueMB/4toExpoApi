@@ -352,7 +352,7 @@ namespace _4toExpoApi.Core.Services
             }
         }
 
-        public async Task<ListResponse<UsuariosPromoVM>> ObtenerUsuariosPromo()
+        public async Task<ListResponse<UsuariosPromoVM>> ObtenerUsuariosPromo(int id)
         {
             try
             {
@@ -361,7 +361,7 @@ namespace _4toExpoApi.Core.Services
                 var response = new ListResponse<UsuariosPromoVM>();
 
                 string[] include = new string[] { "Usuarios" };
-                Expression<Func<UsuariosPromocion, bool>> query = u => u.Activo == true;
+                Expression<Func<UsuariosPromocion, bool>> query = u => u.Activo == true && u.IdUsuario == id;
 
                 var usuariosPromo = await _promocionRepository.GetAll(_logger, include, query);
 
