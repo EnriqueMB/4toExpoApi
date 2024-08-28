@@ -356,31 +356,31 @@ namespace _4toExpoApi_v1._0._0.Controllers
                 throw;
             }
         }
-        [HttpGet("ObtenerReservaCompradores")]
-        public async Task<IActionResult> ObtenerReservaCompradores()
-        {
-            try
-            {
-                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
+        //[HttpGet("ObtenerReservaCompradores")]
+        //public async Task<IActionResult> ObtenerReservaCompradores()
+        //{
+        //    try
+        //    {
+        //        _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
-                var response = await _payService.ObtenerReservaCompradores();
+        //        var response = await _payService.ObtenerReservaCompradores();
 
-                if (response != null)
-                {
-                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+        //        if (response != null)
+        //        {
+        //            _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
 
-                    return Ok(response);
-                }
-                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+        //            return Ok(response);
+        //        }
+        //        _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
 
-                return null;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
-                throw;
-            }
-        }
+        //        return null;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+        //        throw;
+        //    }
+        //}
 
         [HttpPost("PayWithCard")]
         public async Task<IActionResult> CreateCharge([FromBody] PaymentRequest request)

@@ -1,6 +1,7 @@
 ﻿using _4toExpoApi.Core.ViewModels;
 using _4toExpoApi.DataAccess.Entities;
 using Microsoft.AspNetCore.Http;
+using Org.BouncyCastle.Crypto.Digests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,7 @@ namespace _4toExpoApi.Core.Request
         public string? asociacion { get; set; }
         public string? Cargo { get; set; }
         public bool? Factura { get; set; }
+        public bool? paqueteGratis { get; set; }
         public string? contactoEmergencia { get; set; }
         public string? alergia { get; set; }
         public bool? asesoria { get; set; }

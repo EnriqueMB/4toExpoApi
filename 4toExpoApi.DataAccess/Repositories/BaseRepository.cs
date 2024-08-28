@@ -139,6 +139,11 @@ namespace _4toExpoApi.DataAccess.Repositories
             return await entity.ToListAsync();
         }
 
+        public async Task<int> GetCount(ILogger log, Expression<Func<T, bool>> query)
+        {
+            return await EntitySet.Where(query).CountAsync();
+        }
+
         public async Task<T> GetById(int id, ILogger log)
         {
             return await EntitySet.FindAsync(id);

@@ -25,6 +25,7 @@ namespace _4toExpoApi.DataAccess.Entities
         public string? Alergia { get; set; }
         public bool? Asesoria { get; set; }
         public bool? Factura { get; set; }
+        public bool? PaqueteGratis { get; set; }
 
         public string? Cargo { get; set; }
         public string? Sugerencia { get; set; }

@@ -45,6 +45,7 @@ builder.Services.AddScoped<UniversidadService>();
 builder.Services.AddScoped<PreguntasService>();
 builder.Services.AddScoped<ProgramaActividadesService>();
 builder.Services.AddScoped<PromocionService>();
+builder.Services.AddScoped<PaquetesFreeService>();
 //builder.Services.AddScoped<>
 
 builder.Services.AddScoped<HotelService>();
@@ -88,6 +89,7 @@ builder.Services.AddScoped<IBaseRepository<ProgramaActividades>, BaseRepository<
 builder.Services.AddScoped<IBaseRepository<Pagos>, BaseRepository<Pagos>>();
 builder.Services.AddScoped<IBaseRepository<Promocion>, BaseRepository<Promocion>>();
 builder.Services.AddScoped<IBaseRepository<RedPatrocinador>, BaseRepository<RedPatrocinador>>();
+builder.Services.AddScoped<IBaseRepository<Reservas>, BaseRepository<Reservas>>();
 #endregion
 #region <-- Context -->
 
