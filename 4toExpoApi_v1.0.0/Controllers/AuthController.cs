@@ -114,13 +114,13 @@ namespace _4toExpoApi_v1._0._0.Controllers
         }
 
         [HttpGet("ObtenerUsuariosPromocion")]
-        public async Task<IActionResult> ObtenerUsuariosPromo()
+        public async Task<IActionResult> ObtenerUsuariosPromo(int id)
         {
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
-                var response = await _authService.ObtenerUsuariosPromo();
+                var response = await _authService.ObtenerUsuariosPromo(id);
 
                 if (response != null)
                 {
