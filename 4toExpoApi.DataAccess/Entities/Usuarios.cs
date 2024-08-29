@@ -28,6 +28,7 @@ namespace _4toExpoApi.DataAccess.Entities
         public bool? PaqueteGratis { get; set; }
 
         public string? Cargo { get; set; }
+        public string? Institucion { get; set; }
         public string? Sugerencia { get; set; }
 
         [MaxLength(250)]
