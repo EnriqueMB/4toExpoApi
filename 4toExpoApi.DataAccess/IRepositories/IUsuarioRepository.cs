@@ -20,5 +20,8 @@ namespace _4toExpoApi.DataAccess.IRepositories
         Task<GenericResponse<Usuarios>> ObtenerUsuarioPorId(int id, ILogger logger);
         Task<GenericResponse<Usuarios>> ExistsNombreUsuario(string nombreUsuario, int idUsuario, ILogger logger);
         Task<GenericResponse<Usuarios>> EliminarUsuario(int id, int userMod, ILogger logger);
+
+        Task<bool> ValidarUsuarioConReservasYPagos(int userId, ILogger logger);
+
     }
 }

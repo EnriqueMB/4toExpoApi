@@ -294,7 +294,7 @@ namespace _4toExpoApi.Core.Services
                         Correo = usuario.Correo,
                         Edad = usuario.Edad,
                         Asociacion = usuario.Asociacion,
-
+                        Factura = usuario.Factura,
                     };
                     return user;
                 }
@@ -326,8 +326,9 @@ namespace _4toExpoApi.Core.Services
                     Correo = usuario.Correo,
                     Edad = usuario.Edad,
                     Asociacion = usuario.Asociacion,
-
+                    Factura = usuario.Factura,
                     CompraConfirmada = reserva.ConfirmarCompra,
+                   IdReserva = reserva.Id        
                 };
 
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
