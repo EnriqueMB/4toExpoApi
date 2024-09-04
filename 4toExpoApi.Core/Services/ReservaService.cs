@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -217,44 +218,87 @@ namespace _4toExpoApi.Core.Services
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
                 var response = new GenericResponse();
 
-                if (request.ImgFile != null)
+                Expression<Func<Pagos, bool>> query = x => x.IdReserva == request.idReserva;
+
+                var boucherValid = await _pagosRepository.GetAll(_logger, [], query);
+                if (boucherValid != null && boucherValid.Count() > 0)
                 {
-                    request.baucherPago = await this._azureBlobStorageService.UploadAsync(request.ImgFile, ContainerEnum.multimedia);
+
+                    if (request.ImgFile != null)
+                    {
+                        request.baucherPago = await this._azureBlobStorageService.UploadAsync(request.ImgFile, ContainerEnum.multimedia);
+                    }
+                    if (request.PdfFile != null)
+                    {
+                        request.UrlPDF = await this._azureBlobStorageService.UploadAsync(request.PdfFile, ContainerEnum.multimedia);
+                    }
+
+                    /***************  DATOS PARA LA TABLA PAGOS ********************/
+
+                    var data = boucherValid.FirstOrDefault();
+
+                    data.IdReserva = request.idReserva;
+                    data.IdPromocion = data.IdPromocion;
+                    data.Monto = data.Monto;
+                    data.StatusPago = "COMPLETADO";
+                    data.Pasarela = "Transfrencia";
+                    data.Banco = data.Banco;
+                    data.Cuenta = data.Cuenta;
+                    data.ClaveBancaria = data.ClaveBancaria;
+                    data.BaucherPago = request.baucherPago;
+                    data.FechaUpd = DateTime.Now;
+                    data.UserUpd = 1;
+                    data.Activo = true;
+                    data.UrlPDF = data.UrlPDF;
+                    
+
+                    var result = await _reservaRepository.Update(data, _logger);
+
+
+                    if (result != null)
+                    {
+                        response.Message = "Pago actualizado correctamente";
+                        response.Success = true;
+                    }
                 }
-                if(request.PdfFile != null)
-                {
-                    request.UrlPDF = await this._azureBlobStorageService.UploadAsync(request.PdfFile, ContainerEnum.multimedia);
+                else {
+
+                    if (request.ImgFile != null)
+                    {
+                        request.baucherPago = await this._azureBlobStorageService.UploadAsync(request.ImgFile, ContainerEnum.multimedia);
+                    }
+                    if (request.PdfFile != null)
+                    {
+                        request.UrlPDF = await this._azureBlobStorageService.UploadAsync(request.PdfFile, ContainerEnum.multimedia);
+                    }
+
+                    /***************  DATOS PARA LA TABLA PAGOS ********************/
+
+                    var pagos = new Pagos
+                    {
+                        IdReserva = request.idReserva,
+                        IdPromocion = request.IdPromocion,
+                        Monto = request.Monto,
+                        StatusPago = "COMPLETADO",
+                        Pasarela = "Transfrencia",
+                        Banco = request.banco,
+                        Cuenta = request.cuenta,
+                        ClaveBancaria = request.claveBancaria,
+                        BaucherPago = request.baucherPago,
+                        FechaAlt = DateTime.Now,
+                        UserAlt = 1,
+                        Activo = true,
+                        UrlPDF = request.UrlPDF,
+                    };
+                    var result = await _reservaRepository.AgregarReserva(pagos, _logger);
+                    if (result.Success)
+                    {
+                        response.Message = "Pago guardado correctamente";
+                        response.Success = true;
+                        response.CreatedId = result.CreatedId;
+                    }
+
                 }
-
-                /***************  DATOS PARA LA TABLA PAGOS ********************/
-
-                var pagos = new Pagos
-                {
-                    IdReserva = request.idReserva,
-                    IdPromocion = request.IdPromocion,
-                    Monto = request.Monto,
-                    StatusPago = "COMPLETADO",
-                    Pasarela = "Transfrencia",
-                    Banco = request.banco,
-                    Cuenta = request.cuenta,
-                    ClaveBancaria = request.claveBancaria,
-                    BaucherPago = request.baucherPago,
-                    FechaAlt = DateTime.Now,
-                    UserAlt = 1,
-                    Activo = true,
-                    UrlPDF = request.UrlPDF,
-                };
-
-
-                var result = await _reservaRepository.AgregarReserva(pagos, _logger);
-
-                if (result.Success)
-                {
-                    response.Message = "Pago guardado correctamente";
-                    response.Success = true;
-                    response.CreatedId = result.CreatedId;
-                }
-
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
 
                 return response;
@@ -328,7 +372,7 @@ namespace _4toExpoApi.Core.Services
                     Asociacion = usuario.Asociacion,
                     Factura = usuario.Factura,
                     CompraConfirmada = reserva.ConfirmarCompra,
-                   IdReserva = reserva.Id        
+                    IdReserva = reserva.Id,
                 };
 
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");

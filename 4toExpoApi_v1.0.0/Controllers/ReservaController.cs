@@ -184,6 +184,8 @@ namespace _4toExpoApi_v1._0._0.Controllers
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
+
+
                 var response = await _payService.pagarTranferencia(request);
 
                 if (response.Success)

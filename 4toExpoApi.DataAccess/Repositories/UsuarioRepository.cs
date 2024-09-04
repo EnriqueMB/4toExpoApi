@@ -439,6 +439,12 @@ namespace _4toExpoApi.DataAccess.Repositories
                     return false;
                 }
 
+                if (string.IsNullOrWhiteSpace(pago.BaucherPago))
+                {
+                    logger.LogInformation("BaucherPago no encontrado o es inválido para el pago.");
+                    return false;
+                }
+
                 logger.LogInformation($"{nameof(UsuarioRepository)} - ValidarUsuarioConReservasYPagos Finished Success");
                 return true;
             }
