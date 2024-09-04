@@ -9,6 +9,7 @@ using _4toExpoApi.DataAccess.IRepositories;
 using _4toExpoApi.DataAccess.Response;
 using AutoMapper.Configuration.Annotations;
 using KiddyCheckApi.Core.Helpers;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -62,7 +63,7 @@ namespace _4toExpoApi.Core.Services
 
                 if (userDb != null)
                 {
-                    response.Message = "El nombre de usuario ya existe";
+                    response.Message = "El nombre de usuario ya está registrado. Por favor, inicie sesión para completar sus datos.";
                     response.Success = false;
 
                     _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
@@ -87,11 +88,21 @@ namespace _4toExpoApi.Core.Services
                 usuario.UserAlt = usrAlta;
                 usuario.Activo = true;
 
+                decimal montofinal;
+                if(request.Factura == true)
+                {
+                    montofinal = (decimal)request.monto * 1.16m;
+                }
+                else
+                {
+                    montofinal = (decimal)request.monto;
+                }
+
                 var reserva = new Reservas
                 {
                     Producto = request.producto,
                     IdPaquete = request.idPaquete,
-                    Monto = request.monto,
+                    Monto = (int)montofinal,
                     NombreCompleto = request.NombreCompleto,
                     FechaAlt = DateTime.Now,
                     UserAlt = usrAlta,
@@ -342,7 +353,7 @@ namespace _4toExpoApi.Core.Services
             }
         }
 
-        public async Task<ListResponse<UsuariosPromoVM>> ObtenerUsuariosPromo()
+        public async Task<ListResponse<UsuariosPromoVM>> ObtenerUsuariosPromo(int id)
         {
             try
             {
@@ -351,7 +362,7 @@ namespace _4toExpoApi.Core.Services
                 var response = new ListResponse<UsuariosPromoVM>();
 
                 string[] include = new string[] { "Usuarios" };
-                Expression<Func<UsuariosPromocion, bool>> query = u => u.Activo == true;
+                Expression<Func<UsuariosPromocion, bool>> query = u => u.Activo == true && u.IdUsuario == id;
 
                 var usuariosPromo = await _promocionRepository.GetAll(_logger, include, query);
 
@@ -499,6 +510,27 @@ namespace _4toExpoApi.Core.Services
                 return computedHash.SequenceEqual(passwordHash);
             }
         }
+
+
+        public async Task<bool> ValidarUsuario(int userAlt)
+        {
+            try
+            {
+                _logger.LogInformation($"{nameof(ValidarUsuario)} - Started");
+
+                // Llamar al repositorio para validar el usuario, las reservas y los pagos
+                bool resultado = await _usuarioRepository.ValidarUsuarioConReservasYPagos(userAlt, _logger);
+
+                _logger.LogInformation($"{nameof(ValidarUsuario)} - Finished Success");
+                return resultado;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{nameof(ValidarUsuario)} - Error: {ex.Message}");
+                throw;
+            }
+        }
+
 
         #endregion
     }

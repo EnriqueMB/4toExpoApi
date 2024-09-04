@@ -26,7 +26,9 @@ namespace _4toExpoApi.Core.ViewModels
         public string? Correo {  get; set; }
         public string? Asociacion { get; set; }
         public bool? CompraConfirmada {  get; set; }
+        public bool? Factura { get; set; }
 
+        public int IdReserva { get; set; }
 
     }
 }

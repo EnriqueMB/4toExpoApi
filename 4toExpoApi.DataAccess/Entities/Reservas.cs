@@ -26,11 +26,11 @@ namespace _4toExpoApi.DataAccess.Entities
         public DateTime? FechaUpd { get; set; }
         public bool? Activo { get; set; }
 
-        [ForeignKey(nameof(IdPaquete))]
-        public virtual PaquetePatrocinadores PaquetePatrocinadores { get; set; }
+        [ForeignKey("IdPaquete")]
+        public virtual PaqueteGeneral? PaqueteGeneral { get; set; }
 
         [ForeignKey("IdUsuario")]
-        public virtual Usuarios Usuarios { get; set; }
+        public virtual Usuarios? Usuarios { get; set; }
        
     }
 }

@@ -13,7 +13,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
         private readonly AuthService _authService;
         private ILogger<AuthController> _logger;
         #endregion
-        
+
         #region <--- Constructor --->
         public AuthController(
             ILogger<AuthController> logger,
@@ -28,7 +28,7 @@ namespace _4toExpoApi_v1._0._0.Controllers
         #region <--- Metodos --->
         //Agregar usuario
         [HttpPost("AgregarUsuario")]
-        public async Task<IActionResult> AgregarUsuario([FromForm]UsuarioRequest request)
+        public async Task<IActionResult> AgregarUsuario([FromForm] UsuarioRequest request)
         {
             try
             {
@@ -114,13 +114,13 @@ namespace _4toExpoApi_v1._0._0.Controllers
         }
 
         [HttpGet("ObtenerUsuariosPromocion")]
-        public async Task<IActionResult> ObtenerUsuariosPromo()
+        public async Task<IActionResult> ObtenerUsuariosPromo(int id)
         {
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
-                var response = await _authService.ObtenerUsuariosPromo();
+                var response = await _authService.ObtenerUsuariosPromo(id);
 
                 if (response != null)
                 {
@@ -281,6 +281,39 @@ namespace _4toExpoApi_v1._0._0.Controllers
             {
                 _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
                 return BadRequest(new { Success = false, Message = "Error al cerrar sesión" });
+            }
+        }
+
+
+        [HttpGet("ValidarUsuario")]
+        public async Task<IActionResult> ValidarUsuario([FromQuery] int userId)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " Started");
+
+                
+                if (userId <= 0)
+                {
+                    return BadRequest("ID de usuario inválido");
+                }
+
+               
+                var response = await _authService.ValidarUsuario(userId);
+
+                if (response == true)
+                {
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " Finished Successfully");
+                    return Ok(true);
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " Finished Successfully");
+                return Ok(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + " " + ex.Message);
+                return StatusCode(500, "Error interno del servidor");
             }
         }
 

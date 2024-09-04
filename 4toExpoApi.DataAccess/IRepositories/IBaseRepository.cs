@@ -22,6 +22,7 @@ namespace _4toExpoApi.DataAccess.IRepositories
         Task<IEnumerable<T>> GetAll(ILogger log, string[] include);
         Task<IEnumerable<T>> GetAll(ILogger log, string[] include, Expression<Func<T, bool>> query);
         Task<IEnumerable<T>> GetAll(ILogger log, string[] include, Expression<Func<T, bool>> query, int skip, int take);
+        Task<int> GetCount(ILogger log, Expression<Func<T, bool>> query);
         public void BeginTransaction();
         public void Commit();
         public void Rollback();

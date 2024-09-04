@@ -408,5 +408,45 @@ namespace _4toExpoApi.DataAccess.Repositories
             }
         }
 
+
+        public async Task<bool> ValidarUsuarioConReservasYPagos(int userId, ILogger logger)
+        {
+            try
+            {
+                logger.LogInformation($"{nameof(UsuarioRepository)} - ValidarUsuarioConReservasYPagos Started");
+
+                // Verificar si el usuario existe en la tabla Usuarios
+                var usuario = await _dbContext.Set<Usuarios>().FindAsync(userId);
+                if (usuario == null)
+                {
+                    logger.LogInformation("Usuario no encontrado.");
+                    return false;
+                }
+
+                // Verificar si existe una reserva asociada al usuario
+                var reserva = await _dbContext.Set<Reservas>().FirstOrDefaultAsync(r => r.IdUsuario == userId);
+                if (reserva == null)
+                {
+                    logger.LogInformation("Reserva no encontrada para el usuario.");
+                    return false;
+                }
+
+                // Verificar si existe un pago asociado a la reserva
+                var pago = await _dbContext.Set<Pagos>().FirstOrDefaultAsync(p => p.IdReserva == reserva.Id);
+                if (pago == null)
+                {
+                    logger.LogInformation("Pago no encontrado para la reserva.");
+                    return false;
+                }
+
+                logger.LogInformation($"{nameof(UsuarioRepository)} - ValidarUsuarioConReservasYPagos Finished Success");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{nameof(UsuarioRepository)} - Error: {ex.Message}");
+                throw;
+            }
+        }
     }
 }
