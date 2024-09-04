@@ -165,7 +165,51 @@ namespace _4toExpoApi_v1._0._0.Controllers
                 throw;
             }
         }
+        [HttpGet("BannerObtenerPat")]
+        public async Task<IActionResult> BannerObtenerPat(int idPat)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Started Success");
 
+                //var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
+
+                //if (string.IsNullOrEmpty(userIdClaim))
+                //{
+                //    return Unauthorized("Usuario no autenticado");
+                //}
+
+                //if (!int.TryParse(userIdClaim, out int userAlt))
+                //{
+                //    return BadRequest("ID de usuario inválido");
+                //}
+
+                //var patrocinador = await _patrocinadorRepository.GetByUserIdAsync(userAlt);
+                //if (patrocinador == null)
+                //{
+                //    return BadRequest("El usuario no tiene un patrocinador asociado");
+                //}
+                //int idPatrocinador = patrocinador.Id;
+                //idPat = idPatrocinador;
+                var response = await _bannerService.ObtenerBanner(idPat);
+
+                if (response.Id > 0)
+                {
+                    _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                    return Ok(response);
+                }
+
+                _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + ex.Message);
+                throw;
+            }
+        }
         #endregion
     }
 }

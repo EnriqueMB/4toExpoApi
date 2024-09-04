@@ -50,6 +50,11 @@ namespace _4toExpoApi.Core.Services
                 string extension = Path.GetExtension(file.FileName);
                 blobName = $"{Guid.NewGuid().ToString()}{extension}";
             }
+            else
+            {
+                string newExtension = Path.GetExtension(file.FileName);
+                blobName = Path.ChangeExtension(blobName, newExtension);
+            }
 
             var blobClient = blobContainerClient.GetBlobClient(blobName);
 
