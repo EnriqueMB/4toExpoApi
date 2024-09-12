@@ -98,12 +98,20 @@ namespace _4toExpoApi.Core.Services
                     montofinal = (decimal)request.monto;
                 }
 
+                var confirmacion = false;
+
+                if (request.paqueteGratis == true)
+                {
+                    confirmacion = true;
+                }
+
                 var reserva = new Reservas
                 {
                     Producto = request.producto,
                     IdPaquete = request.idPaquete,
                     Monto = (int)montofinal,
                     NombreCompleto = request.NombreCompleto,
+                    ConfirmarCompra = confirmacion,
                     FechaAlt = DateTime.Now,
                     UserAlt = usrAlta,
                     Activo = true
