@@ -440,7 +440,8 @@ namespace _4toExpoApi.Core.Services
                                     UrlPdf = pago.UrlPDF,
                                     TipoDePago = pago.Pasarela,
                                     UrlComprobante = usuario.UrlImg,
-                                    ConfirmarCompra = reserva.ConfirmarCompra
+                                    ConfirmarCompra = reserva.ConfirmarCompra,
+                                    Banco = pago.Banco
                                 }).ToList();
 
                 _logger.LogInformation(MethodBase.GetCurrentMethod().DeclaringType.DeclaringType.Name + "Finished Success");
